@@ -1,8 +1,11 @@
 export interface LessonSubSection {
   id: string;
+  code: string;
   title: string;
+  subtitle: string;
   sommervilleRef: string;
   mentorVoice: string;
+  deepDiveParagraphs: string[];
   corePrinciples: {
     heading: string;
     explanation: string;
@@ -24,7 +27,22 @@ export interface TrainingModule {
   subtitle: string;
   sommervilleChapters: string;
   bgTone: 'primary' | 'primary-alt' | 'primary-deep';
-  interactiveToolId: 'lifecycle-flow' | 'architecture-schema' | 'file-tree' | 'data-hosting-sim' | 'dependability-swiss' | 'ai-studio-scenarios';
+  schemaImage: {
+    src: string;
+    alt: string;
+    caption: string;
+    secondarySrc?: string;
+    secondaryCaption?: string;
+  };
+  interactiveToolId:
+    | 'lifecycle-flow'
+    | 'architecture-schema'
+    | 'file-tree'
+    | 'data-hosting-sim'
+    | 'dependability-swiss'
+    | 'ai-studio-scenarios'
+    | 'capstone-project'
+    | 'none';
   mentorIntro: string;
   keyTakeaway: string;
   sections: LessonSubSection[];
@@ -133,6 +151,17 @@ export interface AiStudioScenario {
   idealFolderStructure: string[];
 }
 
+export interface CapstoneMilestone {
+  id: string;
+  number: string;
+  title: string;
+  subtitle: string;
+  objective: string;
+  deliverables: string[];
+  architectChecklist: string[];
+  promptToUse: string;
+}
+
 export interface GlossaryTerm {
   id: string;
   term: string;
@@ -148,304 +177,613 @@ export const TRAINING_MODULES: TrainingModule[] = [
   {
     id: 'mod-1-fondations',
     number: '01',
-    shortTitle: 'Penser en Ingénieur',
+    shortTitle: 'Esprit Ingénieur & Exigences',
     fullTitle: 'Penser et Agir comme un Ingénieur Logiciel (Sans Coder)',
-    subtitle: 'Du besoin flou au système structuré : processus, règles métier, incréments et exigences selon Ian Sommerville.',
-    sommervilleChapters: 'Chapitres 1, 2, 3 & 4 — Introduction, Processus Logiciels, Agile & Ingénierie des Exigences',
+    subtitle:
+      'Comprendre ce qu’est réellement un logiciel professionnel, comment recueillir les besoins et comment transformer une idée floue en exigences et règles métier solides.',
+    sommervilleChapters: 'Sommerville Chapitres 1 & 4 — Introduction à l’Ingénierie & Ingénierie des Exigences',
     bgTone: 'primary',
-    interactiveToolId: 'lifecycle-flow',
+    schemaImage: {
+      src: '/src/assets/images/schema_module1_cycle_incremental_1795020431050.jpg',
+      alt: 'Schéma du besoin et des règles métier découpés en incréments',
+      caption: 'Du besoin métier central vers le découpage en incréments maîtrisés : la base de la réflexion d’ingénieur.'
+    },
+    interactiveToolId: 'none',
     mentorIntro:
       "Bienvenue dans le métier. Beaucoup pensent qu'un ingénieur logiciel est quelqu'un qui tape des lignes de code très vite. C'est faux. Le code n'est que la brique finale. L'ingénieur logiciel est celui qui transforme un problème humain désordonné en un système fiable, découpé et maintenable. Avec l'IA générative, tu n'as plus besoin de maçonner chaque brique toi-même : l'IA est ton équipe d'ouvriers ultra-rapides. Mais si l'architecte (toi) ne fournit pas le plan, les règles métier et les limites, l'IA construira une tour instable qui s'effondrera au premier changement.",
     keyTakeaway:
-      "Ne demande jamais à une IA de « créer toute l'application d'un coup ». Découpe toujours ton système en 4 activités fondamentales (Spécification, Conception, Validation, Évolution) et livre par petits incréments vérifiables.",
+      'Avant de demander la moindre ligne de code à l’IA, sépare toujours par écrit : 1) Ce que fait l’application (Exigences Fonctionnelles), 2) Ses limites et garanties de sécurité/vitesse (Exigences Non-Fonctionnelles), et 3) Ses lois de calcul pures (Règles Métier).',
     sections: [
       {
         id: 'sec-1-1',
-        title: 'Les 4 Activités Fondamentales & Pourquoi le Code Monolithique Échoue',
-        sommervilleRef: 'Sommerville Chap. 1 & 2 — Software Processes',
+        code: 'Sous-module 1.1',
+        title: 'La Différence entre un Script Jetable et l’Ingénierie Logicielle',
+        subtitle: 'Pourquoi 70 % de la vie d’un logiciel se joue après sa première création.',
+        sommervilleRef: 'Ian Sommerville — Chapitre 1.1 : Professional Software Development',
         mentorVoice:
-          "Ian Sommerville rappelle que peu importe la technologie, tout logiciel sérieux traverse quatre activités : Spécifier (que doit faire le système ?), Concevoir et Implémenter (comment est-il organisé ?), Valider (fait-il vraiment ce qu'on attend ?), et Évoluer (comment le modifier quand le monde change ?).",
+          "Quand on débute avec une IA, on est ébloui parce qu'en un seul message (« Fais-moi un site de facturation »), un écran apparaît en 30 secondes. Mais dès le lendemain, quand on veut ajouter la TVA, gérer les avoirs ou sécuriser l'accès d'un comptable, tout se casse. Pourquoi ? Parce qu'on a confondu un « prototype visuel » avec un « système ingénieré ».",
+        deepDiveParagraphs: [
+          "Dans le Chapitre 1 de son ouvrage, Ian Sommerville pose une distinction fondamentale : un programme personnel peut être écrit sans plan, mais un logiciel professionnel est destiné à évoluer, à résister aux erreurs humaines et à survivre aux changements de besoins. Le coût principal d'un logiciel n'est presque jamais sa fabrication initiale, mais sa modification et sa maintenance au fil des mois.",
+          "En tant qu'architecte qui ne code pas, ton super-pouvoir ne réside pas dans la syntaxe des virgules ou des parenthèses : il réside dans ta capacité à anticiper le changement. Chaque fois que tu demandes une fonctionnalité à l'IA, tu dois te poser la question d'ingénieur : « Si demain je dois modifier cette règle de tarif ou changer l'apparence de cette page, est-ce que les deux sont suffisamment séparés pour que l'un ne détruise pas l'autre ? »",
+          "Sommerville résume la qualité d'un bon logiciel en quatre piliers que tu dois exiger de l'IA : la Maintenabilité (pouvoir modifier une pièce sans tout casser), la Sûreté et Sécurité (protéger les données contre les erreurs et les attaques), l'Efficacité (répondre rapidement sans gaspiller les ressources), et l'Acceptabilité (être limpide et agréable pour l'utilisateur final)."
+        ],
         corePrinciples: [
           {
-            heading: 'Exigences Fonctionnelles vs Non-Fonctionnelles',
+            heading: 'Le Piège du « Tout-en-Un »',
             explanation:
-              "Une exigence fonctionnelle décrit CE QUE fait le logiciel (ex: « L'utilisateur peut télécharger sa facture en PDF »). Une exigence non-fonctionnelle décrit COMMENT le système se comporte sous contrainte (ex: « Le PDF doit se générer en moins de 2 secondes même avec 500 utilisateurs simultanés, et les données médicales doivent être chiffrées »).",
+              "Quand on ne donne aucune consigne d'organisation à l'IA, elle place l'affichage, les textes, les calculs financiers et les appels réseau dans un seul et même fichier. C'est rapide à la minute 1, mais fatal à l'heure 2.",
             concreteExample:
-              "Dans l'étude de cas Mentcare (suivi médical psychiatrique de Sommerville), afficher le dossier d'un patient est fonctionnel. Garantir que le dossier reste accessible en clinique même si Internet coupe est une exigence non-fonctionnelle critique qui change toute l'architecture.",
+              "Une maison où les tuyaux d'eau, les câbles électriques et les murs porteurs seraient coulés en vrac au milieu du salon : impossible de réparer une fuite sans abattre le salon.",
             aiArchitectRule:
-              "L'IA devine facilement les exigences fonctionnelles, mais elle ignore presque toujours les exigences non-fonctionnelles si tu ne les imposes pas explicitement dans ton prompt ou ton fichier context.md."
+              "Dès le début d'un projet, annonce à l'IA : « Nous allons construire une application modulaire propre où chaque responsabilité est séparée dans son propre dossier. »"
           },
           {
-            heading: 'La Règle Métier (Business Rule) : Le Cœur Sacré du Logiciel',
+            heading: 'Les 4 Activités Universelles de Sommerville',
             explanation:
-              "Une règle métier est une loi propre à ton activité qui serait vraie même si tu travaillais avec du papier et un crayon. Elle ne dépend d'aucun bouton ni d'aucune couleur.",
+              "Peu importe le projet, ton travail d'architecte suit toujours 4 temps : 1. Spécifier (définir les règles), 2. Concevoir (organiser les dossiers et couches), 3. Valider (tester que le résultat est exact), 4. Évoluer (adapter proprement).",
             concreteExample:
-              "« Une commande de plus de 100€ bénéficie de la livraison gratuite sauf pour les produits surgelés » ou « Un patient ne peut pas recevoir plus de 25 unités d'insuline par période de 24h (Pompe à insuline Sommerville Chap. 1) ».",
+              "Sur Google AI Studio, Spécifier = écrire dans `context.md` ; Concevoir = écrire dans `plan.md` et `agents.md` ; Valider = vérifier les tests et l'aperçu ; Évoluer = itérer par petits prompts ciblés.",
             aiArchitectRule:
-              "Exige toujours de l'IA qu'elle isole les règles métier dans des fichiers purs (ex: src/utils/ ou src/services/) séparés des composants visuels (src/components/). Si une règle métier est cachée dans le code d'un bouton, ton application deviendra impossible à maintenir."
+              "Ne saute jamais directement à l'étape de génération sans avoir clarifié la spécification et le plan."
+          }
+        ]
+      },
+      {
+        id: 'sec-1-2',
+        code: 'Sous-module 1.2',
+        title: 'Exigences Fonctionnelles vs Exigences Non-Fonctionnelles',
+        subtitle: 'Apprendre à formuler ce que le logiciel fait ET les contraintes qu’il doit respecter.',
+        sommervilleRef: 'Ian Sommerville — Chapitre 4.1 : Functional and Non-Functional Requirements',
+        mentorVoice:
+          "C'est l'un des concepts les plus importants de toute ta formation. Selon Sommerville, la majorité des échecs logiciels ne viennent pas d'une erreur de programmation, mais d'une exigence mal comprise ou oubliée au départ.",
+        deepDiveParagraphs: [
+          "Les Exigences Fonctionnelles décrivent les services visibles que le système doit rendre à l'utilisateur : « Le médecin peut rechercher un patient par son nom », « Le client peut télécharger un reçu PDF », « L'administrateur peut créer un nouveau cours ». C'est ce à quoi tout le monde pense naturellement.",
+          "Les Exigences Non-Fonctionnelles, elles, sont les contraintes globales qui pèsent sur l'ensemble de l'architecture : la sécurité (qui a le droit de voir quoi ?), la fiabilité (que se passe-t-il si Internet coupe pendant la saisie ?), la performance (combien de temps maximum pour afficher la page ?), la confidentialité (les clés secrètes sont-elles protégées ?). Sommerville montre qu'une seule exigence non-fonctionnelle est souvent plus déterminante pour le choix de l'architecture que dix exigences fonctionnelles.",
+          "Lorsque tu parles à une IA, elle est entraînée pour satisfaire immédiatement tes exigences fonctionnelles visibles, mais elle prendra la voie la plus courte (et souvent la moins sécurisée) si tu ne lui dictes pas tes exigences non-fonctionnelles."
+        ],
+        corePrinciples: [
+          {
+            heading: 'Exigence Fonctionnelle (Le Comportement)',
+            explanation:
+              "Définit une action précise : Entrée -> Traitement -> Sortie attendue à l'écran.",
+            concreteExample:
+              "Dans le système médical Mentcare (étude de cas de Sommerville) : « Le système doit générer la liste quotidienne des rendez-vous de chaque clinique locale. »",
+            aiArchitectRule:
+              "Décris toujours les fonctionnalités sous forme d'actions claires par profil d'utilisateur."
           },
           {
-            heading: 'Développement Incrémental & Agile vs Cascade (Waterfall)',
+            heading: 'Exigence Non-Fonctionnelle (La Contrainte Architecturale)',
             explanation:
-              "Le modèle en Cascade (Waterfall) tente de tout prévoir sur 6 mois avant de voir le moindre écran : il échoue dès que le besoin évolue. Le modèle Incrémental (Agile) construit une première version minimale mais complète (Incrément 1 : le squelette et une fonction clé), la teste, puis ajoute l'Incrément 2.",
+              "Fixe une norme de qualité, de sécurité, de disponibilité ou d'environnement technique que le logiciel ne doit jamais violer.",
             concreteExample:
-              "Incrément 1 : Créer le moteur de calcul de devis et le tester seul. Incrément 2 : Construire l'interface formulaire. Incrément 3 : Ajouter la sauvegarde en base de données.",
+              "Toujours dans Mentcare : « Les dossiers médicaux doivent rester consultables en clinique même en cas de panne du réseau central, et toute consultation doit être journalisée pour l'audit de confidentialité. »",
             aiArchitectRule:
-              "Avec Google AI Studio, travaille par incréments. Valide l'architecture des données et la logique pure avant de demander des animations ou des tableaux de bord complexes."
+              "Inscris tes exigences non-fonctionnelles (design épuré, sécurité serveur, mode hors-ligne, rapidité) directement dans `agents.md` et `context.md`."
+          }
+        ]
+      },
+      {
+        id: 'sec-1-3',
+        code: 'Sous-module 1.3',
+        title: 'La Règle Métier (Business Rule) : Le Cœur Sacré du Logiciel',
+        subtitle: 'Pourquoi tes règles de calcul et de décision ne doivent jamais être mélangées aux boutons de l’écran.',
+        sommervilleRef: 'Ian Sommerville — Chapitre 4 & Chapitre 7 : Domain Logic & Separation',
+        mentorVoice:
+          "Quand l'IA te parle de « Règle Métier » (ou Domain Logic / Business Logic), de quoi parle-t-elle exactement ? C'est très simple : une règle métier est une loi de ton activité qui existerait même si les ordinateurs n'avaient jamais été inventés.",
+        deepDiveParagraphs: [
+          "Imagine que tu gères un cabinet d'assurance ou une boutique en 1950 avec un registre en papier. La règle « Un client fidèle depuis plus de 3 ans bénéficie de 12 % de remise si sa commande dépasse 200 €, sauf sur les articles déjà en promotion » est une pure Règle Métier. Elle n'a aucun rapport avec React, ni avec la couleur d'un bouton, ni avec le type d'écran téléphone ou ordinateur.",
+          "Dans le système de Pompe à Insuline étudié par Sommerville au Chapitre 1, la règle métier vitale est : « La dose injectée dépend de l'écart entre le taux de sucre actuel et le taux précédent, mais ne doit jamais dépasser le plafond maximal de sécurité sur 24 heures ». Si cette formule mathématique est cachée au milieu du code qui dessine l'écran LCD, le moindre changement d'affichage peut provoquer un surdosage fatal.",
+          "Pour devenir un grand architecte logiciel sans savoir coder, adopte ce réflexe systématique : demande toujours à l'IA d'isoler toutes les règles métier dans un dossier séparé (`/src/utils/` ou `/src/domain/`) sous forme de fonctions pures, et de les vérifier avec des tests automatiques."
+        ],
+        corePrinciples: [
+          {
+            heading: 'Qu’est-ce qu’une Fonction Pure de Règle Métier ?',
+            explanation:
+              "C'est une petite boîte logique qui reçoit des chiffres ou des faits en entrée (ex: ancienneté = 4 ans, panier = 250 €) et renvoie la décision exacte en sortie (remise = 30 €), sans toucher à l'écran ni à Internet.",
+            concreteExample:
+              "Le fichier `src/utils/mentorEngine.ts` de ce site même : il calcule les recommandations d'architecture et ta progression sans jamais dépendre de l'affichage.",
+            aiArchitectRule:
+              "Dis à l'IA : « Place toutes les formules de calcul, barèmes et règles métier dans `src/utils/` en fonctions pures indépendantes de React, et écris un fichier `.test.ts` pour les vérifier. »"
           }
         ],
         constraintAdaptation: [
           {
-            triggerConstraint: "Tu réalises en cours de route que les utilisateurs utilisent l'app sur le terrain avec une connexion 3G instable.",
-            badReaction: "Continuer à ajouter des graphiques lourds et faire des appels serveur à chaque clic.",
-            architectDecision: "Passer sur une approche orientée cache local (Local-First / PWA) : stocker la saisie dans le navigateur et synchroniser par lots (batch) dès que le réseau revient."
-          },
-          {
-            triggerConstraint: "L'IA commence à casser la page d'accueil chaque fois que tu lui demandes de modifier le calcul du panier.",
-            badReaction: "Répéter « Répare le bug » 10 fois de suite dans le chat.",
-            architectDecision: "Arrêter l'ajout de fonctionnalités. Demander un Refactoring d'extraction : séparer le calcul du panier dans un fichier indépendant (`cartEngine.ts`) avec des tests unitaires automatiques."
+            triggerConstraint: "En plein milieu du projet, la législation change : la TVA passe de 20 % à 21 % pour certaines catégories de clients.",
+            badReaction: "Chercher dans 15 pages d'écran différentes tous les endroits où le chiffre 20 % a été écrit à la main.",
+            architectDecision: "Comme la règle métier a été isolée dans un seul fichier central (`src/utils/taxRules.ts`), tu demandes à l'IA de mettre à jour uniquement cette règle : tout le site se met à jour sans aucun bug visuel."
           }
         ]
       }
     ]
   },
   {
-    id: 'mod-2-architecture',
+    id: 'mod-2-processus-agile',
     number: '02',
-    shortTitle: 'Décider l’Architecture',
-    fullTitle: 'Choisir la Bonne Architecture et S’adapter aux Contraintes',
-    subtitle: 'Comprendre MVC, Architecture en Couches, Client-Serveur, Repository, Pipe & Filter et SOA grâce aux schémas interactifs.',
-    sommervilleChapters: 'Chapitres 5, 6, 17 & 18 — Modélisation Système, Design Architectural & Systèmes Distribués',
+    shortTitle: 'Processus, Incréments & Agile',
+    fullTitle: 'Méthodes de Construction : Incréments, Agile et Gestion du Changement',
+    subtitle:
+      'Pourquoi construire un logiciel bloc par bloc (approche incrémentale) bat toujours l’approche monolithique en cascade.',
+    sommervilleChapters: 'Sommerville Chapitres 2 & 3 — Processus Logiciels & Développement Agile / Scrum',
     bgTone: 'primary-alt',
-    interactiveToolId: 'architecture-schema',
+    schemaImage: {
+      src: '/assets/aistudio/Screenshot_20261114_212442_ChatGPT_e42cac57.jpg',
+      alt: 'Architecture Monolithique vs Découpage des composants Frontend, Backend et Data Storage',
+      caption: 'Comprendre la structure globale d’une application (Frontend, Backend, Data Storage) avant de la construire par incréments successifs.'
+    },
+    interactiveToolId: 'lifecycle-flow',
     mentorIntro:
-      "L'architecture logicielle, c'est le plan d'urbanisme de ton application. Comme l'explique Sommerville au Chapitre 6, tu dois choisir comment découper ton logiciel en blocs qui communiquent entre eux. Pourquoi ne pas tout mettre dans un seul fichier ? Parce que dans un fichier unique de 3 000 lignes, modifier la couleur d'un titre risque d'effacer la formule de facturation, et l'IA perdra le fil du contexte. Voici comment choisir la structure exacte adaptée à ta situation.",
+      "Maintenant que tu sais définir tes exigences et tes règles métier, dans quel ordre dois-tu faire construire le logiciel par l'IA ? Au Chapitre 2 et au Chapitre 3, Ian Sommerville compare les méthodes historiques rigides (le modèle en Cascade / Waterfall) aux méthodes modernes (le développement Incrémental et Agile). Avec une IA, cette leçon vaut de l'or : la façon dont tu découpes tes étapes détermine à 100 % la réussite de ton projet.",
     keyTakeaway:
-      "Une bonne architecture respecte deux lois d'or : la Séparation des Préoccupations (chaque couche a un seul métier) et le Couplage Faible (on peut remplacer l'interface sans casser le moteur de calcul).",
+      'Construis toujours par Incréments : Incrément 1 = Modèle de données & Règles métier pures ; Incrément 2 = Écran principal fonctionnel ; Incrément 3 = Persistance base de données ; Incrément 4 = Finitions & Cas limites.',
     sections: [
       {
         id: 'sec-2-1',
-        title: 'Les Grands Patrons d’Architecture (Architectural Patterns) de Sommerville',
-        sommervilleRef: 'Sommerville Chap. 6.3 — Architectural Patterns & Vue 4+1 de Kruchten',
+        code: 'Sous-module 2.1',
+        title: 'Cascade (Waterfall) vs Développement Incrémental',
+        subtitle: 'Pourquoi demander 20 fonctionnalités en une seule phrase à l’IA est l’erreur numéro 1.',
+        sommervilleRef: 'Ian Sommerville — Chapitre 2.1 : Software Process Models',
         mentorVoice:
-          "Il n'existe pas d'architecture universelle. Un architecte choisit son patron en fonction de la nature du problème : s'agit-il d'une application interactive à plusieurs vues (MVC), d'un système d'entreprise sécurisé étape par étape (Couches), d'un outil où plusieurs modules analysent la même masse de données (Repository), ou d'une chaîne de transformation de fichiers (Pipe & Filter) ?",
+          "Dans le modèle en Cascade (Waterfall), on essaie de tout concevoir et de tout produire d'un seul bloc avant de tester quoi que ce soit. Dans le développement Incrémental, on découpe le système en tranches fonctionnelles (Incréments). Chaque incrément est construit, testé et validé avant de passer au suivant.",
+        deepDiveParagraphs: [
+          "Pourquoi le modèle Incrémental est-il infiniment supérieur, surtout quand tu pilotes une IA comme Google AI Studio ? Pour trois raisons concrètes expliquées par Sommerville :",
+          "1. Tu obtiens une base fonctionnelle vérifiable très vite : dès le premier incrément, tu peux manipuler le cœur de ton application et réaliser ce qui manque ou ce qui doit être ajusté.",
+          "2. Les erreurs sont isolées : si l'Incrément 1 (ton moteur de règles et ton premier écran) fonctionne parfaitement, et qu'un bug apparaît lors de l'Incrément 2 (l'ajout de la sauvegarde), tu sais immédiatement que le problème vient uniquement de l'étape 2.",
+          "3. La mémoire de l'IA reste concentrée : au lieu de noyer le modèle avec 50 consignes simultanées où il finira par bâcler la moitié des fichiers, tu lui fais construire des fondations d'une propreté chirurgicale étape par étape."
+        ],
         corePrinciples: [
           {
-            heading: 'Séparation des Préoccupations (Separation of Concerns)',
+            heading: 'Qu’est-ce qu’un « Incrément » au sens strict ?',
             explanation:
-              "On sépare toujours : 1) L'Affichage (UI / Présentation), 2) L'Orchestration et les Règles Métier (Logique / Contrôleur / Domaine), et 3) La Persistance et les Accès Externes (Base de données / API).",
+              "Un incrément n'est pas un bout de code inachevé qui ne marche pas. C'est une version complète et utilisable du logiciel, mais limitée aux fonctionnalités prioritaires.",
             concreteExample:
-              "Un restaurant : la salle et le menu (Présentation), le chef qui applique les recettes (Logique Métier), et la chambre froide où sont stockés les ingrédients (Données). Le serveur en salle ne va jamais cuisiner directement dans la chambre froide.",
+              "Pour une application de réservation : l'Incrément 1 permet de choisir un créneau et de calculer le tarif exact à l'écran. L'Incrément 2 ajoute l'enregistrement en base de données. L'Incrément 3 ajoute l'espace d'administration.",
             aiArchitectRule:
-              "Si tu vois une requête SQL ou un appel `fetch('/api/...')` écrit directement au milieu d'un composant de bouton visuel, dis à l'IA : « Déplace cet accès aux données dans la couche service »."
-          },
-          {
-            heading: 'Couplage Faible (Low Coupling) & Cohésion Forte (High Cohesion)',
-            explanation:
-              "La cohésion forte signifie qu'un fichier ne contient que des éléments qui vont ensemble (ex: `taxCalculator.ts` ne calcule que les taxes). Le couplage faible signifie que `taxCalculator.ts` n'a pas besoin de savoir quelle est la couleur de l'écran pour fonctionner.",
-            concreteExample:
-              "Un chargeur USB-C a un couplage faible avec ton téléphone : tu peux changer de marque de téléphone sans refaire l'installation électrique de ta maison.",
-            aiArchitectRule:
-              "Demande à l'IA de communiquer entre les fichiers via des Interfaces TypeScript claires (`types.ts`). C'est le contrat de prise électrique entre les modules."
+              "Note toujours la liste de tes incréments dans le fichier `plan.md` et valide chaque incrément avant d'ordonner le suivant."
           }
+        ]
+      },
+      {
+        id: 'sec-2-2',
+        code: 'Sous-module 2.2',
+        title: 'Les Principes Agiles, User Stories et Adaptation Continue',
+        subtitle: 'Formuler ses besoins comme un Product Owner / Architecte Agile.',
+        sommervilleRef: 'Ian Sommerville — Chapitre 3 : Agile Software Development & Scrum',
+        mentorVoice:
+          "Dans les méthodes Agiles (comme Scrum ou Extreme Programming présentées au Chapitre 3), on exprime les besoins sous forme de Scénarios Utilisateurs (User Stories) et on accepte que le plan évolue à mesure que l'on découvre le produit.",
+        deepDiveParagraphs: [
+          "Une User Story bien formulée suit une structure limpide en trois parties : « En tant que [Rôle précis], je veux [Action concrète], afin de [Bénéfice métier / Règle de validation] ». Par exemple : « En tant que praticien en visite à domicile, je veux enregistrer mes notes de consultation même sans réseau, afin qu'aucune observation médicale ne soit perdue. »",
+          "En formulant tes demandes à l'IA sous cet angle, tu lui donnes simultanément qui utilise l'écran, quelle action technique doit être codée, et pourquoi cette action est importante (ce qui guide la gestion des erreurs et des états de chargement)."
         ],
-        constraintAdaptation: [
+        corePrinciples: [
           {
-            triggerConstraint: "Une clé API secrète (ex: Gemini API, Stripe) doit être utilisée sans qu'aucun visiteur puisse la voler.",
-            badReaction: "Appeler l'API depuis le navigateur React avec une variable `VITE_SECRET_KEY` (visible par tout le monde dans l'inspecteur réseau).",
-            architectDecision: "Basculer d'une architecture 100% Client vers une architecture Client-Serveur Full-Stack : ajouter un `server.ts` (Express) qui garde la clé secrète côté serveur et expose une route interne `/api/...`."
-          },
-          {
-            triggerConstraint: "Plusieurs outils différents (un tableau de bord, un générateur de rapport, une alerte automatique) doivent lire et modifier les mêmes dossiers patients en temps réel.",
-            badReaction: "Faire communiquer chaque outil directement avec tous les autres (effet plat de spaghettis).",
-            architectDecision: "Adopter l'architecture Repository (Dépôt Central Partagé) : tous les sous-systèmes lisent et écrivent uniquement dans un store central ou une base unique gouvernée par des règles strictes."
+            heading: 'L’Itération Courte (Build -> Verify -> Critique -> Fix)',
+            explanation:
+              "Construire une brique, vérifier qu'elle compile et s'affiche sans erreur, critiquer le résultat avec l'œil de l'architecte, et corriger immédiatement avant d'aller plus loin.",
+            concreteExample:
+              "Si l'écran principal déborde sur mobile à l'Incrément 1, on le corrige tout de suite avant d'ajouter 5 autres écrans.",
+            aiArchitectRule:
+              "Utilise `context.md` comme fil conducteur : à la fin de chaque itération, ce qui est terminé passe dans « Ce qui est fait » et la prochaine étape devient limpide."
           }
         ]
       }
     ]
   },
   {
-    id: 'mod-3-arborescence',
+    id: 'mod-3-architecture-couches',
     number: '03',
-    shortTitle: 'Lire une Arborescence',
-    fullTitle: 'Lire une Arborescence de Fichiers pour Repérer une Architecture',
-    subtitle: 'Comprendre chaque dossier et chaque fichier d’un projet moderne pour diriger l’IA chirurgicalement.',
-    sommervilleChapters: 'Chapitres 7, 15 & 25 — Design & Implémentation, Réutilisation & Gestion de Configuration',
+    shortTitle: 'Architecture en Couches & Rôles',
+    fullTitle: 'Comprendre l’Architecture en Couches et la Séparation des Rôles',
+    subtitle:
+      'Découper son logiciel en étages indépendants (Présentation, Logique Métier, Accès aux Données, Base de Données) pour une clarté totale.',
+    sommervilleChapters: 'Sommerville Chapitre 6.1 à 6.3.2 — Architectural Design Decisions & Layered Architecture',
     bgTone: 'primary',
-    interactiveToolId: 'file-tree',
+    schemaImage: {
+      src: '/src/assets/images/schema_module2_couches_roles_1795020435677.jpg',
+      alt: 'Schéma des 4 couches logicielles avec les rôles associés',
+      caption: 'Les 4 étages fondamentaux d’un logiciel moderne : Présentation (UI), Logique Métier, Accès Données (API) et Base de Données.',
+      secondarySrc: '/assets/aistudio/Screenshot_20261114_212457_ChatGPT_1e112b2e.jpg',
+      secondaryCaption: 'Modèle de référence : chaque couche correspond à un rôle et une responsabilité strictement isolés.'
+    },
+    interactiveToolId: 'none',
     mentorIntro:
-      "Quand tu ouvres un projet sans savoir coder, la colonne de gauche avec tous les fichiers peut intimider. Pourtant, l'arborescence d'un projet est exactement comme le sommaire d'un livre ou le plan d'un bâtiment. En 10 secondes, rien qu'en regardant les noms des dossiers et des fichiers à la racine, un ingénieur senior sait quel langage est utilisé, s'il y a un serveur arrière (backend), où sont rangées les règles métier et si l'architecture est propre ou chaotique.",
+      "Regarde attentivement le schéma ci-dessus. C'est l'image la plus importante à graver dans ton esprit d'architecte logiciel. Tout logiciel bien conçu sur terre — qu'il s'agisse d'une banque, d'un hôpital ou d'une application créée sur Google AI Studio — est organisé en étages superposés appelés « Couches » (Layers). Chaque couche a un métier unique et ne marche jamais sur les pieds des autres.",
     keyTakeaway:
-      "Les fichiers à la racine (`package.json`, `vite.config.ts`, `tsconfig.json`, `.env.example`) sont les fondations techniques de l'immeuble. Le dossier `/src` est l'intérieur habitable, qui doit être divisé par responsabilité (`components`, `services`, `utils`, `types`).",
+      'La règle d’or de l’Architecture en Couches : la flèche descend toujours d’un étage à la fois (Présentation -> Logique Métier -> Accès Données -> Base de Données). La couche Présentation ne doit jamais sauter directement dans la Base de Données sans passer par la Logique Métier.',
     sections: [
       {
         id: 'sec-3-1',
-        title: 'Comment Diagnostiquer un Projet en un Coup d’Œil',
-        sommervilleRef: 'Sommerville Chap. 7 & 25 — Host-Target Development & Configuration Management',
+        code: 'Sous-module 3.1',
+        title: 'Anatomie Détaillée des 4 Couches Fondamentales',
+        subtitle: 'Que fait exactement chaque étage et pourquoi cette séparation te sauve la vie ?',
+        sommervilleRef: 'Ian Sommerville — Chapitre 6.3.2 : Layered Architecture',
         mentorVoice:
-          "Regarde toujours d'abord la racine du projet, puis la structure de `/src`. Voici les indices infaillibles qui te permettent de savoir à quelle architecture tu as affaire.",
+          "Prenons le temps de disséquer chacune des 4 boîtes colorées du schéma pour que tu saches exactement ce qu'elles représentent dans tes projets.",
+        deepDiveParagraphs: [
+          "1. LA COUCHE PRÉSENTATION (Presentation Layer / UI — en bleu) : C'est la vitrine en contact avec l'utilisateur humain. Son seul travail est d'afficher les informations proprement (titres, formulaires, schémas, états de chargement) et de capter les gestes de l'utilisateur (clics, saisies au clavier). Elle est « bête » volontairement : elle ne décide pas si un client a droit à un crédit et elle ne connaît pas les mots de passe de la base de données.",
+          "2. LA COUCHE LOGIQUE MÉTIER (Business Logic Layer / Domain — en vert) : C'est le cerveau d'ingénierie et de gestion. Quand l'utilisateur clique sur un bouton dans la couche Présentation, la demande descend ici. Cette couche vérifie les règles métier : le panier est-il valide ? L'utilisateur a-t-il les droits ? Quel est le résultat du calcul ? C'est la couche la plus précieuse de ton entreprise.",
+          "3. LA COUCHE ACCÈS AUX DONNÉES (Data Access Layer / Services & API — en orange) : Une fois que la Logique Métier a validé l'opération, il faut aller lire ou enregistrer les informations. La couche Accès aux Données joue le rôle de traducteur et de douanier : elle prépare la requête réseau (`/api/...`), gère la sécurité du transport et parle le langage technique de la base ou des services externes (comme l'API Gemini).",
+          "4. LA BASE DE DONNÉES (Database / Persistance — en rouge) : C'est le coffre-fort final (SQL, Firestore, Stockage Cloud) où les informations sont gravées durablement pour ne jamais disparaître quand on éteint l'ordinateur."
+        ],
         corePrinciples: [
           {
-            heading: 'Indice 1 : Application Front-End Seule (SPA) vs Full-Stack (Client + Serveur)',
+            heading: 'Pourquoi cette séparation est magique quand tu guides l’IA',
             explanation:
-              "Si tu vois uniquement `index.html` et `/src` sans fichier `server.ts` ni dossier `/api` ou `/db`, tout s'exécute dans le navigateur de l'utilisateur. Si tu vois `server.ts` (ou un dossier `/server`, `/db`), tu as une architecture Client-Serveur complète.",
+              "Si demain tu demandes à l'IA : « Allège complètement le design visuel et change la police pour DM Sans », l'IA ne touchera qu'à l'étage 1 (Couche Présentation). Les étages 2 (Logique Métier), 3 (Accès Données) et 4 (Base de données) ne subiront aucun risque de bug !",
             concreteExample:
-              "Sur Google AI Studio, dès qu'une application utilise l'API Gemini côté serveur ou une base SQL, un fichier `server.ts` apparaît à la racine pour sécuriser les échanges.",
+              "C'est exactement ce que nous faisons sur ce site : les textes et données sont dans `src/data/`, le moteur logique est dans `src/utils/mentorEngine.ts`, et le design visuel est dans `src/components/` et `src/index.css`.",
             aiArchitectRule:
-              "Avant de demander une fonctionnalité de sauvegarde ou d'IA, vérifie si `server.ts` ou un fichier de configuration Firebase existe dans l'arborescence."
+              "C'est le principe que tu as inscrit dans tes instructions : « Privilégier par défaut un développement modulaire en couches : une couche pour la présentation (UI), une autre pour les règles métier, une autre pour la base de données »."
           },
           {
-            heading: 'Indice 2 : Repérer une Architecture par Couches vs Modulaire (Feature-based)',
+            heading: 'Couplage Faible (Low Coupling) et Cohésion Forte (High Cohesion)',
             explanation:
-              "Si `/src` contient `/components`, `/services`, `/utils`, `/types`, c'est un découpage en Couches Techniques (idéal pour les projets de taille petite à moyenne). Si `/src` contient `/features/facturation`, `/features/patients`, `/features/auth`, c'est une architecture Modulaire par Domaine Métier (idéale pour les très gros logiciels).",
+              "Deux termes techniques que l'IA utilise souvent : la « Cohésion Forte » signifie que chaque couche ne contient que ce qui relève de sa mission. Le « Couplage Faible » signifie que deux couches sont reliées par un contrat simple (une interface propre) et peuvent être modifiées indépendamment.",
             concreteExample:
-              "Un supermarché rangé par type de contenant (toutes les bouteilles ensemble, toutes les boîtes ensemble) vs rangé par univers (univers bébé, univers petit-déjeuner).",
+              "Tu peux repeindre la carrosserie de ta voiture (Présentation) sans démonter la boîte de vitesses (Logique Métier) parce qu'elles ont un couplage faible.",
             aiArchitectRule:
-              "Si ton dossier `/src/components` dépasse 15 fichiers mélangés, demande à l'IA de les regrouper en sous-dossiers logiques (`components/layout`, `components/schemas`, `components/modals`)."
+              "Si l'IA te dit qu'elle va « découpler la logique métier du composant React », félicite-la : elle est en train de nettoyer ton architecture en couches."
           }
         ]
       }
     ]
   },
   {
-    id: 'mod-4-donnees-hebergement',
+    id: 'mod-4-patrons-architecture',
     number: '04',
-    shortTitle: 'Données & Hébergement',
-    fullTitle: 'Choisir le Bon Type de Données et le Bon Hébergeur',
-    subtitle: 'SQL vs NoSQL, Stockage Objet, Cache, et critères de choix d’infrastructure (Cloud Run, Edge CDN, BaaS, VPS).',
-    sommervilleChapters: 'Chapitres 6, 17 & 18 — Repository Pattern, Client-Serveur Multi-Tiers & Cloud/SaaS',
+    shortTitle: 'Monolithe Modulaire & Patrons',
+    fullTitle: 'Décider quelle Architecture Convient à Quelle Situation',
+    subtitle:
+      'Monolithe vs Monolithe Modulaire, MVC, Client-Serveur, Repository et Pipe & Filter : savoir choisir comme un architecte senior.',
+    sommervilleChapters: 'Sommerville Chapitres 6.3, 17 & 18 — Architectural Patterns & Distributed Systems',
     bgTone: 'primary-alt',
-    interactiveToolId: 'data-hosting-sim',
+    schemaImage: {
+      src: '/src/assets/images/schema_module3_monolith_modulaire_1795020438811.jpg',
+      alt: 'Comparaison entre Code Monolithique enchevêtré et Architecture Modulaire Propre',
+      caption: 'Haut : Le Monolithe enchevêtré où tout est mélangé. Bas : Le Monolithe Modulaire où l’API distribue proprement vers chaque module.',
+      secondarySrc: '/assets/aistudio/Screenshot_20261114_212429_ChatGPT_d561167a.jpg',
+      secondaryCaption: 'Croquis d’architecte : passer d’un bloc unique rigide à un Monolithe Modulaire bien compartimenté.'
+    },
+    interactiveToolId: 'architecture-schema',
     mentorIntro:
-      "Deux décisions techniques déterminent si ton application coûtera 0€ ou 2 000€ par mois, et si elle sera rapide ou lente : 1) Comment tu ranges tes données, et 2) Sur quel type de machine ton logiciel tourne sur Internet (l'hébergement). Pas besoin d'être administrateur système : il suffit de connaître les 5 grandes familles de données et les 4 grandes familles d'hébergeurs.",
+      "Observe le croquis ci-dessus comparant le « Monolith » et le « Modular Monolith » (Monolithe Modulaire). Quand tu crées une application sur Google AI Studio, ton projet vit dans un seul dépôt de code : c'est donc techniquement un monolithe (une seule application déployée). Mais il y a deux façons opposées de construire ce monolithe : le monolithe spaghetti (tout en vrac) ou le Monolithe Modulaire combiné aux grands patrons d'architecture de Sommerville.",
     keyTakeaway:
-      "Choisis du SQL Relationnel quand tes données sont très liées et strictes (comptabilité, commandes, stocks). Choisis du Document NoSQL quand tes données sont flexibles et hiérarchiques (profils, notes, chats temps réel). Ne stocke jamais de gros fichiers (PDF, vidéos) directement dans la base de données : utilise un Stockage Objet (Blob/Bucket).",
+      'Pour 95 % des projets créés avec l’IA, la meilleure architecture de départ est un Monolithe Modulaire en Couches (un seul projet facile à déployer, mais strictement découpé à l’intérieur en modules et couches indépendantes).',
     sections: [
       {
         id: 'sec-4-1',
-        title: 'Les 5 Familles de Données : Quoi Utiliser et Quand ?',
-        sommervilleRef: 'Sommerville Chap. 6.3.3 & 17 — Data Management & Distributed Data',
+        code: 'Sous-module 4.1',
+        title: 'Monolithe Classique vs Monolithe Modulaire vs Microservices',
+        subtitle: 'Comprendre enfin la différence sans jargon inutile.',
+        sommervilleRef: 'Ian Sommerville — Chapitre 6 & Chapitre 18 : Distributed & Modular Architectures',
         mentorVoice:
-          "Une erreur classique de débutant est de vouloir tout mettre au même endroit : les utilisateurs, les factures, les photos de profil et l'état du bouton ouvert/fermé. Un architecte sépare les données selon leur nature, leur durée de vie et leurs liens.",
+          "On entend souvent ces trois mots : Monolithe, Monolithe Modulaire, et Microservices. Voici comment un ingénieur senior décide entre les trois.",
+        deepDiveParagraphs: [
+          "1. Le Monolithe Non-Structuré : Toute l'application tourne ensemble et le code est mélangé. Facile les 10 premières minutes, mais devient un cauchemar dès que le projet grandit.",
+          "2. Le Monolithe Modulaire (Modular Monolith — illustré sur le croquis) : Toute l'application est déployée en une seule fois sur un seul serveur (zéro prise de tête réseau), MAIS à l'intérieur du code, une porte d'entrée claire (API) sépare des Modules autonomes (Module 1 : Facturation, Module 2 : Clients, Module 3 : Catalogue) qui respectent chacun leurs couches. C'est l'architecture reine pour créer des logiciels sérieux avec l'IA.",
+          "3. Les Microservices : Chaque module devient un programme totalement séparé qui tourne sur un serveur distinct avec sa propre base de données. Utile uniquement quand tu t'appelles Netflix ou Amazon avec 500 ingénieurs, mais beaucoup trop lourd et coûteux pour un projet individuel ou une PME."
+        ],
         corePrinciples: [
           {
-            heading: 'Relationnel (SQL : PostgreSQL, Cloud SQL) vs Document (NoSQL : Firestore)',
+            heading: 'Quand choisir quel Patron d’Architecture (Guide de Décision)',
             explanation:
-              "Une base Relationnelle (SQL) range les données dans des tables strictes reliées par des clés (comme des feuilles Excel verrouillées qui se référencent). Elle garantit qu'aucune transaction bancaire ne soit à moitié enregistrée (propriété ACID). Une base Document (NoSQL) range des fiches JSON souples et permet d'écouter les changements en direct.",
+              "En plus du découpage modulaire, Sommerville présente 5 grands patrons que tu peux explorer dans le schéma interactif ci-dessous :",
             concreteExample:
-              "Un logiciel de gestion hospitalière avec rendez-vous, médecins, chambres et facturation mutuelle -> SQL Relationnel. Une application collaborative de prise de notes en direct -> NoSQL Document (Firestore).",
+              "• Choisis MVC quand les mêmes données sont affichées sous plusieurs formes interactives (tableau + graphique).\n• Choisis Client-Serveur dès qu'il y a une clé secrète (API Gemini, paiement) à protéger dans `server.ts`.\n• Choisis Repository quand plusieurs outils analysent un dossier central commun.\n• Choisis Pipe & Filter quand tu transformes des données étape par étape (import -> nettoyage -> calcul -> export).",
             aiArchitectRule:
-              "Quand tu demandes une base de données à l'IA, précise toujours si tes données ont des relations croisées fortes (SQL) ou si tu privilégies la synchronisation temps réel par utilisateur (Firestore)."
-          },
-          {
-            heading: 'Les Critères de Choix d’un Hébergeur',
-            explanation:
-              "Pour choisir un hébergeur, pose-toi 4 questions : 1) Mon app a-t-elle un serveur actif (`server.ts`) ou juste des fichiers statiques ? 2) Mon trafic est-il constant 24h/24 ou par pics imprévisibles (besoin du Scale-to-Zero) ? 3) Ai-je des contraintes légales sur la localisation géographique des serveurs (ex: Europe pour le RGPD) ? 4) Quel est mon budget de maintenance ?",
-            concreteExample:
-              "Cloud Run (utilisé par Google AI Studio) démarre un conteneur en quelques millisecondes quand un visiteur arrive et redescend à zéro (coût nul) quand personne n'utilise l'application.",
-            aiArchitectRule:
-              "Assure-toi que ton application est « Stateless » (sans état stocké uniquement dans la mémoire vive temporaire du serveur) pour qu'elle puisse redémarrer ou se dupliquer sur le Cloud sans perdre les sessions des utilisateurs."
+              "Tu peux combiner ces patrons ! Par exemple : une application Client-Serveur dont le code interne est organisé en Couches avec un pipeline Pipe & Filter pour ses exports."
           }
         ]
       }
     ]
   },
   {
-    id: 'mod-5-fiabilite-maintenance',
+    id: 'mod-5-arborescence',
     number: '05',
-    shortTitle: 'Qualité, Sécurité & Maintenance',
-    fullTitle: 'De la Vérification à la Maintenance : Faire Durer le Logiciel',
-    subtitle: 'Tests automatisés, Modèle du Fromage Suisse (Sécurité), Dette Technique, Refactoring et Git.',
-    sommervilleChapters: 'Chapitres 8, 9, 10, 11, 13 & 25 — Tests, Évolution, Sûreté de Fonctionnement & Configuration',
+    shortTitle: 'Lire une Arborescence',
+    fullTitle: 'Lire une Arborescence pour Repérer une Architecture et Savoir ce que Contient Chaque Fichier',
+    subtitle:
+      'Apprendre à scanner la liste des dossiers et fichiers d’un projet en 10 secondes pour savoir exactement comment il est construit.',
+    sommervilleChapters: 'Sommerville Chapitres 7, 15 & 25 — Implémentation, Réutilisation & Gestion de Configuration',
     bgTone: 'primary',
-    interactiveToolId: 'dependability-swiss',
+    schemaImage: {
+      src: '/src/assets/images/schema_module4_arborescence_1795020521295.jpg',
+      alt: 'Schéma de l’anatomie d’une arborescence de projet logiciel',
+      caption: 'La Racine du projet pilote la configuration et la mémoire, tandis que le dossier /src répartit les couches : components/, utils/ et services/.'
+    },
+    interactiveToolId: 'file-tree',
     mentorIntro:
-      "Dans l'ouvrage d'Ian Sommerville, un constat frappe fort : créer la première version d'un logiciel ne représente souvent que 20% à 30% de son coût total. Les 70% restants concernent son évolution, sa sécurisation et sa maintenance. Quand tu pilotes une IA, le plus grand piège est la « Dette Technique » : chaque fois que l'IA ajoute du code rapidement sans nettoyer ni tester, le système devient plus fragile. Voici comment garder le contrôle.",
+      "Voici l'une des compétences les plus concrètes que tu voulais acquérir : ouvrir n'importe quel projet logiciel, regarder l'arbre des fichiers à gauche (l'arborescence) sans ouvrir le code, et comprendre immédiatement à quelle architecture tu as affaire et à quoi sert chaque fichier.",
     keyTakeaway:
-      "La sécurité et la fiabilité ne reposent jamais sur une seule barrière magique, mais sur une Défense en Profondeur (Modèle du Fromage Suisse de Reason) et sur des Tests Automatisés qui vérifient que les anciennes fonctions marchent toujours après chaque modification.",
+      'Une arborescence saine ne contient jamais de dossier « fourre-tout » : la racine contient les contrats du projet (`package.json`, `context.md`, `plan.md`, `agents.md`, `server.ts`), et `/src` sépare clairement `components/` (UI), `utils/` (Règles métier), `services/` (Accès données) et `data/` ou `db/` (Schémas et Données).',
     sections: [
       {
         id: 'sec-5-1',
-        title: 'Vérification vs Validation, Pyramide des Tests & Modèle du Fromage Suisse',
-        sommervilleRef: 'Sommerville Chap. 8 (Software Testing), Chap. 9 (Evolution) & Chap. 10/11 (Dependability)',
+        code: 'Sous-module 5.1',
+        title: 'Les Fichiers de la Racine : Les Fondations de l’Immeuble',
+        subtitle: 'Comprendre package.json, .env.example, index.html, vite.config.ts et server.ts.',
+        sommervilleRef: 'Ian Sommerville — Chapitre 7.3 & Chapitre 25 : System Building & Configuration',
         mentorVoice:
-          "Barry Boehm (cité par Sommerville au Chapitre 8) résume toute la qualité logicielle en deux questions : 1) « La Vérification : construisons-nous le produit correctement ? » (pas de bugs, code propre) et 2) « La Validation : construisons-nous le BON produit ? » (celui qui aide vraiment l'utilisateur).",
+          "Les fichiers situés tout en haut de ton projet (en dehors du dossier `/src`) ne contiennent pas tes écrans : ils définissent comment l'application s'installe, démarre et communique avec le monde extérieur.",
+        deepDiveParagraphs: [
+          "• `package.json` : C'est le passeport technique et la liste des ingrédients du projet. Si tu veux savoir quelles technologies une application utilise, ouvre uniquement ce fichier : tu y verras la liste `dependencies` (ex: `react` pour l'interface, `express` pour le serveur, `@google/genai` pour l'IA Gemini, `lucide-react` pour les icônes). Tu y verras aussi les commandes `scripts` (`dev` pour travailler, `build` pour préparer la mise en ligne).",
+          "• `.env.example` : C'est la liste des clés secrètes et réglages extérieurs dont l'application a besoin pour tourner (comme `GEMINI_API_KEY`). Le mot `.example` signifie que ce fichier montre le nom des clés requises sans jamais contenir le vrai mot de passe secret en clair.",
+          "• `server.ts` : C'est le marqueur décisif ! Si tu vois `server.ts` à la racine, tu sais immédiatement que tu es face à une architecture **Client-Serveur Full-Stack**. Ce fichier fait tourner un serveur Node.js/Express qui garde tes secrets à l'abri et répond aux routes `/api/...`.",
+          "• `context.md`, `plan.md` et `agents.md` : C'est la mémoire vivante de l'architecte. Ils permettent à tout agent IA de comprendre instantanément ce qui a été décidé, ce qui est fait et quelles règles d'architecture respecter."
+        ],
         corePrinciples: [
           {
-            heading: 'Les 3 Niveaux de Tests (Unitaire, Composant/Intégration, Système/Acceptation)',
+            heading: 'Comment repérer une architecture rien qu’en lisant les noms des dossiers',
             explanation:
-              "Un Test Unitaire teste une seule fonction de calcul isolée en quelques millisecondes. Un Test de Composant vérifie que plusieurs pièces s'assemblent bien. Un Test Système (ou E2E avec un vrai navigateur) simule le parcours complet d'un vrai utilisateur.",
+              "Observe l'intérieur du dossier `/src` :\n1) Si tu vois `/src/App.tsx` tout seul sans sous-dossiers -> Architecture Monolithique plate (attention, danger dès que ça grossit !).\n2) Si tu vois `/src/components`, `/src/utils`, `/src/services`, `/src/data` -> Architecture en Couches propre.\n3) Si tu vois `/src/modules/facturation`, `/src/modules/clients` -> Monolithe Modulaire par domaine métier.",
             concreteExample:
-              "Tester le moteur d'une voiture sur un établi (Unitaire), tester le moteur relié à la boîte de vitesse (Composant), conduire la voiture sur route (Système).",
+              "Utilise l'explorateur interactif ci-dessous pour cliquer sur chaque fichier et voir exactement comment guider l'IA dessus.",
             aiArchitectRule:
-              "Demande toujours à l'IA d'écrire des tests unitaires pour tes règles métier critiques (prix, permissions, scores). Ainsi, même si l'IA modifie 10 fichiers, le test t'alertera immédiatement si une règle métier a été brisée."
-          },
-          {
-            heading: 'Le Modèle du Fromage Suisse (James Reason) & La Défense en Profondeur',
-            explanation:
-              "Chaque barrière de protection dans un logiciel (validation du formulaire, règle de sécurité serveur, sauvegarde automatique) possède des « trous » (des failles ou cas imprévus), comme des tranches d'emmental. Une catastrophe survient uniquement quand les trous de toutes les tranches s'alignent. L'architecte superpose plusieurs couches indépendantes pour qu'aucune erreur ne traverse tout le système.",
-            concreteExample:
-              "Tranche 1 : Le formulaire bloque un montant négatif. Tranche 2 : Le serveur revérifie que le montant est positif et que l'utilisateur est connecté. Tranche 3 : La base de données refuse d'écrire un solde inférieur à zéro.",
-            aiArchitectRule:
-              "Ne fais jamais confiance uniquement à l'interface visuelle pour la sécurité. Un utilisateur malveillant peut contourner un bouton grisé : exige que les règles de sécurité soient aussi vérifiées côté serveur ou dans `firestore.rules`."
-          },
-          {
-            heading: 'Dette Technique & Refactoring Préventif',
-            explanation:
-              "Le Refactoring (Chap. 9.4) consiste à réorganiser et nettoyer la structure interne du code SANS changer ce que voit l'utilisateur à l'écran. C'est comme ranger sa cuisine entre deux plats pour pouvoir continuer à cuisiner proprement.",
-            concreteExample:
-              "Découper un fichier `App.tsx` devenu géant (1 200 lignes) en 5 composants clairs de 200 lignes chacun.",
-            aiArchitectRule:
-              "Tous les 3 ou 4 ajouts de fonctionnalités, fais une pause « Refactoring » avec l'IA : demande-lui de supprimer le code mort, de découper les gros fichiers et de mettre à jour `context.md`."
+              "Interdis toujours à l'IA de créer un dossier vague comme `/src/misc` ou `/src/helpers_divers` : chaque dossier doit correspondre à une couche claire."
           }
         ]
       }
     ]
   },
   {
-    id: 'mod-6-scenarios-ia',
+    id: 'mod-6-donnees-hebergement',
     number: '06',
-    shortTitle: 'Scénarios IA Studio',
-    fullTitle: 'Dans la Peau d’un Architecte sur Google AI Studio : Cas Réels',
-    subtitle: 'Entraîne-toi sur des mises en situation concrètes et maîtrise l’art de guider l’IA pour répartir le code proprement.',
-    sommervilleChapters: 'Synthèse Appliquée — Études de cas Mentcare, iLearn, Station Météo & Ingénierie Assistée par IA',
+    shortTitle: 'Données & Hébergeurs Cloud',
+    fullTitle: 'Savoir Quel Type de Données et Quel Hébergeur Choisir selon Chaque Cas',
+    subtitle:
+      'Maîtriser SQL, NoSQL, Stockage de Fichiers, Cache, et savoir choisir son infrastructure d’hébergement (Cloud Run, CDN Statique, BaaS, VPS).',
+    sommervilleChapters: 'Sommerville Chapitres 6.3.3, 17 & 18 — Data Repositories, Client-Serveur & Cloud SaaS',
     bgTone: 'primary-alt',
-    interactiveToolId: 'ai-studio-scenarios',
+    schemaImage: {
+      src: '/src/assets/images/schema_module5_donnees_cloud_1795020522247.jpg',
+      alt: 'Schéma du flux entre Client Web, Hébergeur Cloud Run et les 3 types de stockage Cloud',
+      caption: 'Le Client Web communique avec l’hébergeur serveur (Cloud Run), qui aiguille chaque donnée vers le bon moteur : SQL, NoSQL Firestore ou Blob Storage.'
+    },
+    interactiveToolId: 'data-hosting-sim',
     mentorIntro:
-      "Passons de la théorie à la pratique directe. Tu es maintenant l'Architecte Logiciel Senior d'un projet construit avec Google AI Studio. Tu ne vas pas écrire une seule ligne de JavaScript, mais c'est toi qui prends toutes les décisions d'architecture, de découpage de fichiers, de choix de base de données et de formulation du prompt. Voyons comment tu réagis face aux défis réels.",
+      "Deux questions reviennent dans tous les projets logiciels : « Où et sous quelle forme dois-je ranger mes données ? » et « Sur quel type d'hébergeur dois-je publier mon application ? ». Le croquis ci-dessus résume la chaîne complète : voyons méthodiquement comment trancher dans chaque situation.",
     keyTakeaway:
-      "Un excellent prompt d'architecte contient toujours 4 éléments : 1) Le Contexte Métier, 2) La Répartition Architecturale attendue (quels dossiers/fichiers créer ou modifier), 3) Les Contraintes Non-Fonctionnelles et d'Interface, et 4) Ce qu'il ne faut surtout pas toucher.",
+      'Données liées et financières = SQL Relationnel. Données flexibles et temps réel = NoSQL Document (Firestore). Fichiers lourds (PDF, images, vidéos) = Stockage Objet (Blob). Application avec serveur/IA = Conteneur Serverless (Cloud Run). Site sans serveur = CDN Statique.',
     sections: [
       {
         id: 'sec-6-1',
-        title: 'La Méthode en 4 Points pour Piloter l’IA sans Coder',
-        sommervilleRef: 'Synthèse Ingénierie Logicielle Moderne & Pilotage par Contrats',
+        code: 'Sous-module 6.1',
+        title: 'Quel Type de Données Convient dans Quel Cas ?',
+        subtitle: 'Les 5 grandes familles de stockage expliquées simplement.',
+        sommervilleRef: 'Ian Sommerville — Chapitre 6 & Chapitre 17 : Data Management',
         mentorVoice:
-          "Quand un non-programmeur parle à une IA, il décrit souvent uniquement le résultat visuel (« Fais-moi un site de réservation avec un bouton bleu »). L'IA prend alors des raccourcis techniques invisibles qui bloquent le projet deux jours plus tard. Quand un Architecte parle à l'IA, il guide la structure invisible autant que le visible.",
+          "Il n'y a pas une seule sorte de base de données, parce qu'une facture comptable, un message de chat en direct et une vidéo de 500 Mo n'ont pas du tout les mêmes besoins.",
+        deepDiveParagraphs: [
+          "1. Les Bases Relationnelles SQL (PostgreSQL, Cloud SQL) : Range les données dans des tables strictes avec des colonnes fixes reliées entre elles (Clients <-> Commandes <-> Factures). C'est le choix obligatoire dès que tu manipules de l'argent, de la comptabilité, des stocks ou des données très structurées qui ne tolèrent aucune incohérence.",
+          "2. Les Bases Document NoSQL Temps Réel (Firebase Firestore, MongoDB) : Range les données sous forme de fiches JSON souples regroupées en collections. Son immense force est le Temps Réel et la souplesse : dès qu'une fiche est modifiée dans la base, tous les écrans connectés se mettent à jour en une fraction de seconde. Idéal pour les profils utilisateurs, les espaces collaboratifs, les tableaux de suivi ou les messageries.",
+          "3. Le Stockage Objet / Fichiers (Blob Storage / Cloud Storage / S3) : On ne met JAMAIS un fichier PDF, une photo haute résolution ou un fichier audio à l'intérieur d'une case SQL ou Firestore (cela ralentirait et coûterait très cher). On range le fichier dans un espace de Stockage Objet (Bucket), et on garde uniquement son adresse URL en texte dans la base SQL ou Firestore.",
+          "4. Le Cache Clé-Valeur (Redis / Mémoire) et le Stockage Local Navigateur (LocalStorage / IndexedDB) : Le Cache côté serveur sert à garder en mémoire vive un calcul fréquent pour répondre instantanément. Le Stockage Local Navigateur garde des notes ou préférences directement sur le téléphone ou l'ordinateur du visiteur (très utile pour un outil sans inscription ou pour le mode hors-ligne)."
+        ],
         corePrinciples: [
           {
-            heading: '1. Maintenir la Mémoire du Projet (context.md, plan.md, agents.md)',
+            heading: 'La Règle de Combinaison des Données',
             explanation:
-              "Les modèles d'IA ont une fenêtre de mémoire limitée. En maintenant à la racine du projet un fichier `context.md` (vision, état actuel, ce qui reste à faire), un `plan.md` (étapes de construction) et un `agents.md` (règles d'architecture et de design), tu donnes à l'IA un cahier des charges permanent.",
+              "Un logiciel complet combine souvent deux types de stockage : une base structurée (SQL ou Firestore) pour les informations texte/chiffres, et un Stockage Objet pour les pièces jointes.",
             concreteExample:
-              "Même si tu reprends ton projet trois semaines plus tard ou après une longue conversation, l'IA lit `context.md` et comprend immédiatement l'architecture sans rien casser.",
+              "Sur une plateforme immobilière : les prix, surfaces et adresses sont en base SQL ; les 20 photos de chaque appartement sont en Stockage Objet.",
             aiArchitectRule:
-              "Exige systématiquement que l'IA mette à jour `context.md` et `plan.md` à chaque étape majeure."
+              "Précise toujours à l'IA : « Utilise une base SQL (`src/db/schema.ts`) pour les tables métier reliées, ou Firestore (`firestore.rules`) pour les documents temps réel par utilisateur. »"
+          }
+        ]
+      },
+      {
+        id: 'sec-6-2',
+        code: 'Sous-module 6.2',
+        title: 'Quel Choix d’Hébergeur Faire, et en Fonction de Quoi ?',
+        subtitle: 'Les 4 critères décisifs : présence d’un serveur, allure du trafic, sécurité et budget.',
+        sommervilleRef: 'Ian Sommerville — Chapitre 18 : Cloud Computing, Containers & SaaS',
+        mentorVoice:
+          "Héberger un logiciel, c'est louer l'endroit sur Internet où ton code va vivre et répondre aux visiteurs. Voici comment choisir sans jamais te tromper.",
+        deepDiveParagraphs: [
+          "Critère 1 — As-tu un serveur arrière (`server.ts`) ou des clés API secrètes ? Si oui, tu as besoin d'un hébergeur capable d'exécuter du code serveur sécurisé. Le roi moderne dans cette catégorie est le **Conteneur Serverless (comme Google Cloud Run)** : ton application complète est emballée dans un conteneur qui démarre instantanément quand un visiteur arrive, se multiplie automatiquement s'il y a 500 visiteurs d'un coup, et repasse en veille (coût 0 €) la nuit quand personne n'est là.",
+          "Critère 2 — Ton application est-elle 100 % côté navigateur sans clé secrète serveur ? Alors choisis un **Hébergement Statique sur CDN (Firebase Hosting, Vercel, Netlify, Cloudflare Pages)**. Tes fichiers compilés sont copiés aux quatre coins du monde : l'affichage est fulgurant et souvent gratuit.",
+          "Critère 3 — Veux-tu déléguer toute la gestion des comptes utilisateurs et de la base temps réel ? Choisis une approche **BaaS (Backend-as-a-Service comme Firebase ou Supabase)** qui réunit Authentification, Base de données et Règles de sécurité sous un même toit.",
+          "Critère 4 — As-tu un programme lourd qui doit tourner 24h/24 sans jamais s'endormir une seule seconde avec un tarif mensuel fixe ? C'est le seul cas où l'on choisit un **Serveur Virtuel Dédié (VPS / Machine Virtuelle)**, mais attention : il faut savoir l'administrer et le mettre à jour soi-même."
+        ],
+        corePrinciples: [
+          {
+            heading: 'La Règle d’Or pour le Cloud : Garder le Serveur « Stateless » (Sans État Local)',
+            explanation:
+              "Sur un hébergeur moderne comme Cloud Run, le conteneur du serveur peut s'éteindre et se rallumer à tout moment. Si tu enregistres un fichier uniquement sur le disque temporaire du conteneur, il sera effacé au prochain redémarrage !",
+            concreteExample:
+              "Toutes les données durables doivent être envoyées vers la base externe (Cloud SQL ou Firestore) et jamais stockées dans une simple variable temporaire du serveur.",
+            aiArchitectRule:
+              "Utilise le simulateur interactif ci-dessous pour tester différentes combinaisons de contraintes et voir la recommandation complète."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'mod-7-qualite-maintenance',
+    number: '07',
+    shortTitle: 'Sécurité, Tests & Maintenance',
+    fullTitle: 'Garantir la Fiabilité, la Sécurité et la Maintenance Long Terme',
+    subtitle:
+      'Défense en profondeur (Modèle du Fromage Suisse), pyramide des tests automatisés, maîtrise de la dette technique et refactoring.',
+    sommervilleChapters: 'Sommerville Chapitres 8, 9, 10, 11, 13 & 25 — Tests, Évolution, Sûreté & Configuration',
+    bgTone: 'primary',
+    schemaImage: {
+      src: '/src/assets/images/schema_module6_securite_tests_1795020529336.jpg',
+      alt: 'Schéma des 4 barrières de sécurité et de validation du logiciel',
+      caption: 'La Défense en Profondeur : 1. Validation Formulaire (UI) -> 2. Middleware Serveur -> 3. Tests Unitaires & Règles Métier -> 4. Règles Base de Données.'
+    },
+    interactiveToolId: 'dependability-swiss',
+    mentorIntro:
+      "Un architecte logiciel ne se contente pas d'un système qui « a l'air de marcher » quand tout va bien. Dans la deuxième partie de son livre (Chapitres 8 à 14), Ian Sommerville explique comment empêcher les pannes, bloquer les intrusions et faire évoluer un logiciel pendant des années sans qu'il devienne un champ de ruines.",
+    keyTakeaway:
+      'Ne fais jamais confiance uniquement à l’écran (UI) pour la sécurité : superpose toujours 4 barrières indépendantes (UI, Serveur, Règles Métier testées unitairement, et Règles de Base de Données) et planifie un Refactoring régulier.',
+    sections: [
+      {
+        id: 'sec-7-1',
+        code: 'Sous-module 7.1',
+        title: 'La Défense en Profondeur & Le Modèle du Fromage Suisse',
+        subtitle: 'Pourquoi chaque couche doit revérifier ce que lui envoie la couche précédente.',
+        sommervilleRef: 'Ian Sommerville — Chapitres 10, 12 & 13 : Dependability, Safety & Security Engineering',
+        mentorVoice:
+          "James Reason (cité par Sommerville) a créé une image célèbre : le Modèle du Fromage Suisse. Chaque barrière de protection dans ton logiciel est comme une tranche d'emmental : aussi bonne soit-elle, elle comporte quelques petits trous (un cas oublié, un bug humain). Comment éviter qu'un problème traverse tout le système ? En alignant plusieurs tranches de nature différente !",
+        deepDiveParagraphs: [
+          "Regarde le schéma de ce module : lorsqu'un visiteur soumet une action importante, elle doit traverser 4 barrières successives :",
+          "• Barrière 1 (Validation Formulaire UI) : L'interface vérifie immédiatement que les champs obligatoires sont remplis pour guider gentiment l'utilisateur. Mais attention : un pirate peut envoyer une requête directement au serveur sans utiliser ton écran !",
+          "• Barrière 2 (Middleware Serveur / API) : À l'entrée du serveur (`server.ts`), un vigile logiciel appelé « Middleware » vérifie que l'utilisateur est bien authentifié et autorisé à appeler cette route.",
+          "• Barrière 3 (Règles Métier & Tests Unitaires) : Le moteur métier revérifie mathématiquement que les montants, quantités et statuts respectent les lois de ton activité.",
+          "• Barrière 4 (Règles de Base de Données — `firestore.rules` ou contraintes SQL) : Même si une erreur a franchi les 3 premières étapes, la base de données refuse d'écrire une donnée qui viole ses règles de propriété ou de format."
+        ],
+        corePrinciples: [
+          {
+            heading: 'Vérification vs Validation (La Distinction de Barry Boehm)',
+            explanation:
+              "• La Vérification : « Construisons-nous le logiciel correctement ? » (les calculs sont justes, pas d'erreurs techniques, les tests unitaires passent).\n• La Validation : « Construisons-nous le BON logiciel ? » (il répond vraiment au besoin humain réel avec une interface claire).",
+            concreteExample:
+              "Un test unitaire (`mentorEngine.test.ts`) assure la Vérification ; ouvrir l'application dans un vrai navigateur pour contrôler l'ergonomie assure la Validation.",
+            aiArchitectRule:
+              "Exige toujours ces deux contrôles à la fin de chaque étape importante."
           },
           {
-            heading: '2. Imposer la Répartition Modulaire avant la Génération',
+            heading: 'Dette Technique & Refactoring',
             explanation:
-              "Dis explicitement à l'IA comment répartir les responsabilités : les données de référence dans `/src/data/`, les calculs et règles métier purs dans `/src/utils/`, et les écrans dans `/src/components/`.",
+              "Au Chapitre 9 (Software Evolution), Sommerville montre que chaque modification rapide alourdit la structure du code : c'est la Dette Technique. Le Refactoring est l'opération d'entretien qui consiste à ranger, renommer et découper les fichiers devenus trop longs SANS changer les fonctionnalités visibles.",
             concreteExample:
-              "« Crée d'abord la logique de calcul d'éligibilité dans `src/utils/eligibilityEngine.ts`, puis crée le composant visuel `src/components/EligibilitySimulator.tsx` qui l'utilise. »",
+              "Si un fichier dépasse 500 lignes, demande à l'IA : « Fais un refactoring de ce fichier en extrayant les sous-composants dans `src/components/` sans modifier le comportement. »",
             aiArchitectRule:
-              "Cette simple consigne multiplie par dix la qualité et la fiabilité du code produit par l'IA."
+              "Un bon architecte consacre 1 prompt sur 5 au nettoyage et au refactoring préventif."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'mod-8-pilotage-ia-projet',
+    number: '08',
+    shortTitle: 'Piloter l’IA & Projet Final',
+    fullTitle: 'Guider l’IA comme un Architecte Senior & Construire ton Projet Final',
+    subtitle:
+      'La méthode complète des 3 fichiers directeurs (context.md, plan.md, agents.md), les scénarios réels Google AI Studio et ton projet de fin de formation à réaliser.',
+    sommervilleChapters: 'Synthèse Appliquée — Ingénierie Assistée par IA & Études de Cas Complètes',
+    bgTone: 'primary-alt',
+    schemaImage: {
+      src: '/src/assets/images/schema_module7_pilotage_ia_1795020524992.jpg',
+      alt: 'Schéma du pilotage de l’IA par l’Architecte via context.md, plan.md et agents.md',
+      caption: 'Le triangle de commandement de l’Architecte : ta vision et tes règles métier pilotent l’IA à travers context.md (Mémoire), plan.md (Incréments) et agents.md (Architecture).'
+    },
+    interactiveToolId: 'capstone-project',
+    mentorIntro:
+      "Tu possèdes désormais toute la boîte à outils intellectuelle d'un Ingénieur Logiciel Senior. Dans ce dernier module, nous assemblons la méthode exacte pour diriger l'IA au quotidien sans jamais perdre le contrôle du code, tu t'entraînes sur deux scénarios réels, puis tu passes à l'action avec ton **Projet Final de Fin de Formation**.",
+    keyTakeaway:
+      'Tu n’as pas besoin d’écrire le code toi-même pour être un grand architecte logiciel : tant que tu gouvernes la mémoire (`context.md`), le découpage séquentiel (`plan.md`), les lois d’architecture (`agents.md`) et les règles métier pures (`src/utils/`), l’IA exécutera un logiciel d’une propreté exemplaire.',
+    sections: [
+      {
+        id: 'sec-8-1',
+        code: 'Sous-module 8.1',
+        title: 'Le Système des 3 Fichiers Directeurs : context.md, plan.md et agents.md',
+        subtitle: 'Comment donner une mémoire infaillible et une discipline d’ingénieur à l’IA.',
+        sommervilleRef: 'Méthodologie d’Architecture Assistée par IA & Documentation Vivante',
+        mentorVoice:
+          "Pourquoi beaucoup d'utilisateurs voient-ils leur projet se dégrader au bout de 15 messages avec une IA ? Parce que la conversation s'allonge et que l'IA oublie les décisions prises au début. Ta méthode des 3 fichiers directeurs à la racine du projet résout définitivement ce problème.",
+        deepDiveParagraphs: [
+          "1. `context.md` (La Mémoire Globale et le Fil Conducteur) : Il réunit tout ce qui est dit, pensé, décidé et prévu pour le projet. Il explique la vision métier, ce qui est déjà construit, ce qu'il reste à faire maintenant, et ce qui est prévu pour les futures versions (v1.1, v2.0). N'importe quel agent IA qui ouvre ce fichier comprend tout l'historique en 2 secondes.",
+          "2. `plan.md` (La Feuille de Route et la Méthode de Développement) : Il découpe le travail en incréments ordonnés et précise la méthode d'ingénierie suivie (découplage de la logique pure, tests unitaires, vérification visuelle).",
+          "3. `agents.md` (La Constitution Technique et Visuelle) : Il fixe les lois non négociables pour l'IA : l'architecture en couches obligatoire, l'interdiction des dossiers fourre-tout, les 4 palettes de couleurs et le style minimaliste respirant."
+        ],
+        corePrinciples: [
+          {
+            heading: 'Anatomie d’un Prompt d’Architecte Parfait sur Google AI Studio',
+            explanation:
+              "Au lieu d'écrire « Ajoute un système de devis », formule toujours ta demande en 4 phrases :\n1) Le But Métier et la Règle exacte.\n2) La Couche et les Fichiers où ranger le code (`src/utils/`, `src/components/`).\n3) Les Contraintes Visuelles et d'État (chargement, erreur, sobriété).\n4) La Mise à jour documentaire (`context.md`, `plan.md`) et les Tests.",
+            concreteExample:
+              "« Crée le calcul de devis dans `src/utils/quoteEngine.ts` avec ses tests unitaires, affiche le simulateur dans un composant épuré `src/components/QuoteSimulator.tsx` respectant nos 4 palettes, et mets à jour `context.md` et `plan.md`. »",
+            aiArchitectRule:
+              "Avec cette structure en 4 points, tu parles d'égal à égal avec n'importe quel ingénieur senior."
           }
         ]
       }
     ]
   }
 ];
+
+export const CAPSTONE_PROJECT_SPEC = {
+  title: 'Projet Final à Construire : « MediFlow Studio » (Gestion de Cabinet & Triage Intelligent)',
+  subtitle:
+    'Mets en pratique toute ta formation en concevant et en pilotant de A à Z cette application réelle dans un nouveau projet Google AI Studio.',
+  missionBrief:
+    "Tu es nommé Architecte Logiciel Principal pour créer « MediFlow Studio », une application web permettant à une clinique locale de : 1) Enregistrer des demandes de rendez-vous patients, 2) Calculer automatiquement un score de priorité médicale selon des règles métier strictes (âge, symptômes, antécédents), 3) Visualiser la file d'attente par ordre d'urgence, et 4) Sauvegarder les brouillons même si la connexion Internet de l'accueil vacille.",
+  architecturalConstraints: [
+    'Architecture exigée : Monolithe Modulaire en Couches (Présentation dans /src/components, Règles métier dans /src/utils, Accès données et synchro dans /src/services, Données types dans /src/data).',
+    'Règle métier pure obligatoire : Le calcul du score de priorité (de 1 à 100) doit être 100 % isolé dans `/src/utils/triageEngine.ts` et vérifié par `/src/utils/triageEngine.test.ts`.',
+    'Design System : Police DM Sans, 4 palettes de couleurs (Fond primaire clair respirant, Texte secondaire contrasté, Cartes tertiaires plates à bordure fine 1px sans ombre, États quaternaires pour l’urgence et la validation), zéro carte KPI inutile et zéro pilule de texte.',
+    'Documentation vivante : Créer et tenir à jour `/context.md`, `/plan.md` et `/agents.md` dès le premier incrément.'
+  ],
+  milestones: [
+    {
+      id: 'ms-1',
+      number: 'Mission 01',
+      title: 'Poser les Fondations & Les 3 Fichiers Directeurs',
+      subtitle: 'Définir le cadre d’ingénierie avant de générer l’interface.',
+      objective:
+        'Demander à l’IA d’initialiser `/context.md`, `/plan.md`, `/agents.md` ainsi que les contrats de données dans `/src/types.ts` (PatientRequest, PriorityLevel, TriageResult).',
+      deliverables: ['/context.md', '/plan.md', '/agents.md', '/src/types.ts'],
+      architectChecklist: [
+        'Les exigences fonctionnelles et non-fonctionnelles sont écrites dans context.md',
+        'Les 4 palettes de couleurs et l’interdiction des pilules/ombres sont dans agents.md',
+        'Le découpage en 4 incréments est listé dans plan.md'
+      ],
+      promptToUse:
+        "Agis en Ingénieur Logiciel Senior. Nous lançons le projet « MediFlow Studio ». Pour ce premier incrément : 1) Crée `/context.md`, `/plan.md` et `/agents.md` définissant une architecture modulaire en couches, la police DM Sans, nos 4 palettes de couleurs sur cartes plates sans ombre et sans pilules. 2) Crée les interfaces TypeScript dans `/src/types.ts` pour les demandes patients et le score de triage."
+    },
+    {
+      id: 'ms-2',
+      number: 'Mission 02',
+      title: 'Construire et Tester la Couche Logique Métier Pure',
+      subtitle: 'Isoler le cerveau de calcul loin des boutons de l’écran.',
+      objective:
+        'Faire coder le moteur de règles métier dans `/src/utils/triageEngine.ts` (ex: douleur thoracique = priorité critique immédiate ; âge > 75 ans + fièvre = priorité haute) et ses tests unitaires.',
+      deliverables: ['/src/utils/triageEngine.ts', '/src/utils/triageEngine.test.ts'],
+      architectChecklist: [
+        'Aucune dépendance à React ni à window dans triageEngine.ts',
+        'Au moins 4 règles métier claires et vérifiables',
+        'Tous les tests unitaires passent au vert'
+      ],
+      promptToUse:
+        "Passons à l'Incrément 2 (Couche Métier Pure). Crée dans `/src/utils/triageEngine.ts` les fonctions pures qui calculent le score de priorité (0 à 100) et le niveau d'urgence d'un patient selon son âge, ses symptômes et la durée des signes. Crée ensuite `/src/utils/triageEngine.test.ts` et exécute les tests unitaires pour prouver que les règles métier sont exactes."
+    },
+    {
+      id: 'ms-3',
+      number: 'Mission 03',
+      title: 'Créer la Couche Service & Résilience Hors-Ligne',
+      subtitle: 'Gérer les données et s’adapter à la contrainte de coupure réseau.',
+      objective:
+        'Créer `/src/services/patientQueueService.ts` et `/src/data/initialPatients.ts` pour gérer le CRUD (Créer, Lire, Mettre à jour le statut, Archiver) avec une sauvegarde locale automatique.',
+      deliverables: ['/src/data/initialPatients.ts', '/src/services/patientQueueService.ts'],
+      architectChecklist: [
+        'Séparation nette entre les données initiales (/src/data) et le service (/src/services)',
+        'Sauvegarde dans LocalStorage pour ne rien perdre si la page est rechargée',
+        'Fonctions de tri par score d’urgence décroissant'
+      ],
+      promptToUse:
+        "Passons à l'Incrément 3 (Couche Accès aux Données). Crée un jeu de cas réalistes dans `/src/data/initialPatients.ts` et crée le service `/src/services/patientQueueService.ts` qui gère les opérations CRUD de la file d'attente avec persistance locale de secours. Mets à jour `/context.md` et `/plan.md`."
+    },
+    {
+      id: 'ms-4',
+      number: 'Mission 04',
+      title: 'Assembler la Couche Présentation Minimaliste & Vérifier',
+      subtitle: 'Construire une interface respirante, lisible et centrée sur l’action.',
+      objective:
+        'Créer `/src/components/TriageForm.tsx` et `/src/components/QueueBoard.tsx` assemblés dans `/src/App.tsx` avec un style minimaliste en DM Sans, grand titre, sous-titre et espaces généreux.',
+      deliverables: ['/src/components/TriageForm.tsx', '/src/components/QueueBoard.tsx', '/src/App.tsx'],
+      architectChecklist: [
+        'Chaque section commence par un Grand Titre, un Sous-titre et un contenu aéré',
+        'Les composants visuels appellent le service et le moteur métier sans contenir eux-mêmes les formules de calcul',
+        'Validation visuelle complète sur ordinateur et mobile'
+      ],
+      promptToUse:
+        "Terminons avec l'Incrément 4 (Couche Présentation). Crée `/src/components/TriageForm.tsx` et `/src/components/QueueBoard.tsx`, puis assemble-les dans `/src/App.tsx`. Utilise un design très minimaliste avec DM Sans, de grands espaces respirants, nos 4 palettes de couleurs (cartes plates à bordure fine 1px pour les formulaires et contrôles, états quaternaires pour les priorités médicales), et mets à jour `/context.md` et `/plan.md`."
+    }
+  ] as CapstoneMilestone[]
+};
 
 export const ARCHITECTURE_PATTERNS: ArchitecturePattern[] = [
   {
@@ -929,7 +1267,7 @@ export const PROJECT_FILE_TREE: FileTreeNode[] = [
     importance: 'critique',
     summary: 'La carte d’identité du projet, la liste des briques installées (dépendances) et les commandes de démarrage.',
     whatIsInside:
-      "1) `dependencies` : les bibliothèques utilisées par l'application (React, Lucide icons, Motion, Express, Gemini SDK). 2) `scripts` : les commandes comme `dev` (lancer le serveur de travail), `build` (compiler pour la production) et `lint` (vérifier les erreurs).",
+      "1) `dependencies` : les bibliothèques utilisées par l'application (React, Lucide icons, Express, Gemini SDK). 2) `scripts` : les commandes comme `dev` (lancer le serveur de travail), `build` (compiler pour la production) et `lint` (vérifier les erreurs).",
     architectureClue:
       "En lisant `dependencies` dans `package.json`, tu sais immédiatement si le projet utilise Firebase (`firebase`), une base SQL (`drizzle-orm`, `pg`), un serveur (`express`) ou de la 3D (`three`).",
     dangerIfBroken:
@@ -963,7 +1301,7 @@ export const PROJECT_FILE_TREE: FileTreeNode[] = [
     importance: 'structurant',
     summary: 'La porte d’entrée unique du navigateur web et l’enveloppe SEO du site.',
     whatIsInside:
-      "Le titre de l'onglet (`<title>`), la description pour Google et les réseaux sociaux (`<meta property='og:...'>`), le chargement des polices d'écriture, et la boîte `<div id='root'></div>` dans laquelle React va dessiner toute l'application.",
+      "Le titre de l'onglet (`<title>`), la description pour Google et les réseaux sociaux (`<meta property='og:...'>`), le chargement des polices d'écriture (DM Sans), et la boîte `<div id='root'></div>` dans laquelle React va dessiner toute l'application.",
     architectureClue:
       "Un seul fichier `index.html` qui charge `/src/main.tsx` indique une architecture SPA (Single Page Application) moderne pilotée par Vite et React.",
     dangerIfBroken:
@@ -1014,7 +1352,7 @@ export const PROJECT_FILE_TREE: FileTreeNode[] = [
         importance: 'structurant',
         summary: 'Le démarreur technique React (`main.tsx`) et le système de couleurs/typographie global (`index.css`).',
         whatIsInside:
-          "`main.tsx` branche l'application React dans `index.html`. `index.css` contient les variables de tes 4 palettes de couleurs et les règles visuelles globales.",
+          "`main.tsx` branche l'application React dans `index.html`. `index.css` contient les variables de tes 4 palettes de couleurs et la police DM Sans globale.",
         architectureClue:
           "Centraliser les couleurs dans `index.css` via des variables CSS (`--bg-primary`, etc.) prouve l'existence d'un vrai Design System maintenable.",
         dangerIfBroken:
@@ -1048,7 +1386,7 @@ export const PROJECT_FILE_TREE: FileTreeNode[] = [
         importance: 'critique',
         summary: 'Les briques visuelles et schémas interactifs réutilisables de l’interface.',
         whatIsInside:
-          "Un fichier par grand bloc visuel : ex. `ArchitectureExplorer.tsx`, `FileTreeInspector.tsx`, `DecisionSimulator.tsx`, `ScenarioLab.tsx`.",
+          "Un fichier par grand bloc visuel : ex. `InteractiveArchitectureDiagram.tsx`, `FileTreeExplorer.tsx`, `DecisionSimulator.tsx`, `CapstoneProjectLab.tsx`.",
         architectureClue:
           "Représente la Couche Présentation (ou la Vue dans MVC). Chaque fichier a un nom explicite qui indique immédiatement ce qu'il affiche à l'écran.",
         dangerIfBroken:
@@ -1120,7 +1458,7 @@ export const DATA_MODEL_OPTIONS: DataModelOption[] = [
   },
   {
     id: 'nosql-document',
-    name: 'Base Document NoSQLTemps Réel (Firestore)',
+    name: 'Base Document NoSQL Temps Réel (Firestore)',
     examples: 'Firebase Firestore, MongoDB',
     structureType: 'Collections contenant des Documents JSON flexibles (fiches hiérarchiques)',
     idealUseCases: [

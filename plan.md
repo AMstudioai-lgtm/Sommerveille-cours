@@ -1,32 +1,23 @@
 # Plan de Développement — Site Web de Formation Modulaire
 
 ## 1. Méthode de Développement
-1. **Découplage de la Logique Pure (Architecture Propre)** :
-   - Toute la logique de recommandation d'architecture, d'analyse d'arborescence, de sélection de base de données/hébergeur, de filtrage du glossaire et d'évaluation des scénarios AI Studio est isolée dans `src/utils/mentorEngine.ts` (sans dépendance React ni DOM).
-   - Les contenus pédagogiques structurés (Modules, Schémas, Arborescences, Scénarios, Glossaire) sont centralisés dans `src/data/curriculumData.ts`.
-2. **Validation par Tests Unitaires (`node:test`)** :
-   - Vérification systématique des fonctions pures via `src/utils/mentorEngine.test.ts` exécuté avec `npx --yes tsx --test src/utils/mentorEngine.test.ts`.
-3. **Design System Éditorial & Schémas Interactifs SVG** :
-   - Application stricte des 4 palettes de couleurs (Primaire fond `#F6F5F0`, Secondaire texte `#16181D`, Tertiaire cartes plates à bordure fine 1px sans ombre `#FFFFFF`/`#E8E4D9`, Quaternaire états `#1E56A0`/`#1B6B4A`/`#B85D19`).
-   - Absence totale de cartes KPI, de pilules de texte (`rounded-full`) et de hero surchargé.
-   - Navigation animée avec effet reveal fluide (`motion/react`).
-4. **Vérification Visuelle en Navigateur Réel (Playwright)** :
-   - Compilation, lancement du serveur sur le port 3000, inspection DOM et captures d'écran desktop/mobile pour garantir zéro débordement et une lisibilité optimale.
+1. **Architecture Modulaire en Couches** :
+   - **Couche Données (`/src/data/curriculumData.ts`)** : Contient les 8 modules, leurs sous-modules détaillés (`deepDiveParagraphs`, principes clés, adaptations aux contraintes), les schémas visuels associés, les matrices de décision, les scénarios et le Projet Final (« MediFlow Studio »).
+   - **Couche Logique Métier (`/src/utils/mentorEngine.ts`)** : Fonctions pures de recommandation d'architecture, d'analyse d'arborescence, de filtrage du lexique et de calcul de progression, vérifiées par `/src/utils/mentorEngine.test.ts`.
+   - **Couche Présentation (`/src/components/` & `/src/App.tsx`)** : Interface minimaliste en `DM Sans` structurée selon le modèle « Grand Titre -> Sous-titre -> Contenu aéré ».
+2. **Validation Continue** :
+   - Tests unitaires (`npx --yes tsx --test src/utils/mentorEngine.test.ts`).
+   - Vérification TypeScript & Build (`compile_applet` + `lint_applet`).
+   - Inspection visuelle réelle sous Chromium (`playwright-cli`).
 
-## 2. Tâches Accomplir
-- [x] **Étape 1 : Documentation & Configuration**
-  - Création de `/context.md`, `/plan.md`, et `/agents.md`.
-  - Mise à jour de `/metadata.json` et `/index.html` (typographies éditoriales & techniques, métadonnées SEO en français).
-  - Configuration des variables CSS des 4 palettes dans `/src/index.css`.
-- [x] **Étape 2 : Moteur Logique & Données Pédagogiques**
-  - Création de `/src/data/curriculumData.ts` couvrant les 6 modules complets, l'explorateur d'arborescence, les matrices de décision (Architecture, Données, Hébergement), les scénarios Google AI Studio et le glossaire technique.
-  - Création de `/src/utils/mentorEngine.ts` et `/src/utils/mentorEngine.test.ts`.
-- [x] **Étape 3 : Composants Interactifs & Schémas**
-  - `InteractiveArchitectureDiagram.tsx` : Schéma SVG interactif permettant de manipuler les couches, de simuler le flux d'une requête (Client -> API -> Règle Métier -> Base de données) et de comparer MVC, Layered, Client-Serveur, Repository, Pipe & Filter.
-  - `FileTreeExplorer.tsx` : Explorateur d'arborescence de projet réel (Full-Stack AI Studio, MVC, Modulaire) où chaque fichier/dossier révèle son rôle, ses règles d'architecture et le prompt idéal pour guider l'IA.
-  - `DecisionSimulator.tsx` : Simulateur interactif de contraintes (type de projet, sensibilité des données, trafic, mode hors-ligne) qui recommande l'architecture, le type de base de données et l'hébergeur adaptés avec justification du mentor.
-  - `AiStudioScenarioLab.tsx` : Laboratoire de scénarios réels dans la peau d'un ingénieur sur Google AI Studio (études de cas Sommerville modernisées : Mentcare, iLearn, SaaS).
-  - `GlossaryDecoder.tsx` : Décodeur interactif des grands termes techniques (CRUD, règle métier, incrément, agile, dette technique, etc.) et référence au PDF original d'Ian Sommerville.
-- [x] **Étape 4 : Assemblage, Tests & Vérification Navigateur**
-  - Intégration dans `/src/App.tsx` avec navigation reveal fluide.
-  - Exécution des tests unitaires, build, lint et vérification Playwright.
+## 2. Tâches Accomplies
+- [x] **Incrément 1 : Fondations & Moteur Logique Pur**
+  - Création de `src/utils/mentorEngine.ts` et validation par tests unitaires `src/utils/mentorEngine.test.ts`.
+- [x] **Incrément 2 : Génération des Schémas Visuels & Enrichissement Méthodique**
+  - Génération des schémas visuels dédiés à chaque module dans les 3 styles de référence (blocs pastel plats, couches avec rôles, croquis Excalidraw).
+  - Découpage méthodique en 8 Modules contenant chacun des Sous-modules détaillés et des textes enrichis.
+- [x] **Incrément 3 : Refonte Visuelle Minimaliste en DM Sans**
+  - Application de `DM Sans` sur tout le site (`index.html`, `src/index.css`).
+  - Adoption de la hiérarchie « Grand Titre -> Sous-titre -> Reste du contenu » avec des espaces blancs conséquents.
+- [x] **Incrément 4 : Projet Final de Fin de Formation (« MediFlow Studio »)**
+  - Création de `src/components/CapstoneProjectLab.tsx` permettant à l'utilisateur de suivre 4 missions séquentielles, de copier ses prompts d'architecte et de générer sa trame `context.md / plan.md / agents.md`.

@@ -2,22 +2,22 @@
 
 @layer base {
   :root {
-    /* 1. PALETTE PRIMAIRE : Backgrounds respirants (Papier architectural & Sections contrastées) */
-    --bg-primary: #F6F5F0;
-    --bg-primary-alt: #EFECE4;
-    --bg-primary-deep: #E7E3D8;
+    /* 1. PALETTE PRIMAIRE : Backgrounds ultra-épurés et respirants */
+    --bg-primary: #FAF9F5;
+    --bg-primary-alt: #F3F1EA;
+    --bg-primary-deep: #EAE6DC;
 
-    /* 2. PALETTE SECONDAIRE : Texte & Hiérarchie Éditoriale */
-    --text-secondary-main: #16181D;
-    --text-secondary-body: #3A3F4B;
-    --text-secondary-muted: #687082;
+    /* 2. PALETTE SECONDAIRE : Texte & Hiérarchie (DM Sans intégral) */
+    --text-secondary-main: #141619;
+    --text-secondary-body: #3B4049;
+    --text-secondary-muted: #6E7582;
 
-    /* 3. PALETTE TERTIAIRE : Contenu important, contrôles, champs, cartes plates sans ombre (bordure fine 1px) */
+    /* 3. PALETTE TERTIAIRE : Contenu important, contrôles, cartes plates sans ombre (bordure fine 1px) */
     --surface-tertiary: #FFFFFF;
-    --surface-tertiary-alt: #FAF8F5;
-    --surface-tertiary-active: #EBF1FA;
-    --border-tertiary-fine: #D5D0C3;
-    --border-tertiary-strong: #9DA5B4;
+    --surface-tertiary-alt: #F7F5EF;
+    --surface-tertiary-active: #EDF3FC;
+    --border-tertiary-fine: #DCD7CA;
+    --border-tertiary-strong: #141619;
 
     /* 4. PALETTE QUATERNAIRE : États, Chargement, Interactions, Validation, Alertes */
     --state-quaternary-active: #1E56A0;
@@ -30,21 +30,22 @@
   html {
     background-color: var(--bg-primary);
     color: var(--text-secondary-main);
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     scroll-behavior: smooth;
   }
 
   body {
     background-color: var(--bg-primary);
     color: var(--text-secondary-main);
-    line-height: 1.65;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.75;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
 
-  h1, h2, h3, .font-serif-editorial {
-    font-family: 'Fraunces', Georgia, serif;
-    letter-spacing: -0.02em;
+  h1, h2, h3, h4, h5, h6, .font-serif-editorial {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    letter-spacing: -0.025em;
   }
 
   code, pre, .font-mono-tech {
@@ -52,7 +53,7 @@
   }
 }
 
-/* Utilitaires stricts respectant les 4 palettes et l'absence d'effet de profondeur */
+/* Utilitaires stricts respectant les 4 palettes et le minimalisme sans effet de profondeur */
 .bg-palette-primary {
   background-color: var(--bg-primary);
 }
@@ -139,7 +140,7 @@
 @keyframes revealDown {
   from {
     opacity: 0;
-    transform: translateY(-14px);
+    transform: translateY(-10px);
   }
   to {
     opacity: 1;
@@ -150,7 +151,7 @@
 @keyframes revealUp {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -159,14 +160,13 @@
 }
 
 .animate-reveal-down {
-  animation: revealDown 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: revealDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-reveal-up {
-  animation: revealUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: revealUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-reveal-up-delayed {
-  animation: revealUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.08s forwards;
+  animation: revealUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.08s forwards;
 }
-
