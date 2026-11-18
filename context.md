@@ -44,6 +44,7 @@ Elle transforme l'ouvrage de référence *Software Engineering (10th Edition)* d
 - [x] Passage intégral à la police `DM Sans` et allègement minimaliste avec grands espaces respirants (Grand Titre -> Sous-titre -> Contenu).
 - [x] Création du Projet Final guidé « MediFlow Studio » (`src/components/CapstoneProjectLab.tsx`) en fin de formation.
 - [x] Validation par tests unitaires (`src/utils/mentorEngine.test.ts`), compilation et vérification navigateur.
+- [x] Résolution du conflit de dépendances `esbuild` / `vite` dans `package.json` (`esbuild@^0.28.0`) pour compatibilité `npm install` sur Vercel.
 
 ## 5. Évolutions Futures (Versions X)
 - **v1.2** : Export téléchargeable en un clic d'une archive `.zip` contenant les fichiers `context.md`, `plan.md` et `agents.md` personnalisés par l'apprenant.

@@ -21,3 +21,5 @@
   - Adoption de la hiérarchie « Grand Titre -> Sous-titre -> Reste du contenu » avec des espaces blancs conséquents.
 - [x] **Incrément 4 : Projet Final de Fin de Formation (« MediFlow Studio »)**
   - Création de `src/components/CapstoneProjectLab.tsx` permettant à l'utilisateur de suivre 4 missions séquentielles, de copier ses prompts d'architecte et de générer sa trame `context.md / plan.md / agents.md`.
+- [x] **Incrément 5 : Compatibilité Déploiement Vercel (`npm install`)**
+  - Mise à jour de `esbuild` (`^0.25.0` -> `^0.28.0`) dans `package.json` pour alignement avec la `peerOptional` de `vite@^8.3.0`.
