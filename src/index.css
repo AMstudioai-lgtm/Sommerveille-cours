@@ -1,0 +1,172 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* 1. PALETTE PRIMAIRE : Backgrounds respirants (Papier architectural & Sections contrastées) */
+    --bg-primary: #F6F5F0;
+    --bg-primary-alt: #EFECE4;
+    --bg-primary-deep: #E7E3D8;
+
+    /* 2. PALETTE SECONDAIRE : Texte & Hiérarchie Éditoriale */
+    --text-secondary-main: #16181D;
+    --text-secondary-body: #3A3F4B;
+    --text-secondary-muted: #687082;
+
+    /* 3. PALETTE TERTIAIRE : Contenu important, contrôles, champs, cartes plates sans ombre (bordure fine 1px) */
+    --surface-tertiary: #FFFFFF;
+    --surface-tertiary-alt: #FAF8F5;
+    --surface-tertiary-active: #EBF1FA;
+    --border-tertiary-fine: #D5D0C3;
+    --border-tertiary-strong: #9DA5B4;
+
+    /* 4. PALETTE QUATERNAIRE : États, Chargement, Interactions, Validation, Alertes */
+    --state-quaternary-active: #1E56A0;
+    --state-quaternary-success: #1B6B4A;
+    --state-quaternary-warning: #B85D19;
+    --state-quaternary-danger: #A62626;
+    --state-quaternary-neutral: #475569;
+  }
+
+  html {
+    background-color: var(--bg-primary);
+    color: var(--text-secondary-main);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-secondary-main);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-serif-editorial {
+    font-family: 'Fraunces', Georgia, serif;
+    letter-spacing: -0.02em;
+  }
+
+  code, pre, .font-mono-tech {
+    font-family: 'IBM Plex Mono', monospace;
+  }
+}
+
+/* Utilitaires stricts respectant les 4 palettes et l'absence d'effet de profondeur */
+.bg-palette-primary {
+  background-color: var(--bg-primary);
+}
+
+.bg-palette-primary-alt {
+  background-color: var(--bg-primary-alt);
+}
+
+.bg-palette-primary-deep {
+  background-color: var(--bg-primary-deep);
+}
+
+.text-palette-main {
+  color: var(--text-secondary-main);
+}
+
+.text-palette-body {
+  color: var(--text-secondary-body);
+}
+
+.text-palette-muted {
+  color: var(--text-secondary-muted);
+}
+
+/* Carte plate tertiaire : aucune ombre (box-shadow: none), bordure fine 1px */
+.flat-surface-tertiary {
+  background-color: var(--surface-tertiary);
+  border: 1px solid var(--border-tertiary-fine);
+  box-shadow: none !important;
+}
+
+.flat-surface-tertiary-alt {
+  background-color: var(--surface-tertiary-alt);
+  border: 1px solid var(--border-tertiary-fine);
+  box-shadow: none !important;
+}
+
+.flat-surface-tertiary-borderless {
+  background-color: var(--surface-tertiary);
+  border: 1px solid transparent;
+  box-shadow: none !important;
+}
+
+.flat-input-tertiary {
+  background-color: var(--surface-tertiary);
+  border: 1px solid var(--border-tertiary-fine);
+  color: var(--text-secondary-main);
+  box-shadow: none !important;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.flat-input-tertiary:focus {
+  outline: none;
+  border-color: var(--state-quaternary-active);
+  background-color: #FFFFFF;
+}
+
+/* États Quaternaires */
+.state-active-border {
+  border-color: var(--state-quaternary-active) !important;
+}
+
+.state-active-bg {
+  background-color: var(--surface-tertiary-active);
+}
+
+.state-text-active {
+  color: var(--state-quaternary-active);
+}
+
+.state-text-success {
+  color: var(--state-quaternary-success);
+}
+
+.state-text-warning {
+  color: var(--state-quaternary-warning);
+}
+
+.state-text-danger {
+  color: var(--state-quaternary-danger);
+}
+
+/* Animations Reveal Fluides (Navigation, Sections & États) */
+@keyframes revealDown {
+  from {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes revealUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-reveal-down {
+  animation: revealDown 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-reveal-up {
+  animation: revealUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-reveal-up-delayed {
+  animation: revealUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.08s forwards;
+}
+

@@ -1,0 +1,6 @@
+{
+  "name": "L'Architecte Logiciel — Formation Modulaire & Schémas Interactifs",
+  "description": "Formation modulaire interactive de la conception à la maintenance d'un logiciel, inspirée d'Ian Sommerville pour apprendre à penser en architecte logiciel et piloter l'IA.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
