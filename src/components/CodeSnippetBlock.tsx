@@ -18,14 +18,14 @@ export interface CodeSnippetBlockProps {
 }
 
 const TOKEN_CLASSES: Record<CodeTokenType, string> = {
-  keyword: 'text-[#1E56A0] font-semibold',
-  type: 'text-[#1E56A0]',
-  string: 'text-[#1B6B4A]',
-  number: 'text-[#B85D19]',
-  function: 'text-[#B85D19] font-medium',
-  comment: 'text-[#6E7582] italic',
-  tree: 'text-[#6E7582]',
-  plain: 'text-[#141619]',
+  keyword: 'text-[var(--state-quaternary-active)] font-semibold',
+  type: 'text-[var(--state-quaternary-active)]',
+  string: 'text-[var(--state-quaternary-success)]',
+  number: 'text-[var(--state-quaternary-warning)]',
+  function: 'text-[var(--state-quaternary-warning)] font-medium',
+  comment: 'text-[var(--text-secondary-muted)] italic',
+  tree: 'text-[var(--text-secondary-muted)]',
+  plain: 'text-[var(--text-secondary-main)]',
 };
 
 export const CodeSnippetBlock: React.FC<CodeSnippetBlockProps> = ({

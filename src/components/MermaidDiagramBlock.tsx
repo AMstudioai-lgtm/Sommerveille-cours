@@ -15,16 +15,64 @@ export interface MermaidDiagramBlockProps {
   className?: string;
 }
 
-let mermaidInitialized = false;
+let lastMermaidTheme: 'light' | 'dark' | null = null;
 let renderCounter = 0;
 let renderQueue: Promise<unknown> = Promise.resolve();
 
-async function renderMermaidSafe(code: string, prefix: string): Promise<string> {
+const MERMAID_THEME_VARIABLES = {
+  light: {
+    background: '#FAF9F5',
+    primaryColor: '#EDF3FC',
+    primaryBorderColor: '#1E56A0',
+    primaryTextColor: '#141619',
+    secondaryColor: '#F7F5EF',
+    secondaryBorderColor: '#DCD7CA',
+    secondaryTextColor: '#141619',
+    tertiaryColor: '#FFFFFF',
+    tertiaryBorderColor: '#DCD7CA',
+    tertiaryTextColor: '#141619',
+    lineColor: '#3B4049',
+    textColor: '#141619',
+    edgeLabelBackground: '#FAF9F5',
+    clusterBkg: '#FFFFFF',
+    clusterBorder: '#DCD7CA',
+    fontSize: '14px',
+  },
+  dark: {
+    background: '#111317',
+    primaryColor: '#16263D',
+    primaryBorderColor: '#6EA8FE',
+    primaryTextColor: '#F3F1EA',
+    secondaryColor: '#1B1F26',
+    secondaryBorderColor: '#2B313D',
+    secondaryTextColor: '#F3F1EA',
+    tertiaryColor: '#15181E',
+    tertiaryBorderColor: '#2B313D',
+    tertiaryTextColor: '#F3F1EA',
+    lineColor: '#9AA3B2',
+    textColor: '#F3F1EA',
+    edgeLabelBackground: '#111317',
+    clusterBkg: '#1B1F26',
+    clusterBorder: '#2B313D',
+    fontSize: '14px',
+  },
+} as const;
+
+function readDocumentTheme(): 'light' | 'dark' {
+  if (typeof document === 'undefined') return 'light';
+  return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+}
+
+async function renderMermaidSafe(
+  code: string,
+  prefix: string,
+  themeMode: 'light' | 'dark'
+): Promise<string> {
   const job = renderQueue.then(async () => {
     const mermaidModule = await import('mermaid');
     const mermaid = mermaidModule.default;
 
-    if (!mermaidInitialized) {
+    if (lastMermaidTheme !== themeMode) {
       mermaid.initialize({
         startOnLoad: false,
         securityLevel: 'strict',
@@ -38,30 +86,13 @@ async function renderMermaidSafe(code: string, prefix: string): Promise<string> 
           padding: 14,
           useMaxWidth: false,
         },
-        themeVariables: {
-          background: '#FAF9F5',
-          primaryColor: '#EDF3FC',
-          primaryBorderColor: '#1E56A0',
-          primaryTextColor: '#141619',
-          secondaryColor: '#F7F5EF',
-          secondaryBorderColor: '#DCD7CA',
-          secondaryTextColor: '#141619',
-          tertiaryColor: '#FFFFFF',
-          tertiaryBorderColor: '#DCD7CA',
-          tertiaryTextColor: '#141619',
-          lineColor: '#3B4049',
-          textColor: '#141619',
-          edgeLabelBackground: '#FAF9F5',
-          clusterBkg: '#FFFFFF',
-          clusterBorder: '#DCD7CA',
-          fontSize: '14px',
-        },
+        themeVariables: MERMAID_THEME_VARIABLES[themeMode],
       });
-      mermaidInitialized = true;
+      lastMermaidTheme = themeMode;
     }
 
     renderCounter += 1;
-    const renderId = `mmd_${prefix}_${renderCounter}`;
+    const renderId = `mmd_${prefix}_${themeMode}_${renderCounter}`;
     const { svg } = await mermaid.render(renderId, code);
     return svg;
   });
@@ -88,6 +119,7 @@ export const MermaidDiagramBlock: React.FC<MermaidDiagramBlockProps> = ({
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(max-width: 767px)').matches;
   });
+  const [themeMode, setThemeMode] = useState<'light' | 'dark'>(readDocumentTheme);
   const [orientationMode, setOrientationMode] = useState<MermaidOrientationMode>(defaultMode);
   const [showSource, setShowSource] = useState<boolean>(false);
   const [svgMarkup, setSvgMarkup] = useState<string>('');
@@ -107,6 +139,19 @@ export const MermaidDiagramBlock: React.FC<MermaidDiagramBlockProps> = ({
     return () => mql.removeEventListener('change', handleChange);
   }, []);
 
+  useEffect(() => {
+    if (typeof document === 'undefined' || typeof MutationObserver === 'undefined') return;
+    setThemeMode(readDocumentTheme());
+    const observer = new MutationObserver(() => {
+      setThemeMode(readDocumentTheme());
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
+    return () => observer.disconnect();
+  }, []);
+
   const effectiveDirection = resolveMermaidDirection(orientationMode, isMobile);
 
   const orientedDefinition = useMemo(
@@ -118,7 +163,7 @@ export const MermaidDiagramBlock: React.FC<MermaidDiagramBlockProps> = ({
     let cancelled = false;
     setRenderError(null);
 
-    renderMermaidSafe(orientedDefinition, safePrefix)
+    renderMermaidSafe(orientedDefinition, safePrefix, themeMode)
       .then((svg) => {
         if (!cancelled) {
           setSvgMarkup(svg);
@@ -135,7 +180,7 @@ export const MermaidDiagramBlock: React.FC<MermaidDiagramBlockProps> = ({
     return () => {
       cancelled = true;
     };
-  }, [orientedDefinition, safePrefix]);
+  }, [orientedDefinition, safePrefix, themeMode]);
 
   useEffect(() => {
     const el = scrollContainerRef.current;

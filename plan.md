@@ -37,3 +37,7 @@
   - Génération des icônes PWA conformes (`public/icon.svg`, `pwa-192x192.png`, `pwa-512x512.png`, `pwa-maskable-512x512.png`, `apple-touch-icon.png`) et configuration `vite-plugin-pwa` (Workbox précaching 8 Mo couvrant JS/Mermaid, polices, 7 schémas `public/images/schemas/`, 3 schémas de référence et PDF Sommerville 4 Mo).
   - Création de la couche persistance `src/persistence/progressStorage.ts` (+ tests unitaires `progressStorage.test.ts`), des hooks `src/hooks/usePWAInstall.ts` et `src/hooks/useOnlineStatus.ts`, et des composants `PWAInstallButton.tsx` (Chromium + guide iOS Safari) et `OfflineIndicator.tsx`.
   - Intégration du contrôle de réinitialisation en 2 temps dans le tiroir Sommaire.
+- [x] **Incrément 9 : Mode Sombre Basculable (Variante 4 Palettes sans ombre)**
+  - Définition de `:root[data-theme="dark"]` sur les variables CSS existantes dans `src/index.css` (`#111317` / `#171A20` / `#1B1F26`, textes `#F3F1EA`, bordure fine 1px `#2B313D`, états quaternaires calibrés dark, zéro ombre).
+  - Création de `src/persistence/themeStorage.ts` (+ `themeStorage.test.ts`), `src/hooks/useTheme.ts` (sync `data-theme` + `<meta name="theme-color">`) et `src/components/ThemeToggleButton.tsx` intégré dans l'en-tête.
+  - Adaptation dynamique de `MermaidDiagramBlock.tsx`, `InteractiveArchitectureDiagram.tsx` et `CodeSnippetBlock.tsx`, plus script anti-flash dans `index.html`.

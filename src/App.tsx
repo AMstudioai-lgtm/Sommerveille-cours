@@ -21,6 +21,8 @@ import { AiStudioScenarioLab, GlossaryDecoderSection } from './components/AiStud
 import { CapstoneProjectLab } from './components/CapstoneProjectLab';
 import { PWAInstallButton } from './components/PWAInstallButton';
 import { OfflineIndicator } from './components/OfflineIndicator';
+import { ThemeToggleButton } from './components/ThemeToggleButton';
+import { useTheme } from './hooks/useTheme';
 import {
   ChevronDown,
   CheckSquare,
@@ -30,6 +32,7 @@ import {
 } from 'lucide-react';
 
 export default function App() {
+  const { theme, toggleTheme } = useTheme();
   const [initialProgress] = useState(() => loadProgress());
   const [activeModuleFilter, setActiveModuleFilter] = useState<string | 'all'>('all');
   const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
@@ -185,24 +188,24 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-palette-primary text-palette-main">
       {/* BARRE DE NAVIGATION MINIMALISTE AVEC REVEAL FLUIDE */}
-      <header className="sticky top-0 z-40 bg-[#FAF9F5]/95 backdrop-blur-sm border-b border-[#DCD7CA] animate-reveal-down">
-        <div className="w-full h-1 bg-[#EAE6DC]">
+      <header className="sticky top-0 z-40 bg-[var(--bg-header-sticky)] backdrop-blur-sm border-b border-[var(--border-tertiary-fine)] animate-reveal-down">
+        <div className="w-full h-1 bg-[var(--bg-primary-deep)]">
           <div
-            className="h-full bg-[#1E56A0] transition-all duration-500 ease-out"
+            className="h-full bg-[var(--state-quaternary-active)] transition-all duration-500 ease-out"
             style={{ width: `${mastery.percentage}%` }}
           />
         </div>
 
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-6">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4 sm:gap-6">
           <button
             type="button"
             onClick={() => setActiveModuleFilter('all')}
             className="text-left cursor-pointer group flex items-center gap-2.5 shrink-0 min-w-0"
           >
-            <span className="w-7 h-7 shrink-0 flex items-center justify-center bg-[#141619] text-white font-mono-tech text-xs font-semibold">
+            <span className="w-7 h-7 shrink-0 flex items-center justify-center bg-[var(--btn-ink-bg)] text-[var(--btn-ink-text)] font-mono-tech text-xs font-semibold">
               SE
             </span>
-            <span className="text-sm sm:text-base font-bold text-palette-main group-hover:text-[#1E56A0] transition-colors whitespace-nowrap">
+            <span className="text-sm sm:text-base font-bold text-palette-main group-hover:text-[var(--state-quaternary-active)] transition-colors whitespace-nowrap">
               L’Architecte Logiciel
             </span>
           </button>
@@ -246,14 +249,16 @@ export default function App() {
             </a>
           </nav>
 
-          {/* Progression, Installation PWA & Tiroir Sommaire Animé */}
-          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+          {/* Progression, Thème, Installation PWA & Tiroir Sommaire Animé */}
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
             <span
               title={`${mastery.rankLabel} — ${mastery.percentage}%`}
               className="hidden sm:inline-block text-xs font-mono-tech tabular-nums text-palette-muted whitespace-nowrap shrink-0"
             >
               Maîtrise {mastery.percentage}%
             </span>
+
+            <ThemeToggleButton theme={theme} onToggle={toggleTheme} />
 
             <PWAInstallButton />
 
@@ -264,7 +269,7 @@ export default function App() {
                 setConfirmResetOpen(false);
               }}
               aria-expanded={navDrawerOpen}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono-tech font-medium flat-surface-tertiary cursor-pointer hover:border-[#1E56A0] transition-colors whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono-tech font-medium flat-surface-tertiary cursor-pointer hover:border-[var(--state-quaternary-active)] transition-colors whitespace-nowrap shrink-0"
             >
               <span>Sommaire</span>
               <ChevronDown
@@ -428,7 +433,7 @@ export default function App() {
               <a
                 href="#module-mod-1-fondations"
                 onClick={() => setActiveModuleFilter('all')}
-                className="inline-flex items-center gap-2 px-6 py-3.5 text-sm font-medium bg-[#141619] text-white hover:bg-[#1E56A0] transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3.5 text-sm font-medium bg-[var(--btn-ink-bg)] text-[var(--btn-ink-text)] hover:bg-[var(--state-quaternary-active)] hover:text-white transition-colors"
               >
                 Commencer au Module 01
                 <ArrowUpRight className="w-4 h-4" />

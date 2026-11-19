@@ -2,10 +2,13 @@
 
 @layer base {
   :root {
+    color-scheme: light;
+
     /* 1. PALETTE PRIMAIRE : Backgrounds ultra-épurés et respirants */
     --bg-primary: #FAF9F5;
     --bg-primary-alt: #F3F1EA;
     --bg-primary-deep: #EAE6DC;
+    --bg-header-sticky: rgba(250, 249, 245, 0.95);
 
     /* 2. PALETTE SECONDAIRE : Texte & Hiérarchie (DM Sans intégral) */
     --text-secondary-main: #141619;
@@ -25,6 +28,53 @@
     --state-quaternary-warning: #B85D19;
     --state-quaternary-danger: #A62626;
     --state-quaternary-neutral: #475569;
+
+    /* Fonds teintés plats (zéro ombre) pour états quaternaires & boutons d'action */
+    --state-bg-active: #EDF3FC;
+    --state-bg-success: #EAF5F0;
+    --state-bg-warning: #FDF4EC;
+    --state-bg-danger: #FDF2F2;
+    --state-bg-neutral: #F1F5F9;
+    --btn-ink-bg: #141619;
+    --btn-ink-text: #FAF9F5;
+  }
+
+  :root[data-theme='dark'] {
+    color-scheme: dark;
+
+    /* 1. PALETTE PRIMAIRE (SOMBRE) : Charbon éditorial calme & stratifié */
+    --bg-primary: #111317;
+    --bg-primary-alt: #171A20;
+    --bg-primary-deep: #0D0F13;
+    --bg-header-sticky: rgba(17, 19, 23, 0.94);
+
+    /* 2. PALETTE SECONDAIRE (SOMBRE) : Hiérarchie de texte contrastée sans éblouissement */
+    --text-secondary-main: #F3F1EA;
+    --text-secondary-body: #C8CDD6;
+    --text-secondary-muted: #8E96A5;
+
+    /* 3. PALETTE TERTIAIRE (SOMBRE) : Surfaces plates, bordure fine 1px, zéro ombre */
+    --surface-tertiary: #1B1F26;
+    --surface-tertiary-alt: #15181E;
+    --surface-tertiary-active: #16263D;
+    --border-tertiary-fine: #2B313D;
+    --border-tertiary-strong: #E6E3DA;
+
+    /* 4. PALETTE QUATERNAIRE (SOMBRE) : États lisibles sur fond sombre */
+    --state-quaternary-active: #6EA8FE;
+    --state-quaternary-success: #4CC38A;
+    --state-quaternary-warning: #E5964B;
+    --state-quaternary-danger: #F06D6D;
+    --state-quaternary-neutral: #9AA3B2;
+
+    /* Fonds teintés plats (zéro ombre) en mode sombre */
+    --state-bg-active: #16263D;
+    --state-bg-success: #122920;
+    --state-bg-warning: #2C1F12;
+    --state-bg-danger: #2E1719;
+    --state-bg-neutral: #1F242D;
+    --btn-ink-bg: #F3F1EA;
+    --btn-ink-text: #111317;
   }
 
   html {
@@ -41,6 +91,7 @@
     line-height: 1.75;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   h1, h2, h3, h4, h5, h6, .font-serif-editorial {
@@ -108,7 +159,7 @@
 .flat-input-tertiary:focus {
   outline: none;
   border-color: var(--state-quaternary-active);
-  background-color: #FFFFFF;
+  background-color: var(--surface-tertiary);
 }
 
 /* États Quaternaires */
@@ -134,6 +185,113 @@
 
 .state-text-danger {
   color: var(--state-quaternary-danger);
+}
+
+/* Alignement complet des classes utilitaires héritées sur les 4 palettes en mode sombre */
+:root[data-theme='dark'] .bg-white {
+  background-color: var(--surface-tertiary) !important;
+}
+
+:root[data-theme='dark'] .hover\:bg-white:hover {
+  background-color: #222731 !important;
+}
+
+:root[data-theme='dark'] .bg-\[\#FAF9F5\],
+:root[data-theme='dark'] .bg-\[\#FAF8F5\] {
+  background-color: var(--bg-primary) !important;
+}
+
+:root[data-theme='dark'] .hover\:bg-\[\#FAF9F5\]:hover,
+:root[data-theme='dark'] .hover\:bg-\[\#FAF8F5\]:hover {
+  background-color: #1F242E !important;
+}
+
+:root[data-theme='dark'] .bg-\[\#F7F5EF\],
+:root[data-theme='dark'] .bg-\[\#F3F1EA\] {
+  background-color: var(--surface-tertiary-alt) !important;
+}
+
+:root[data-theme='dark'] .bg-\[\#EAE6DC\] {
+  background-color: var(--border-tertiary-fine) !important;
+}
+
+:root[data-theme='dark'] .bg-\[\#EDF3FC\],
+:root[data-theme='dark'] .bg-\[\#EBF1FA\] {
+  background-color: var(--state-bg-active) !important;
+}
+
+:root[data-theme='dark'] .bg-\[\#EAF5F0\],
+:root[data-theme='dark'] .bg-\[\#F1F8F5\] {
+  background-color: var(--state-bg-success) !important;
+}
+
+:root[data-theme='dark'] .bg-\[\#EAF5F0\]\/30 {
+  background-color: rgba(18, 41, 32, 0.72) !important;
+}
+
+:root[data-theme='dark'] .bg-\[\#FDF4EC\],
+:root[data-theme='dark'] .bg-\[\#FDF3EB\] {
+  background-color: var(--state-bg-warning) !important;
+}
+
+:root[data-theme='dark'] .bg-\[\#FDF2F2\] {
+  background-color: var(--state-bg-danger) !important;
+}
+
+:root[data-theme='dark'] .border-\[\#DCD7CA\],
+:root[data-theme='dark'] .border-\[\#D5D0C3\],
+:root[data-theme='dark'] .border-\[\#E5E0D5\],
+:root[data-theme='dark'] .border-\[\#F1EFEA\] {
+  border-color: var(--border-tertiary-fine) !important;
+}
+
+:root[data-theme='dark'] .border-\[\#141619\] {
+  border-color: var(--border-tertiary-strong) !important;
+}
+
+:root[data-theme='dark'] .border-\[\#1E56A0\],
+:root[data-theme='dark'] .border-l-\[\#1E56A0\],
+:root[data-theme='dark'] .hover\:border-\[\#1E56A0\]:hover {
+  border-color: var(--state-quaternary-active) !important;
+}
+
+:root[data-theme='dark'] .border-\[\#1B6B4A\] {
+  border-color: var(--state-quaternary-success) !important;
+}
+
+:root[data-theme='dark'] .border-\[\#B85D19\] {
+  border-color: var(--state-quaternary-warning) !important;
+}
+
+:root[data-theme='dark'] .border-\[\#A62626\] {
+  border-color: var(--state-quaternary-danger) !important;
+}
+
+:root[data-theme='dark'] .text-\[\#141619\] {
+  color: var(--text-secondary-main) !important;
+}
+
+:root[data-theme='dark'] .text-\[\#1E56A0\],
+:root[data-theme='dark'] .hover\:text-\[\#1E56A0\]:hover {
+  color: var(--state-quaternary-active) !important;
+}
+
+:root[data-theme='dark'] .text-\[\#1B6B4A\] {
+  color: var(--state-quaternary-success) !important;
+}
+
+:root[data-theme='dark'] .text-\[\#B85D19\] {
+  color: var(--state-quaternary-warning) !important;
+}
+
+:root[data-theme='dark'] .text-\[\#A62626\],
+:root[data-theme='dark'] .hover\:text-\[\#A62626\]:hover {
+  color: var(--state-quaternary-danger) !important;
+}
+
+/* Légère atténuation de luminosité des schémas JPG clairs pour confort visuel nocturne */
+:root[data-theme='dark'] figure img {
+  filter: brightness(0.92) contrast(1.03);
 }
 
 /* Animations Reveal Fluides (Navigation, Sections & États) */
@@ -193,6 +351,6 @@
 
 .mermaid-svg-host .edgeLabel {
   font-size: 12px !important;
-  background-color: #FAF9F5 !important;
+  background-color: var(--bg-primary) !important;
 }
 

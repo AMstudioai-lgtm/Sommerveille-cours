@@ -58,13 +58,33 @@ export const InteractiveArchitectureDiagram: React.FC<InteractiveArchitectureDia
   const getLayerBadgeColor = (layerType: 'presentation' | 'logic' | 'data' | 'external') => {
     switch (layerType) {
       case 'presentation':
-        return { stroke: '#1E56A0', fill: '#EBF1FA', text: '#1E56A0', tag: 'PRÉSENTATION / VUE' };
+        return {
+          stroke: 'var(--state-quaternary-active)',
+          fill: 'var(--state-bg-active)',
+          text: 'var(--state-quaternary-active)',
+          tag: 'PRÉSENTATION / VUE',
+        };
       case 'logic':
-        return { stroke: '#1B6B4A', fill: '#EAF5F0', text: '#1B6B4A', tag: 'LOGIQUE MÉTIER / CONTRÔLE' };
+        return {
+          stroke: 'var(--state-quaternary-success)',
+          fill: 'var(--state-bg-success)',
+          text: 'var(--state-quaternary-success)',
+          tag: 'LOGIQUE MÉTIER / CONTRÔLE',
+        };
       case 'data':
-        return { stroke: '#B85D19', fill: '#FDF3EB', text: '#B85D19', tag: 'ACCÈS DONNÉES / DÉPÔT' };
+        return {
+          stroke: 'var(--state-quaternary-warning)',
+          fill: 'var(--state-bg-warning)',
+          text: 'var(--state-quaternary-warning)',
+          tag: 'ACCÈS DONNÉES / DÉPÔT',
+        };
       case 'external':
-        return { stroke: '#475569', fill: '#F1F5F9', text: '#334155', tag: 'PERSISTANCE / CLOUD' };
+        return {
+          stroke: 'var(--state-quaternary-neutral)',
+          fill: 'var(--state-bg-neutral)',
+          text: 'var(--text-secondary-body)',
+          tag: 'PERSISTANCE / CLOUD',
+        };
     }
   };
 
@@ -239,7 +259,7 @@ export const InteractiveArchitectureDiagram: React.FC<InteractiveArchitectureDia
                       y1={y1}
                       x2={x2}
                       y2={y2}
-                      stroke={isFlowHighlighted ? '#1E56A0' : '#9DA5B4'}
+                      stroke={isFlowHighlighted ? 'var(--state-quaternary-active)' : 'var(--text-secondary-muted)'}
                       strokeWidth={isFlowHighlighted ? 2.5 : 1.5}
                       strokeDasharray={isFlowHighlighted ? 'none' : '4 3'}
                       markerEnd={isFlowHighlighted ? 'url(#arrow-active)' : 'url(#arrow-default)'}
@@ -249,8 +269,8 @@ export const InteractiveArchitectureDiagram: React.FC<InteractiveArchitectureDia
                       y={midY - 10}
                       width="156"
                       height="19"
-                      fill="#FFFFFF"
-                      stroke={isFlowHighlighted ? '#1E56A0' : '#D5D0C3'}
+                      fill="var(--surface-tertiary)"
+                      stroke={isFlowHighlighted ? 'var(--state-quaternary-active)' : 'var(--border-tertiary-fine)'}
                       strokeWidth="1"
                     />
                     <text
@@ -259,7 +279,7 @@ export const InteractiveArchitectureDiagram: React.FC<InteractiveArchitectureDia
                       textAnchor="middle"
                       fontSize="9.5"
                       fontFamily="IBM Plex Mono, monospace"
-                      fill={isFlowHighlighted ? '#1E56A0' : '#3A3F4B'}
+                      fill={isFlowHighlighted ? 'var(--state-quaternary-active)' : 'var(--text-secondary-body)'}
                       fontWeight={isFlowHighlighted ? '600' : '400'}
                     >
                       {conn.label}
@@ -287,8 +307,8 @@ export const InteractiveArchitectureDiagram: React.FC<InteractiveArchitectureDia
                       y={node.y}
                       width={node.width}
                       height={node.height}
-                      fill={isSelected ? style.fill : '#FFFFFF'}
-                      stroke={isSelected ? style.stroke : '#9DA5B4'}
+                      fill={isSelected ? style.fill : 'var(--surface-tertiary)'}
+                      stroke={isSelected ? style.stroke : 'var(--border-tertiary-fine)'}
                       strokeWidth={isSelected ? '2.2' : '1'}
                     />
                     {/* Barre d'accentuation latérale gauche */}
@@ -297,15 +317,15 @@ export const InteractiveArchitectureDiagram: React.FC<InteractiveArchitectureDia
                       y={node.y}
                       width="6"
                       height={node.height}
-                      fill={isSelected ? style.stroke : '#D5D0C3'}
+                      fill={isSelected ? style.stroke : 'var(--border-tertiary-fine)'}
                     />
                     <text
                       x={node.x + 16}
                       y={node.y + 22}
                       fontSize="12"
                       fontWeight="700"
-                      fontFamily="Plus Jakarta Sans, sans-serif"
-                      fill="#16181D"
+                      fontFamily="DM Sans, sans-serif"
+                      fill="var(--text-secondary-main)"
                     >
                       {node.label}
                     </text>
@@ -313,8 +333,8 @@ export const InteractiveArchitectureDiagram: React.FC<InteractiveArchitectureDia
                       x={node.x + 16}
                       y={node.y + 41}
                       fontSize="10.5"
-                      fontFamily="Plus Jakarta Sans, sans-serif"
-                      fill="#3A3F4B"
+                      fontFamily="DM Sans, sans-serif"
+                      fill="var(--text-secondary-body)"
                     >
                       {node.role.length > 62 ? node.role.slice(0, 62) + '…' : node.role}
                     </text>
