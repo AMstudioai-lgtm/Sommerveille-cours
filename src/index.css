@@ -170,3 +170,29 @@
 .animate-reveal-up-delayed {
   animation: revealUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.08s forwards;
 }
+
+/* Schémas Mermaid harmonisés : lisibilité nette & défilement horizontal intérieur */
+.mermaid-svg-host svg {
+  display: block;
+  height: auto;
+  max-width: none;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+.mermaid-svg-host .node,
+.mermaid-svg-host .node rect,
+.mermaid-svg-host .node polygon,
+.mermaid-svg-host .node circle,
+.mermaid-svg-host .cluster rect {
+  stroke-width: 1px !important;
+  rx: 2px;
+  ry: 2px;
+  filter: none !important;
+  box-shadow: none !important;
+}
+
+.mermaid-svg-host .edgeLabel {
+  font-size: 12px !important;
+  background-color: #FAF9F5 !important;
+}
+

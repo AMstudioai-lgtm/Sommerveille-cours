@@ -15,11 +15,24 @@ import {
   type XrayPartKey,
 } from '../data/architectureReadingData';
 import {
+  FIVE_ARCH_VISUALS,
+  MODULE5_COMMUNICATION_CODE,
+  MODULE5_COMMUNICATION_MERMAID,
+  MODULE5_DIRECTIVE_MERMAID,
+  MODULE5_EXTRACTION_CODE,
+  MODULE5_EXTRACTION_MERMAID,
+  MODULE5_SCALE_MERMAID,
+  MODULE5_THREE_FORMS_CODE,
+  MODULE5_XRAY_CODE_EXAMPLES,
+} from '../data/module5VisualsData';
+import {
   evaluateFunctionExtraction,
   evaluateModuleToServiceConversion,
   type ConversionCriteriaState,
   type ExtractionCriteriaState,
 } from '../utils/mentorEngine';
+import { CodeSnippetBlock } from './CodeSnippetBlock';
+import { MermaidDiagramBlock } from './MermaidDiagramBlock';
 import {
   AlertTriangle,
   ArrowRight,
@@ -212,6 +225,13 @@ export function ArchitectureReadingLab({
           </p>
         </div>
 
+        {/* Schéma Mermaid de l'échelle logicielle */}
+        <MermaidDiagramBlock
+          title={MODULE5_SCALE_MERMAID.title}
+          caption={MODULE5_SCALE_MERMAID.caption}
+          definition={MODULE5_SCALE_MERMAID.definition}
+        />
+
         {/* Sélecteur 4 niveaux */}
         <div className="flat-surface-tertiary p-5 sm:p-8 space-y-6 min-w-0">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3" role="tablist" aria-label="Échelle logicielle">
@@ -266,13 +286,13 @@ export function ArchitectureReadingLab({
               </div>
             </div>
 
-            <div className="lg:col-span-6 space-y-2 min-w-0">
-              <div className="text-xs font-mono-tech uppercase text-palette-muted">
-                Ce que voit ton œil dans le projet
-              </div>
-              <pre className="p-4 bg-[#FAF9F5] border border-[#DCD7CA] font-mono-tech text-xs leading-relaxed text-palette-main overflow-x-auto max-w-full">
-                <code>{activeScale.tree}</code>
-              </pre>
+            <div className="lg:col-span-6 min-w-0">
+              <CodeSnippetBlock
+                language="tree"
+                title="Ce que voit ton œil dans le projet"
+                code={activeScale.tree}
+                compact
+              />
             </div>
           </div>
         </div>
@@ -356,7 +376,7 @@ export function ArchitectureReadingLab({
               </div>
             </div>
 
-            <div className="pt-2 border-t border-[#DCD7CA] space-y-3 min-w-0">
+            <div className="pt-4 border-t border-[#DCD7CA] space-y-4 min-w-0">
               <div className="text-base font-bold text-palette-main">{activeXray.title}</div>
               <p className="text-base text-palette-body leading-relaxed break-words">
                 {activeXray.text}
@@ -364,22 +384,37 @@ export function ArchitectureReadingLab({
               <p className="text-sm font-medium text-palette-main leading-relaxed break-words">
                 {activeXray.check}
               </p>
+              <CodeSnippetBlock
+                language={MODULE5_XRAY_CODE_EXAMPLES[activeXrayKey].language}
+                title={MODULE5_XRAY_CODE_EXAMPLES[activeXrayKey].title}
+                filename={MODULE5_XRAY_CODE_EXAMPLES[activeXrayKey].filename}
+                caption={MODULE5_XRAY_CODE_EXAMPLES[activeXrayKey].caption}
+                code={MODULE5_XRAY_CODE_EXAMPLES[activeXrayKey].code}
+                compact
+              />
             </div>
           </div>
 
-          <div className="flat-surface-tertiary-alt p-5 max-w-4xl space-y-2 min-w-0">
-            <div className="flex items-center gap-2 text-xs font-mono-tech uppercase state-text-active font-semibold">
-              <Info className="w-4 h-4 shrink-0" />
-              <span>Les 3 écritures équivalentes que tu croiseras chez l’IA</span>
+          <div className="space-y-4 max-w-4xl min-w-0">
+            <div className="flat-surface-tertiary-alt p-5 space-y-2 min-w-0">
+              <div className="flex items-center gap-2 text-xs font-mono-tech uppercase state-text-active font-semibold">
+                <Info className="w-4 h-4 shrink-0" />
+                <span>Les 3 écritures équivalentes que tu croiseras chez l’IA</span>
+              </div>
+              <p className="text-sm sm:text-base text-palette-body leading-relaxed break-words">
+                En TypeScript ou JavaScript, l’IA écrit une même fonction sous trois formes
+                strictement équivalentes : déclaration classique, fonction fléchée ou méthode dans
+                une classe. Repère toujours le <strong className="text-palette-main">verbe d’action</strong> suivi
+                de ses parenthèses d’entrées dans le bloc ci-dessous.
+              </p>
             </div>
-            <p className="text-sm sm:text-base text-palette-body leading-relaxed break-words">
-              En TypeScript ou JavaScript, l’IA écrit une fonction sous trois formes strictement
-              équivalentes : <code className="font-mono-tech text-palette-main">function calculerPrix(...)</code>,{' '}
-              <code className="font-mono-tech text-palette-main">const calculerPrix = (...) =&gt;</code>, ou dans une classe{' '}
-              <code className="font-mono-tech text-palette-main">calculerPrix(...) {'{ ... }'}</code>. Cherche toujours le{' '}
-              <strong className="text-palette-main">verbe d’action</strong> suivi de parenthèses{' '}
-              <code className="font-mono-tech text-palette-main">(...)</code>.
-            </p>
+            <CodeSnippetBlock
+              language={MODULE5_THREE_FORMS_CODE.language}
+              title={MODULE5_THREE_FORMS_CODE.title}
+              filename={MODULE5_THREE_FORMS_CODE.filename}
+              caption={MODULE5_THREE_FORMS_CODE.caption}
+              code={MODULE5_THREE_FORMS_CODE.code}
+            />
           </div>
         </div>
       </article>
@@ -400,6 +435,20 @@ export function ArchitectureReadingLab({
             inutiles : arbitre sur la base de 4 critères objectifs.
           </p>
         </div>
+
+        <MermaidDiagramBlock
+          title={MODULE5_EXTRACTION_MERMAID.title}
+          caption={MODULE5_EXTRACTION_MERMAID.caption}
+          definition={MODULE5_EXTRACTION_MERMAID.definition}
+        />
+
+        <CodeSnippetBlock
+          language={MODULE5_EXTRACTION_CODE.language}
+          title={MODULE5_EXTRACTION_CODE.title}
+          filename={MODULE5_EXTRACTION_CODE.filename}
+          caption={MODULE5_EXTRACTION_CODE.caption}
+          code={MODULE5_EXTRACTION_CODE.code}
+        />
 
         <div className="flat-surface-tertiary p-5 sm:p-8 space-y-6 min-w-0">
           <div className="text-xs font-mono-tech uppercase state-text-active font-semibold">
@@ -599,75 +648,20 @@ export function ArchitectureReadingLab({
             </button>
           </div>
 
-          {msViewMode === 'module' ? (
-            <div className="p-5 sm:p-6 bg-[#FAF9F5] border border-dashed border-[#1E56A0] space-y-5 min-w-0">
-              <div className="text-center text-xs sm:text-sm font-mono-tech uppercase state-text-active font-semibold break-words">
-                UNE SEULE APPLICATION · Même serveur, même mémoire, même déploiement
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                <div className="flat-surface-tertiary p-4 text-center min-w-0">
-                  <div className="font-bold text-palette-main text-sm sm:text-base">
-                    Module Commandes
-                  </div>
-                  <div className="font-mono-tech text-xs text-palette-muted mt-1 break-all">
-                    modules/orders/
-                  </div>
-                </div>
-                <div className="text-center space-y-1 px-2 min-w-0">
-                  <div className="inline-flex items-center gap-1 font-mono-tech text-xs font-semibold state-text-active">
-                    <span>Appel direct</span>
-                    <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-                  </div>
-                  <div className="font-mono-tech text-xs text-palette-muted break-words">
-                    via catalog/index.ts (0 ms réseau)
-                  </div>
-                </div>
-                <div className="flat-surface-tertiary p-4 text-center min-w-0">
-                  <div className="font-bold text-palette-main text-sm sm:text-base">
-                    Module Catalogue
-                  </div>
-                  <div className="font-mono-tech text-xs text-palette-muted mt-1 break-all">
-                    modules/catalog/
-                  </div>
-                </div>
-              </div>
-              <p className="text-center text-xs sm:text-sm text-palette-muted">
-                Une base de données (avec tables bien séparées par module) — Simple à déboguer.
-              </p>
-            </div>
-          ) : (
-            <div className="p-5 sm:p-6 bg-[#FAF9F5] border border-[#DCD7CA] space-y-5 min-w-0">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                <div className="flat-surface-tertiary p-4 text-center border-[#141619] min-w-0">
-                  <div className="font-bold text-palette-main text-sm sm:text-base">
-                    order-service
-                  </div>
-                  <div className="font-mono-tech text-xs text-palette-muted mt-1 break-words">
-                    Serveur A + DB A + Dockerfile A
-                  </div>
-                </div>
-                <div className="text-center space-y-1 px-2 min-w-0">
-                  <div className="font-mono-tech text-xs font-semibold state-text-warning">
-                    ← RÉSEAU (HTTP / Événements) →
-                  </div>
-                  <div className="font-mono-tech text-xs text-palette-muted break-words">
-                    latence, timeout, retry obligatoires
-                  </div>
-                </div>
-                <div className="flat-surface-tertiary p-4 text-center border-[#141619] min-w-0">
-                  <div className="font-bold text-palette-main text-sm sm:text-base">
-                    payment-service
-                  </div>
-                  <div className="font-mono-tech text-xs text-palette-muted mt-1 break-words">
-                    Serveur B + DB B + Dockerfile B
-                  </div>
-                </div>
-              </div>
-              <p className="text-center text-xs sm:text-sm text-palette-muted">
-                Deux programmes totalement séparés. Aucun accès direct à la base de données de l’autre.
-              </p>
-            </div>
-          )}
+          <div className="space-y-5 min-w-0">
+            <MermaidDiagramBlock
+              title={MODULE5_COMMUNICATION_MERMAID[msViewMode].title}
+              caption={MODULE5_COMMUNICATION_MERMAID[msViewMode].caption}
+              definition={MODULE5_COMMUNICATION_MERMAID[msViewMode].definition}
+            />
+            <CodeSnippetBlock
+              language={MODULE5_COMMUNICATION_CODE[msViewMode].language}
+              title={MODULE5_COMMUNICATION_CODE[msViewMode].title}
+              filename={MODULE5_COMMUNICATION_CODE[msViewMode].filename}
+              caption={MODULE5_COMMUNICATION_CODE[msViewMode].caption}
+              code={MODULE5_COMMUNICATION_CODE[msViewMode].code}
+            />
+          </div>
         </div>
 
         {/* Calculateur d'arbitrage Module -> Service */}
@@ -820,6 +814,13 @@ export function ArchitectureReadingLab({
             </div>
           </div>
 
+          {/* Schéma Mermaid dynamique propre à l'architecture sélectionnée */}
+          <MermaidDiagramBlock
+            title={FIVE_ARCH_VISUALS[activeArchKey].mermaid.title}
+            caption={FIVE_ARCH_VISUALS[activeArchKey].mermaid.caption}
+            definition={FIVE_ARCH_VISUALS[activeArchKey].mermaid.definition}
+          />
+
           {/* Grille deux zones : Arborescence + Inspecteur */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             <div className="lg:col-span-7 p-4 bg-[#FAF9F5] border border-[#DCD7CA] min-w-0 overflow-x-auto">
@@ -914,6 +915,15 @@ export function ArchitectureReadingLab({
               </div>
             )}
           </div>
+
+          {/* Extrait de code signature de l'architecture sélectionnée */}
+          <CodeSnippetBlock
+            language={FIVE_ARCH_VISUALS[activeArchKey].code.language}
+            title={FIVE_ARCH_VISUALS[activeArchKey].code.title}
+            filename={FIVE_ARCH_VISUALS[activeArchKey].code.filename}
+            code={FIVE_ARCH_VISUALS[activeArchKey].code.code}
+            compact
+          />
         </div>
 
         {/* Tableau radar 3 secondes */}
@@ -977,6 +987,12 @@ export function ArchitectureReadingLab({
             viole une frontière. Compare les formulations sur 5 situations réelles.
           </p>
         </div>
+
+        <MermaidDiagramBlock
+          title={MODULE5_DIRECTIVE_MERMAID.title}
+          caption={MODULE5_DIRECTIVE_MERMAID.caption}
+          definition={MODULE5_DIRECTIVE_MERMAID.definition}
+        />
 
         <div className="flat-surface-tertiary p-5 sm:p-8 space-y-6 min-w-0">
           <div
@@ -1103,9 +1119,18 @@ export function ArchitectureReadingLab({
                   </span>
                 </div>
 
-                <pre className="p-4 bg-[#FAF9F5] border border-[#DCD7CA] font-mono-tech text-xs sm:text-sm leading-relaxed text-palette-main overflow-x-auto max-w-full">
-                  <code>{currentQuizCase.context}</code>
-                </pre>
+                <CodeSnippetBlock
+                  language={
+                    currentQuizCase.id === 'audit-case-3'
+                      ? 'ts'
+                      : currentQuizCase.id === 'audit-case-4'
+                      ? 'text'
+                      : 'tree'
+                  }
+                  title={`Extrait d’audit — Cas ${quizIndex + 1}`}
+                  code={currentQuizCase.context}
+                  compact
+                />
 
                 <p className="text-base sm:text-lg font-bold text-palette-main leading-snug break-words">
                   {currentQuizCase.question}

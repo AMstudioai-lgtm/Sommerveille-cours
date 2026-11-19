@@ -33,7 +33,10 @@ Elle transforme l'ouvrage de référence *Software Engineering (10th Edition)* d
 ## 3. Système de Design Minimaliste & Contraintes Visuelles
 - **Typographie Unique** : `DM Sans` sur l'ensemble du site (titres, sous-titres, corps de texte) + `IBM Plex Mono` pour les chemins de fichiers et extraits techniques.
 - **Structure Éditoriale Minimaliste** : Chaque module et sous-module est introduit par un **Grand Titre**, un **Sous-titre** et le **Reste du contenu** enrichi, avec des espaces blancs conséquents (`py-24` à `py-32`, `space-y-20`) et sans cartes superflues autour du texte.
-- **Confinement strict des cartes & en-tête PC** : En-tête sur une seule ligne non-débordante (`whitespace-nowrap shrink-0`), tiroir sommaire en grille 3×3 équilibrée, et protection anti-débordement (`min-w-0`, `break-words`, `overflow-x-auto`) sur chaque carte et bloc monospace.
+- **Confinement strict des cartes, en-tête PC & tiroir mobile** : En-tête sur une seule ligne non-débordante (`whitespace-nowrap shrink-0`), tiroir sommaire en grille 3×3 avec défilement vertical interne sur mobile (`max-h-[calc(100dvh-4.25rem)] overflow-y-auto`), et protection anti-débordement (`min-w-0`, `break-words`, `overflow-x-auto`) sur chaque carte et bloc monospace.
+- **Triple codage visuel dans les 9 modules (Texte + Schéma Mermaid + Code typé + Arborescence)** :
+  - Chaque sous-module et atelier du Module 05 associe des schémas **Mermaid** auto-responsives (orientation verticale `TD` sur mobile, horizontale `LR` avec défilement interne fluide sur grand écran, bascule `Auto / Vertical / Horizontal` et code source Mermaid dépliable), des **blocs de code typés** (`ts`, `tsx`, `js`, `sql`, `json`, `rules`, `md`, `text`, `tree`) colorés sobrement sur les 4 palettes avec bouton Copier, et des **arborescences**.
+  - Tous les extraits de code auparavant noyés dans les paragraphes du module Fonction (Module 05) sont désormais isolés en blocs dédiés `Texte + Bloc Code`.
 - **Schémas Visuels Générés par Module** : Les modules théoriques intègrent des schémas épurés dans les 3 styles visuels de référence (blocs pastel plats à contours fins, couches colorées avec rôles, et croquis d'architecture de type Excalidraw).
 - **4 Palettes de Couleurs** :
   - **Primaire (Fond)** : `#FAF9F5`, `#F3F1EA`, `#EAE6DC`.
@@ -43,13 +46,14 @@ Elle transforme l'ouvrage de référence *Software Engineering (10th Edition)* d
 
 ## 4. État d'Avancement (Ce qui est fait)
 - [x] Restructuration méthodique en 9 Modules et Sous-modules détaillés avec textes enrichis et approfondis.
-- [x] Intégration native du **Module 05** (*Lire une Architecture : De la Fonction au Service & 5 Patrons Comparés*) dans `src/data/architectureReadingData.ts`, `src/components/ArchitectureReadingLab.tsx` et règles pures dans `src/utils/mentorEngine.ts`.
+- [x] Intégration native du **Module 05** (*Lire une Architecture : De la Fonction au Service & 5 Patrons Comparés*) dans `src/data/architectureReadingData.ts`, `src/data/module5VisualsData.ts`, `src/components/ArchitectureReadingLab.tsx` et règles pures dans `src/utils/mentorEngine.ts`.
 - [x] Connexion des 5 cas de l'Atelier d'Audit du Module 05 à la jauge de maîtrise globale.
-- [x] Consolidation de l'en-tête desktop (zéro débordement sur PC) et de la grille 3×3 du sommaire.
+- [x] Consolidation de l'en-tête desktop (zéro débordement sur PC), grille 3×3 du sommaire et activation du défilement vertical interne du tiroir sur mobile.
+- [x] Enrichissement complet des **9 modules** en schémas **Mermaid** auto-responsives (`MermaidDiagramBlock`), blocs de code typés 4 palettes (`CodeSnippetBlock`), arborescences (`SubSectionVisualStack`, `moduleVisualsData.ts`) et extraction du code hors du texte dans le Module 05.
 - [x] Génération et intégration des schémas visuels dans le style exact des 3 images de référence pour chaque module.
 - [x] Passage intégral à la police `DM Sans` et allègement minimaliste avec grands espaces respirants (Grand Titre -> Sous-titre -> Contenu).
 - [x] Création du Projet Final guidé « MediFlow Studio » (`src/components/CapstoneProjectLab.tsx`) en fin de formation.
-- [x] Validation par tests unitaires (`src/utils/mentorEngine.test.ts`), compilation et vérification navigateur.
+- [x] Validation par tests unitaires (`mentorEngine.test.ts` + `visualFormatter.test.ts`), compilation et vérification navigateur (PC 1440px & Mobile 390px).
 - [x] Résolution du conflit de dépendances `esbuild` / `vite` dans `package.json` (`esbuild@^0.28.0`) pour compatibilité `npm install` sur Vercel.
 
 ## 5. Évolutions Futures (Versions X)

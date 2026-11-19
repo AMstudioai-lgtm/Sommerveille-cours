@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { TRAINING_MODULES, AI_STUDIO_SCENARIOS, type TrainingModule } from './data/curriculumData';
 import { AUDIT_QUIZ_CASES } from './data/architectureReadingData';
+import { SUBSECTION_VISUALS } from './data/moduleVisualsData';
 import { calculateMasteryProgress } from './utils/mentorEngine';
 import { InteractiveArchitectureDiagram } from './components/InteractiveArchitectureDiagram';
 import { ArchitectureReadingLab } from './components/ArchitectureReadingLab';
+import { SubSectionVisualStack } from './components/SubSectionVisualStack';
 import {
   LifecycleProcessVisualizer,
   SwissCheeseSecuritySimulator,
@@ -504,6 +506,11 @@ export default function App() {
                           </p>
                         ))}
                       </div>
+
+                      {/* Schéma Mermaid adaptatif + Blocs de code typés + Arborescence du sous-module */}
+                      {SUBSECTION_VISUALS[sec.id] && (
+                        <SubSectionVisualStack items={SUBSECTION_VISUALS[sec.id]} />
+                      )}
 
                       {/* Principes clés aérés */}
                       <div className="pt-6 space-y-12 max-w-4xl">

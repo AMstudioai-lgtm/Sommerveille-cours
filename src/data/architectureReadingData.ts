@@ -152,42 +152,42 @@ export const FUNCTION_XRAY_PARTS: Record<XrayPartKey, XrayPartInfo> = {
   decl: {
     key: 'decl',
     codeText: 'function',
-    title: '1. La déclaration (function)',
-    text: "Ce mot-clé signale à ton œil : « Attention, une brique d'action commence ici ». En TypeScript/JavaScript moderne, l'IA peut aussi l'écrire const calculerTotalCommande = (...) => { ... }. Le sens est strictement identique.",
+    title: '1. La déclaration',
+    text: "Ce mot-clé signale à ton œil qu'une brique d'action commence ici. En TypeScript ou JavaScript moderne, l'IA utilise indifféremment la forme classique ou la syntaxe fléchée présentées dans le bloc ci-dessous : le sens architectural est strictement identique.",
     check:
-      'Réflexe de lecture : repère les accolades { ... } qui délimitent le début et la fin de la boîte.',
+      'Réflexe de lecture : repère les accolades ouvrante et fermante qui délimitent le début et la fin de la boîte.',
   },
   name: {
     key: 'name',
     codeText: 'calculerTotalCommande',
-    title: '2. Le Nom (calculerTotalCommande)',
-    text: "Le nom d'une fonction doit toujours être un verbe d'action qui décrit son unique intention. C'est ton meilleur indicateur de qualité sans lire le code interne.",
+    title: '2. Le nom d’action',
+    text: "Le nom d'une fonction doit toujours être un verbe d'action qui décrit son unique intention. C'est ton meilleur indicateur de qualité sans lire une seule ligne du code interne.",
     check:
-      "Signal d'alerte : si le nom est flou (traiterData) ou contient « Et » (calculerEtSauvegarderEtNotifier), la fonction fait probablement trop de choses.",
+      "Signal d'alerte : si le nom est trop vague ou enchaîne plusieurs verbes reliés par « Et », la fonction cumule plusieurs responsabilités et doit être découpée.",
   },
   params: {
     key: 'params',
     codeText: '(articles, tauxReduction)',
-    title: '3. Les Entrées / Paramètres (articles, tauxReduction)',
-    text: "Ce sont les ingrédients que l'on remet à la fonction pour qu'elle travaille. Ici, elle a besoin de la liste d'articles et d'un taux de réduction, rien d'autre.",
+    title: '3. Les entrées (paramètres)',
+    text: "Ce sont les ingrédients remis à la fonction pour qu'elle travaille. Ici, elle reçoit uniquement la liste d'articles et le taux de réduction, rien d'autre.",
     check:
-      "Signal d'alerte : au-delà de 4 ou 5 paramètres, une fonction devient fragile et difficile à maintenir. Demande à l'IA de les regrouper dans un objet clair.",
+      "Signal d'alerte : au-delà de 4 paramètres séparés, la fonction devient fragile. Demande à l'IA de les regrouper dans un seul objet typé clair.",
   },
   body: {
     key: 'body',
     codeText: `const sousTotal = additionnerPrix(articles);\n  const remise = sousTotal * tauxReduction;`,
-    title: '4. Le Corps (La recette interne)',
-    text: "Ce sont les étapes d'exécution. Remarque une excellente pratique ici : elle appelle une autre petite fonction (additionnerPrix) au lieu de tout empiler au même endroit.",
+    title: '4. Le corps (la recette interne)',
+    text: "Ce sont les étapes de calcul. Remarque la bonne pratique illustrée ci-dessous : la fonction délègue l'addition des prix à une autre petite fonction spécialisée au lieu de tout empiler dans un bloc géant.",
     check:
-      "Signal d'alerte : si tu aperçois dans le même corps du calcul métier, un appel SQL/Firestore et du code d'affichage visuel, les couches sont mélangées.",
+      "Signal d'alerte : si tu aperçois dans le même corps du calcul métier, une requête base de données et un appel d'affichage visuel, les couches sont mélangées.",
   },
   return: {
     key: 'return',
     codeText: 'return sousTotal - remise;',
-    title: '5. La Sortie (return)',
-    text: "C'est le résultat propre que la fonction renvoie à celui qui l'a appelée. Une fonction métier idéale calcule et renvoie un résultat sans modifier secrètement l'interface ou la base de données.",
+    title: '5. La sortie (résultat renvoyé)',
+    text: "C'est le résultat propre que la fonction renvoie à l'appelant. Une fonction métier idéale calcule et retourne une valeur prévisible sans modifier secrètement l'écran ni la base de données.",
     check:
-      "Réflexe anti-casse : quand tu demandes à l'IA de réécrire une fonction, précise : « garde exactement la même signature (entrées et sortie) ».",
+      "Réflexe anti-casse : quand tu demandes à l'IA d'améliorer une fonction, précise toujours de conserver exactement la même signature (mêmes entrées et même type de sortie).",
   },
 };
 

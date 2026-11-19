@@ -27,3 +27,8 @@
   - Création de `src/data/architectureReadingData.ts` et `src/components/ArchitectureReadingLab.tsx` (6 ateliers interactifs harmonisés en `DM Sans` et 4 palettes).
   - Extraction des règles d'arbitrage (`evaluateFunctionExtraction`, `evaluateModuleToServiceConversion`) dans `src/utils/mentorEngine.ts` + tests unitaires associés.
   - Insertion en Module 05 entre les modules 04 et 06 (renumérotation fluide 01→09 sans perte), connexion de l'Atelier d'Audit à la jauge globale, et renforcement anti-débordement de l'en-tête desktop et des cartes.
+- [x] **Incrément 7 : Enrichissement Visuel Intégral (Mermaid Auto-Responsive, Code Typé 4 Palettes & Arborescences) + Scroll Mobile Header**
+  - Activation du défilement interne vertical du tiroir Sommaire sur mobile (`max-h-[calc(100dvh-4.25rem)] overflow-y-auto`).
+  - Création de la logique pure `src/utils/visualFormatter.ts` (+ `visualFormatter.test.ts`) : résolution d'orientation Mermaid (`TD` mobile / `LR` desktop) et tokeniseur syntaxique sobre sur 4 palettes.
+  - Création des composants `MermaidDiagramBlock.tsx` (auto-responsive, défilement interne horizontal, bascule V/H, code source dépliable), `CodeSnippetBlock.tsx` (copie + coloration 4 palettes) et `SubSectionVisualStack.tsx`.
+  - Enrichissement de tous les sous-modules (`src/data/moduleVisualsData.ts`) et des 6 ateliers du Module 05 (`src/data/module5VisualsData.ts`) en combinant systématiquement Texte épuré + Schéma Mermaid + Code typé + Arborescence.

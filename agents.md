@@ -3,9 +3,9 @@
 Ce fichier définit les règles techniques, architecturales et visuelles impératives pour tout agent travaillant sur ce projet.
 
 ## 1. Architecture du Code (Développement Modulaire en Couches)
-- **Couche Données (`/src/data/curriculumData.ts`, `/src/data/architectureReadingData.ts`)** : Réunit l'intégralité du programme pédagogique (9 modules, sous-modules détaillés, 6 ateliers interactifs du Module 05, schémas visuels, arborescence type, options de données/hébergement, scénarios et Projet Final). Ne jamais supprimer ni raccourcir les textes pédagogiques : toujours les enrichir.
-- **Couche Métier Pure (`/src/utils/mentorEngine.ts` & `.test.ts`)** : Contient uniquement des fonctions TypeScript pures testées unitairement via `npx --yes tsx --test src/utils/mentorEngine.test.ts`.
-- **Couche Présentation (`/src/components/` & `/src/App.tsx`)** : Composants visuels et schémas interactifs bien rangés sans dossier fourre-tout.
+- **Couche Données (`/src/data/curriculumData.ts`, `/src/data/architectureReadingData.ts`, `/src/data/moduleVisualsData.ts`, `/src/data/module5VisualsData.ts`)** : Réunit l'intégralité du programme pédagogique (9 modules, sous-modules détaillés, 6 ateliers interactifs du Module 05, schémas Mermaid, extraits de code typés, arborescences, options de données/hébergement, scénarios et Projet Final). Ne jamais supprimer ni raccourcir les textes pédagogiques : toujours les enrichir et séparer le code du texte via des blocs typés.
+- **Couche Métier Pure (`/src/utils/mentorEngine.ts`, `/src/utils/visualFormatter.ts` & `.test.ts`)** : Contient uniquement des fonctions TypeScript pures testées unitairement via `npx --yes tsx --test src/utils/mentorEngine.test.ts src/utils/visualFormatter.test.ts`.
+- **Couche Présentation (`/src/components/` & `/src/App.tsx`)** : Composants visuels réutilisables (`MermaidDiagramBlock`, `CodeSnippetBlock`, `SubSectionVisualStack`) et ateliers interactifs sans dossier fourre-tout. Toujours privilégier Mermaid en vertical (`TD`) sur mobile et horizontal (`LR`) avec défilement interne sur grand écran.
 
 ## 2. Règles Strictes de Design & UI Minimaliste
 1. **Typographie Unique** :
