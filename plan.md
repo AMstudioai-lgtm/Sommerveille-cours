@@ -2,8 +2,8 @@
 
 ## 1. Méthode de Développement
 1. **Architecture Modulaire en Couches** :
-   - **Couche Données (`/src/data/curriculumData.ts`)** : Contient les 8 modules, leurs sous-modules détaillés (`deepDiveParagraphs`, principes clés, adaptations aux contraintes), les schémas visuels associés, les matrices de décision, les scénarios et le Projet Final (« MediFlow Studio »).
-   - **Couche Logique Métier (`/src/utils/mentorEngine.ts`)** : Fonctions pures de recommandation d'architecture, d'analyse d'arborescence, de filtrage du lexique et de calcul de progression, vérifiées par `/src/utils/mentorEngine.test.ts`.
+   - **Couche Données (`/src/data/curriculumData.ts`, `/src/data/architectureReadingData.ts`)** : Contient les 9 modules, leurs sous-modules détaillés (`deepDiveParagraphs`, principes clés, adaptations aux contraintes), les données structurées des 6 ateliers du Module 05, les schémas visuels associés, les matrices de décision, les scénarios et le Projet Final (« MediFlow Studio »).
+   - **Couche Logique Métier (`/src/utils/mentorEngine.ts`)** : Fonctions pures de recommandation d'architecture, d'arbitrage d'extraction de fonction, de conversion Module → Service, d'analyse d'arborescence, de filtrage du lexique et de calcul de progression globale (incluant l'Atelier d'Audit), vérifiées par `/src/utils/mentorEngine.test.ts`.
    - **Couche Présentation (`/src/components/` & `/src/App.tsx`)** : Interface minimaliste en `DM Sans` structurée selon le modèle « Grand Titre -> Sous-titre -> Contenu aéré ».
 2. **Validation Continue** :
    - Tests unitaires (`npx --yes tsx --test src/utils/mentorEngine.test.ts`).
@@ -23,3 +23,7 @@
   - Création de `src/components/CapstoneProjectLab.tsx` permettant à l'utilisateur de suivre 4 missions séquentielles, de copier ses prompts d'architecte et de générer sa trame `context.md / plan.md / agents.md`.
 - [x] **Incrément 5 : Compatibilité Déploiement Vercel (`npm install`)**
   - Mise à jour de `esbuild` (`^0.25.0` -> `^0.28.0`) dans `package.json` pour alignement avec la `peerOptional` de `vite@^8.3.0`.
+- [x] **Incrément 6 : Intégration Native du Module 05 (Lire une Architecture : De la Fonction au Service & 5 Patrons Comparés)**
+  - Création de `src/data/architectureReadingData.ts` et `src/components/ArchitectureReadingLab.tsx` (6 ateliers interactifs harmonisés en `DM Sans` et 4 palettes).
+  - Extraction des règles d'arbitrage (`evaluateFunctionExtraction`, `evaluateModuleToServiceConversion`) dans `src/utils/mentorEngine.ts` + tests unitaires associés.
+  - Insertion en Module 05 entre les modules 04 et 06 (renumérotation fluide 01→09 sans perte), connexion de l'Atelier d'Audit à la jauge globale, et renforcement anti-débordement de l'en-tête desktop et des cartes.

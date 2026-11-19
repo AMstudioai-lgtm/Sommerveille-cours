@@ -3,7 +3,7 @@
 Ce fichier définit les règles techniques, architecturales et visuelles impératives pour tout agent travaillant sur ce projet.
 
 ## 1. Architecture du Code (Développement Modulaire en Couches)
-- **Couche Données (`/src/data/curriculumData.ts`)** : Réunit l'intégralité du programme pédagogique (8 modules, sous-modules détaillés, schémas visuels, arborescence type, options de données/hébergement, scénarios et Projet Final). Ne jamais supprimer ni raccourcir les textes pédagogiques : toujours les enrichir.
+- **Couche Données (`/src/data/curriculumData.ts`, `/src/data/architectureReadingData.ts`)** : Réunit l'intégralité du programme pédagogique (9 modules, sous-modules détaillés, 6 ateliers interactifs du Module 05, schémas visuels, arborescence type, options de données/hébergement, scénarios et Projet Final). Ne jamais supprimer ni raccourcir les textes pédagogiques : toujours les enrichir.
 - **Couche Métier Pure (`/src/utils/mentorEngine.ts` & `.test.ts`)** : Contient uniquement des fonctions TypeScript pures testées unitairement via `npx --yes tsx --test src/utils/mentorEngine.test.ts`.
 - **Couche Présentation (`/src/components/` & `/src/App.tsx`)** : Composants visuels et schémas interactifs bien rangés sans dossier fourre-tout.
 
@@ -19,10 +19,10 @@ Ce fichier définit les règles techniques, architecturales et visuelles impéra
    - **Palette 2 — Secondaire (Texte)** : `#141619`, `#3B4049`, `#6E7582`.
    - **Palette 3 — Tertiaire (Éléments importants, schémas, formulaires, cartes plates)** : `#FFFFFF` et `#F7F5EF` avec **bordure fine 1px (`#DCD7CA`)** et **zéro effet de profondeur** (aucune ombre `box-shadow`).
    - **Palette 4 — Quaternaire (États, chargement, feedback)** : `#1E56A0` (actif), `#1B6B4A` (validé), `#B85D19` (contrainte), `#A62626` (alerte).
-4. **Interdictions Visuelles Absolues** :
-   - Pas de KPI cards.
-   - Pas de Hero surchargé.
-   - Pas de pilules pour le texte (`rounded-full` interdit sur les textes).
+4. **Interdictions Visuelles & Confinement Strict** :
+   - Pas de KPI cards, pas de Hero surchargé, pas de pilules pour le texte (`rounded-full` interdit sur les textes).
+   - Aucun texte ne doit dépasser d'une carte (`min-w-0`, `break-words`, `overflow-x-auto` sur les blocs de code/arborescences).
+   - L'en-tête desktop reste strictement sur une seule ligne non-débordante (`whitespace-nowrap shrink-0`).
 
 ## 3. Maintenance Documentaire
 - Toujours mettre à jour `/context.md` et `/plan.md` à chaque évolution du projet.

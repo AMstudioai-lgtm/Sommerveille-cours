@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {
   calculateMasteryProgress,
   evaluateArchitectDecision,
+  evaluateFunctionExtraction,
+  evaluateModuleToServiceConversion,
   filterGlossaryTerms,
   flattenFileTree,
 } from './mentorEngine.ts';
@@ -73,4 +75,80 @@ describe('mentorEngine pure logic', () => {
     assert.equal(full.percentage, 100);
     assert.equal(full.rankLabel, 'Architecte Logiciel Accompli');
   });
+
+  it('evaluates function extraction criteria deterministically', () => {
+    const empty = evaluateFunctionExtraction({
+      reused: false,
+      multi: false,
+      critical: false,
+      long: false,
+      trivial: false,
+    });
+    assert.equal(empty.tone, 'neutral');
+    assert.equal(empty.prompt, null);
+
+    const trivialOnly = evaluateFunctionExtraction({
+      reused: false,
+      multi: false,
+      critical: false,
+      long: false,
+      trivial: true,
+    });
+    assert.equal(trivialOnly.tone, 'warning');
+    assert.ok(trivialOnly.prompt && trivialOnly.prompt.includes('localement'));
+
+    const mixedResponsibilities = evaluateFunctionExtraction({
+      reused: true,
+      multi: true,
+      critical: false,
+      long: false,
+      trivial: false,
+    });
+    assert.equal(mixedResponsibilities.tone, 'danger');
+    assert.ok(mixedResponsibilities.title.includes('indispensable'));
+
+    const reusedCritical = evaluateFunctionExtraction({
+      reused: true,
+      multi: false,
+      critical: true,
+      long: false,
+      trivial: false,
+    });
+    assert.equal(reusedCritical.tone, 'success');
+    assert.ok(reusedCritical.body.includes('2 critères solides'));
+  });
+
+  it('arbitrates module vs independent service conversion objectively', () => {
+    const stayModule = evaluateModuleToServiceConversion({
+      scale: false,
+      fault: false,
+      team: false,
+      stack: false,
+      security: false,
+    });
+    assert.equal(stayModule.score, 0);
+    assert.equal(stayModule.tone, 'success');
+
+    const lockContract = evaluateModuleToServiceConversion({
+      scale: true,
+      fault: false,
+      team: false,
+      stack: false,
+      security: false,
+    });
+    assert.equal(lockContract.score, 1);
+    assert.equal(lockContract.tone, 'active');
+
+    const convertService = evaluateModuleToServiceConversion({
+      scale: true,
+      fault: true,
+      team: false,
+      stack: true,
+      security: false,
+    });
+    assert.equal(convertService.score, 3);
+    assert.equal(convertService.tone, 'warning');
+    assert.ok(convertService.title.includes('3/5'));
+  });
 });
+

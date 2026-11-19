@@ -27,7 +27,7 @@ export interface TrainingModule {
   subtitle: string;
   sommervilleChapters: string;
   bgTone: 'primary' | 'primary-alt' | 'primary-deep';
-  schemaImage: {
+  schemaImage?: {
     src: string;
     alt: string;
     caption: string;
@@ -37,6 +37,7 @@ export interface TrainingModule {
   interactiveToolId:
     | 'lifecycle-flow'
     | 'architecture-schema'
+    | 'architecture-reading-lab'
     | 'file-tree'
     | 'data-hosting-sim'
     | 'dependability-swiss'
@@ -477,14 +478,30 @@ export const TRAINING_MODULES: TrainingModule[] = [
     ]
   },
   {
-    id: 'mod-5-arborescence',
+    id: 'mod-5-lecture-architecture',
     number: '05',
+    shortTitle: 'Fonction, Module, Service & 5 Architectures',
+    fullTitle: 'Lire une Architecture Logicielle : De la Fonction au Service & 5 Patrons Comparés',
+    subtitle:
+      'Clarifier définitivement la différence entre fonction, fichier, module et service autonome, entraîner son œil sur les 5 grandes architectures et diriger l’IA sans casser les frontières du projet.',
+    sommervilleChapters: 'Pont Pratique — Granularité Logicielle, 5 Architectures Comparées & Audit IA',
+    bgTone: 'primary',
+    interactiveToolId: 'architecture-reading-lab',
+    mentorIntro:
+      "Avant de plonger dans l'arborescence technique complète d'un projet réel au Module 06, faisons sauter le principal blocage de tous ceux qui pilotent une IA sans coder : la confusion d'échelle. Quand faut-il isoler une fonction ? Quelle est la vraie différence entre un fichier *Service interne et un Microservice autonome ? Comment reconnaître en 3 secondes une architecture En Couches, MVC, Monolithe Modulaire, Hexagonale ou Microservices ? Manipule les 6 ateliers interactifs ci-dessous dans l'ordre : ton œil d'architecte ne lira plus jamais un projet de la même façon.",
+    keyTakeaway:
+      'Un bloc commence toujours sa vie en Fonction propre dans un Module interne doté d’un contrat public (index.ts). On ne passe au Service autonome sur le réseau que lorsque des contraintes réelles (charge asymétrique, isolation de pannes, équipes ou stack dédiée) l’imposent objectivement.',
+    sections: [],
+  },
+  {
+    id: 'mod-5-arborescence',
+    number: '06',
     shortTitle: 'Lire une Arborescence',
     fullTitle: 'Lire une Arborescence pour Repérer une Architecture et Savoir ce que Contient Chaque Fichier',
     subtitle:
       'Apprendre à scanner la liste des dossiers et fichiers d’un projet en 10 secondes pour savoir exactement comment il est construit.',
     sommervilleChapters: 'Sommerville Chapitres 7, 15 & 25 — Implémentation, Réutilisation & Gestion de Configuration',
-    bgTone: 'primary',
+    bgTone: 'primary-alt',
     schemaImage: {
       src: '/src/assets/images/schema_module4_arborescence_1795020521295.jpg',
       alt: 'Schéma de l’anatomie d’une arborescence de projet logiciel',
@@ -498,7 +515,7 @@ export const TRAINING_MODULES: TrainingModule[] = [
     sections: [
       {
         id: 'sec-5-1',
-        code: 'Sous-module 5.1',
+        code: 'Sous-module 6.1',
         title: 'Les Fichiers de la Racine : Les Fondations de l’Immeuble',
         subtitle: 'Comprendre package.json, .env.example, index.html, vite.config.ts et server.ts.',
         sommervilleRef: 'Ian Sommerville — Chapitre 7.3 & Chapitre 25 : System Building & Configuration',
@@ -526,13 +543,13 @@ export const TRAINING_MODULES: TrainingModule[] = [
   },
   {
     id: 'mod-6-donnees-hebergement',
-    number: '06',
+    number: '07',
     shortTitle: 'Données & Hébergeurs Cloud',
     fullTitle: 'Savoir Quel Type de Données et Quel Hébergeur Choisir selon Chaque Cas',
     subtitle:
       'Maîtriser SQL, NoSQL, Stockage de Fichiers, Cache, et savoir choisir son infrastructure d’hébergement (Cloud Run, CDN Statique, BaaS, VPS).',
     sommervilleChapters: 'Sommerville Chapitres 6.3.3, 17 & 18 — Data Repositories, Client-Serveur & Cloud SaaS',
-    bgTone: 'primary-alt',
+    bgTone: 'primary',
     schemaImage: {
       src: '/src/assets/images/schema_module5_donnees_cloud_1795020522247.jpg',
       alt: 'Schéma du flux entre Client Web, Hébergeur Cloud Run et les 3 types de stockage Cloud',
@@ -546,7 +563,7 @@ export const TRAINING_MODULES: TrainingModule[] = [
     sections: [
       {
         id: 'sec-6-1',
-        code: 'Sous-module 6.1',
+        code: 'Sous-module 7.1',
         title: 'Quel Type de Données Convient dans Quel Cas ?',
         subtitle: 'Les 5 grandes familles de stockage expliquées simplement.',
         sommervilleRef: 'Ian Sommerville — Chapitre 6 & Chapitre 17 : Data Management',
@@ -572,7 +589,7 @@ export const TRAINING_MODULES: TrainingModule[] = [
       },
       {
         id: 'sec-6-2',
-        code: 'Sous-module 6.2',
+        code: 'Sous-module 7.2',
         title: 'Quel Choix d’Hébergeur Faire, et en Fonction de Quoi ?',
         subtitle: 'Les 4 critères décisifs : présence d’un serveur, allure du trafic, sécurité et budget.',
         sommervilleRef: 'Ian Sommerville — Chapitre 18 : Cloud Computing, Containers & SaaS',
@@ -600,13 +617,13 @@ export const TRAINING_MODULES: TrainingModule[] = [
   },
   {
     id: 'mod-7-qualite-maintenance',
-    number: '07',
+    number: '08',
     shortTitle: 'Sécurité, Tests & Maintenance',
     fullTitle: 'Garantir la Fiabilité, la Sécurité et la Maintenance Long Terme',
     subtitle:
       'Défense en profondeur (Modèle du Fromage Suisse), pyramide des tests automatisés, maîtrise de la dette technique et refactoring.',
     sommervilleChapters: 'Sommerville Chapitres 8, 9, 10, 11, 13 & 25 — Tests, Évolution, Sûreté & Configuration',
-    bgTone: 'primary',
+    bgTone: 'primary-alt',
     schemaImage: {
       src: '/src/assets/images/schema_module6_securite_tests_1795020529336.jpg',
       alt: 'Schéma des 4 barrières de sécurité et de validation du logiciel',
@@ -620,7 +637,7 @@ export const TRAINING_MODULES: TrainingModule[] = [
     sections: [
       {
         id: 'sec-7-1',
-        code: 'Sous-module 7.1',
+        code: 'Sous-module 8.1',
         title: 'La Défense en Profondeur & Le Modèle du Fromage Suisse',
         subtitle: 'Pourquoi chaque couche doit revérifier ce que lui envoie la couche précédente.',
         sommervilleRef: 'Ian Sommerville — Chapitres 10, 12 & 13 : Dependability, Safety & Security Engineering',
@@ -658,13 +675,13 @@ export const TRAINING_MODULES: TrainingModule[] = [
   },
   {
     id: 'mod-8-pilotage-ia-projet',
-    number: '08',
+    number: '09',
     shortTitle: 'Piloter l’IA & Projet Final',
     fullTitle: 'Guider l’IA comme un Architecte Senior & Construire ton Projet Final',
     subtitle:
       'La méthode complète des 3 fichiers directeurs (context.md, plan.md, agents.md), les scénarios réels Google AI Studio et ton projet de fin de formation à réaliser.',
     sommervilleChapters: 'Synthèse Appliquée — Ingénierie Assistée par IA & Études de Cas Complètes',
-    bgTone: 'primary-alt',
+    bgTone: 'primary',
     schemaImage: {
       src: '/src/assets/images/schema_module7_pilotage_ia_1795020524992.jpg',
       alt: 'Schéma du pilotage de l’IA par l’Architecte via context.md, plan.md et agents.md',
@@ -678,7 +695,7 @@ export const TRAINING_MODULES: TrainingModule[] = [
     sections: [
       {
         id: 'sec-8-1',
-        code: 'Sous-module 8.1',
+        code: 'Sous-module 9.1',
         title: 'Le Système des 3 Fichiers Directeurs : context.md, plan.md et agents.md',
         subtitle: 'Comment donner une mémoire infaillible et une discipline d’ingénieur à l’IA.',
         sommervilleRef: 'Méthodologie d’Architecture Assistée par IA & Documentation Vivante',

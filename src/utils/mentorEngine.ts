@@ -206,3 +206,139 @@ export function calculateMasteryProgress(
     statusTone
   };
 }
+
+export interface ExtractionCriteriaState {
+  reused: boolean;
+  multi: boolean;
+  critical: boolean;
+  long: boolean;
+  trivial: boolean;
+}
+
+export interface ExtractionVerdict {
+  tone: 'neutral' | 'success' | 'warning' | 'danger';
+  statusLabel: string;
+  title: string;
+  body: string;
+  prompt: string | null;
+}
+
+/**
+ * Pure rule engine deciding whether a code block/function should be extracted
+ * into its own dedicated function based on objective engineering criteria.
+ */
+export function evaluateFunctionExtraction(state: ExtractionCriteriaState): ExtractionVerdict {
+  const positiveCount =
+    (state.reused ? 1 : 0) +
+    (state.multi ? 1 : 0) +
+    (state.critical ? 1 : 0) +
+    (state.long ? 1 : 0);
+
+  if (positiveCount === 0 && !state.trivial) {
+    return {
+      tone: 'neutral',
+      statusLabel: 'En attente de critères',
+      title: 'Sélectionne au moins un critère ci-dessus',
+      body: "Coche ce que tu observes dans le bloc généré par l'IA pour obtenir le verdict d'ingénierie et la directive exacte à lui donner.",
+      prompt: null,
+    };
+  }
+
+  if (state.trivial && positiveCount === 0) {
+    return {
+      tone: 'warning',
+      statusLabel: 'Ne pas sur-découper',
+      title: 'Verdict : Laisse-la sur place (ne pas sur-découper)',
+      body: "Une opération de 2 à 5 lignes qui ne sert qu'à un seul endroit est plus lisible là où elle est. La sortir maintenant ajouterait de la complexité inutile sans bénéfice.",
+      prompt:
+        '« Garde cette petite logique localement dans ce fichier pour le moment ; ne crée pas de fichier utilitaire séparé. »',
+    };
+  }
+
+  if (state.multi) {
+    return {
+      tone: 'danger',
+      statusLabel: 'Extraction indispensable',
+      title: 'Verdict : Extraction indispensable (mélange de responsabilités)',
+      body: "C'est le cas le plus urgent : une fonction qui fait deux métiers différents finit toujours par créer des bugs en cascade. Il faut séparer chaque responsabilité dans sa propre fonction et sa bonne couche.",
+      prompt:
+        '« Ce bloc mélange plusieurs responsabilités. Découpe-le en fonctions distinctes placées dans leurs couches respectives (calcul dans business/, persistance dans data/, affichage dans presentation/), en conservant exactement les mêmes entrées/sorties côté appelant. »',
+    };
+  }
+
+  return {
+    tone: 'success',
+    statusLabel: 'Extraction recommandée',
+    title: 'Verdict : Oui, mets cette fonction à part proprement',
+    body: `Tu as coché ${positiveCount} critère${positiveCount > 1 ? 's' : ''} solide${positiveCount > 1 ? 's' : ''}. Isoler cette fonction dans le bon dossier métier rendra le code plus sûr à modifier et évitera les copier-coller.`,
+    prompt:
+      "« Extrais cette logique dans une fonction nommée clairement (verbe d'action) dans le dossier métier correspondant — sans créer de dossier utils/ fourre-tout — et mets à jour les appels existants sans changer le comportement. »",
+  };
+}
+
+export interface ConversionCriteriaState {
+  scale: boolean;
+  fault: boolean;
+  team: boolean;
+  stack: boolean;
+  security: boolean;
+}
+
+export interface ConversionVerdict {
+  score: number;
+  tone: 'success' | 'active' | 'warning';
+  statusLabel: string;
+  title: string;
+  body: string;
+  prompt: string;
+}
+
+/**
+ * Pure rule engine arbitrating whether an internal Module should remain a module
+ * or be extracted into an independent networked Service.
+ */
+export function evaluateModuleToServiceConversion(
+  state: ConversionCriteriaState
+): ConversionVerdict {
+  const score =
+    (state.scale ? 1 : 0) +
+    (state.fault ? 1 : 0) +
+    (state.team ? 1 : 0) +
+    (state.stack ? 1 : 0) +
+    (state.security ? 1 : 0);
+
+  if (score === 0) {
+    return {
+      score,
+      tone: 'success',
+      statusLabel: 'Conserver en Module',
+      title: 'Verdict : Garde-le impérativement en Module interne',
+      body: "Aucun critère ne justifie la lourdeur d'un service autonome. Passer en microservice maintenant ralentirait chaque modification et multiplierait les pannes réseau inutiles.",
+      prompt:
+        '« Garde cette fonctionnalité en module interne dans modules/. Ne crée ni serveur séparé ni microservice. »',
+    };
+  }
+
+  if (score === 1) {
+    return {
+      score,
+      tone: 'active',
+      statusLabel: 'Module étanche recommandé',
+      title: 'Verdict : Reste en Module, mais verrouille son contrat public',
+      body: "Un seul signal apparaît. Ce n'est généralement pas encore suffisant pour payer le prix d'un système distribué. La stratégie d'ingénieur : rendre le module 100 % étanche aujourd'hui (via son index.ts) pour pouvoir l'extraire facilement plus tard si besoin.",
+      prompt:
+        '« Isole strictement ce module : aucune importation directe de ses fichiers internes ni de ses tables depuis les autres modules. Tout passe par son fichier index.ts. »',
+    };
+  }
+
+  return {
+    score,
+    tone: 'warning',
+    statusLabel: `Candidat Service (${score}/5)`,
+    title: `Verdict : Candidat légitime à la conversion en Service (${score}/5 critères)`,
+    body: "Les contraintes de charge, d'isolation ou d'organisation justifient une séparation physique. Procède par étapes : 1) définir le contrat d'API/événements, 2) séparer les données, 3) extraire le serveur dédié.",
+    prompt:
+      "« Prépare un plan de migration dans plan.md pour extraire ce module en service autonome : commence par définir le contrat d'API/événements et l'isolation de sa base de données avant de toucher au code. »",
+  };
+}
+

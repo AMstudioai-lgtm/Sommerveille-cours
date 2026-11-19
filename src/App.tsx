@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { TRAINING_MODULES, AI_STUDIO_SCENARIOS, type TrainingModule } from './data/curriculumData';
+import { AUDIT_QUIZ_CASES } from './data/architectureReadingData';
 import { calculateMasteryProgress } from './utils/mentorEngine';
 import { InteractiveArchitectureDiagram } from './components/InteractiveArchitectureDiagram';
+import { ArchitectureReadingLab } from './components/ArchitectureReadingLab';
 import {
   LifecycleProcessVisualizer,
   SwissCheeseSecuritySimulator,
@@ -23,10 +25,9 @@ export default function App() {
   const [completedModules, setCompletedModules] = useState<string[]>(['mod-1-fondations']);
   const [solvedScenarioSteps, setSolvedScenarioSteps] = useState<string[]>([]);
 
-  const totalScenarioStepsCount = AI_STUDIO_SCENARIOS.reduce(
-    (acc, scen) => acc + scen.steps.length,
-    0
-  );
+  const totalScenarioStepsCount =
+    AI_STUDIO_SCENARIOS.reduce((acc, scen) => acc + scen.steps.length, 0) +
+    AUDIT_QUIZ_CASES.length;
 
   const mastery = calculateMasteryProgress(
     completedModules,
@@ -71,6 +72,13 @@ export default function App() {
           <div className="pt-8">
             <InteractiveArchitectureDiagram />
           </div>
+        );
+      case 'architecture-reading-lab':
+        return (
+          <ArchitectureReadingLab
+            onAuditCaseSolved={handleScenarioStepSolved}
+            solvedSteps={solvedScenarioSteps}
+          />
         );
       case 'file-tree':
         return (
@@ -120,44 +128,54 @@ export default function App() {
           />
         </div>
 
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-6">
           <button
             type="button"
             onClick={() => setActiveModuleFilter('all')}
-            className="text-left cursor-pointer group flex items-center gap-3 shrink-0"
+            className="text-left cursor-pointer group flex items-center gap-2.5 shrink-0 min-w-0"
           >
             <span className="w-7 h-7 shrink-0 flex items-center justify-center bg-[#141619] text-white font-mono-tech text-xs font-semibold">
               SE
             </span>
-            <span className="text-base font-bold text-palette-main group-hover:text-[#1E56A0] transition-colors whitespace-nowrap">
+            <span className="text-sm sm:text-base font-bold text-palette-main group-hover:text-[#1E56A0] transition-colors whitespace-nowrap">
               L’Architecte Logiciel
             </span>
           </button>
 
-          {/* Navigation épurée */}
-          <nav className="hidden md:flex items-center gap-5 shrink-0" aria-label="Navigation principale">
+          {/* Navigation épurée sur une seule ligne */}
+          <nav
+            className="hidden md:flex items-center gap-6 shrink-0"
+            aria-label="Navigation principale"
+          >
             <button
               type="button"
               onClick={() => setActiveModuleFilter('all')}
-              className={`text-sm cursor-pointer transition-colors whitespace-nowrap ${
+              className={`text-sm cursor-pointer transition-colors whitespace-nowrap shrink-0 ${
                 activeModuleFilter === 'all'
                   ? 'state-text-active font-semibold'
                   : 'text-palette-body hover:text-palette-main'
               }`}
             >
-              Tous les modules (01–08)
+              Modules (01–09)
             </button>
+            <a
+              href="#module-mod-5-lecture-architecture"
+              onClick={() => setActiveModuleFilter('all')}
+              className="text-sm text-palette-body hover:text-[#1E56A0] transition-colors whitespace-nowrap shrink-0"
+            >
+              Atelier 5 Architectures
+            </a>
             <a
               href="#projet-final"
               onClick={() => setActiveModuleFilter('all')}
-              className="text-sm text-palette-body hover:text-[#1E56A0] transition-colors whitespace-nowrap"
+              className="text-sm text-palette-body hover:text-[#1E56A0] transition-colors whitespace-nowrap shrink-0"
             >
               Projet Final
             </a>
             <a
               href="#lexique-decodeur"
               onClick={() => setActiveModuleFilter('all')}
-              className="text-sm text-palette-body hover:text-[#1E56A0] transition-colors whitespace-nowrap"
+              className="text-sm text-palette-body hover:text-[#1E56A0] transition-colors whitespace-nowrap shrink-0"
             >
               Lexique IA
             </a>
@@ -165,19 +183,22 @@ export default function App() {
 
           {/* Progression & Tiroir Sommaire Animé */}
           <div className="flex items-center gap-3 shrink-0">
-            <span className="hidden sm:inline-block text-xs font-mono-tech text-palette-muted">
-              {mastery.rankLabel} · {mastery.percentage}%
+            <span
+              title={`${mastery.rankLabel} — ${mastery.percentage}%`}
+              className="hidden sm:inline-block text-xs font-mono-tech tabular-nums text-palette-muted whitespace-nowrap shrink-0"
+            >
+              Maîtrise {mastery.percentage}%
             </span>
 
             <button
               type="button"
               onClick={() => setNavDrawerOpen((prev) => !prev)}
               aria-expanded={navDrawerOpen}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-mono-tech font-medium flat-surface-tertiary cursor-pointer hover:border-[#1E56A0] transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono-tech font-medium flat-surface-tertiary cursor-pointer hover:border-[#1E56A0] transition-colors whitespace-nowrap shrink-0"
             >
-              <span>Modules & Sous-modules</span>
+              <span>Sommaire</span>
               <ChevronDown
-                className={`w-3.5 h-3.5 transition-transform duration-300 ${
+                className={`w-3.5 h-3.5 shrink-0 transition-transform duration-300 ${
                   navDrawerOpen ? 'rotate-180' : 'rotate-0'
                 }`}
               />
@@ -187,11 +208,11 @@ export default function App() {
 
         {/* Tiroir Sommaire Complet avec Sous-modules */}
         {navDrawerOpen && (
-          <div className="border-t border-[#DCD7CA] bg-[#F7F5EF] animate-reveal-down">
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              <div className="flex flex-wrap items-center justify-between gap-2 mb-6">
+          <div className="border-t border-[#DCD7CA] bg-[#F7F5EF] animate-reveal-down max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain touch-pan-y">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-10 sm:py-8">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
                 <span className="text-xs font-mono-tech uppercase text-palette-muted">
-                  Plan Méthodique de la Formation (8 Modules + Projet Final)
+                  Plan Méthodique de la Formation (9 Modules + Projet Final) · {mastery.rankLabel} · {mastery.percentage}%
                 </span>
                 <button
                   type="button"
@@ -199,16 +220,54 @@ export default function App() {
                     setActiveModuleFilter('all');
                     setNavDrawerOpen(false);
                   }}
-                  className="text-xs font-mono-tech state-text-active underline cursor-pointer"
+                  className="text-xs font-mono-tech state-text-active underline cursor-pointer whitespace-nowrap"
                 >
                   Tout afficher en lecture continue
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Accès rapides visibles sur mobile/tablette */}
+              <div className="grid grid-cols-3 gap-2 mb-5 md:hidden">
+                <a
+                  href="#module-mod-5-lecture-architecture"
+                  onClick={() => {
+                    setActiveModuleFilter('all');
+                    setNavDrawerOpen(false);
+                  }}
+                  className="px-2.5 py-2 text-center text-xs font-medium flat-surface-tertiary text-palette-main hover:border-[#1E56A0] transition-colors truncate"
+                >
+                  5 Architectures
+                </a>
+                <a
+                  href="#projet-final"
+                  onClick={() => {
+                    setActiveModuleFilter('all');
+                    setNavDrawerOpen(false);
+                  }}
+                  className="px-2.5 py-2 text-center text-xs font-medium flat-surface-tertiary text-palette-main hover:border-[#1E56A0] transition-colors truncate"
+                >
+                  Projet Final
+                </a>
+                <a
+                  href="#lexique-decodeur"
+                  onClick={() => {
+                    setActiveModuleFilter('all');
+                    setNavDrawerOpen(false);
+                  }}
+                  className="px-2.5 py-2 text-center text-xs font-medium flat-surface-tertiary text-palette-main hover:border-[#1E56A0] transition-colors truncate"
+                >
+                  Lexique IA
+                </a>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {TRAINING_MODULES.map((mod) => {
                   const isDone = completedModules.includes(mod.id);
                   const isFocused = activeModuleFilter === mod.id;
+                  const subCountLabel =
+                    mod.interactiveToolId === 'architecture-reading-lab'
+                      ? '6 ateliers'
+                      : `${mod.sections.length} sous-mod.`;
                   return (
                     <button
                       key={mod.id}
@@ -217,22 +276,26 @@ export default function App() {
                         setActiveModuleFilter(mod.id);
                         setNavDrawerOpen(false);
                       }}
-                      className={`p-4 text-left cursor-pointer flat-surface-tertiary transition-colors ${
+                      className={`p-4 text-left cursor-pointer flat-surface-tertiary transition-colors min-w-0 overflow-hidden ${
                         isFocused ? 'state-active-border state-active-bg' : 'hover:bg-white'
                       }`}
                     >
-                      <div className="flex items-center justify-between text-xs font-mono-tech mb-1.5">
-                        <span className="state-text-active font-semibold">
+                      <div className="flex items-center justify-between gap-2 text-xs font-mono-tech mb-1.5">
+                        <span className="state-text-active font-semibold whitespace-nowrap">
                           MODULE {mod.number}
                         </span>
-                        <span className={isDone ? 'state-text-success' : 'text-palette-muted'}>
-                          {isDone ? '✓ Acquis' : `${mod.sections.length} sous-mod.`}
+                        <span
+                          className={`whitespace-nowrap ${
+                            isDone ? 'state-text-success' : 'text-palette-muted'
+                          }`}
+                        >
+                          {isDone ? '✓ Acquis' : subCountLabel}
                         </span>
                       </div>
-                      <div className="text-sm font-bold text-palette-main mb-1">
+                      <div className="text-sm font-bold text-palette-main mb-1 break-words">
                         {mod.shortTitle}
                       </div>
-                      <div className="text-xs text-palette-muted line-clamp-2">
+                      <div className="text-xs text-palette-muted line-clamp-2 break-words">
                         {mod.subtitle}
                       </div>
                     </button>
@@ -292,9 +355,9 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setActiveModuleFilter('all')}
-                className="underline text-palette-main font-semibold cursor-pointer"
+                className="underline text-palette-main font-semibold cursor-pointer whitespace-nowrap"
               >
-                Réafficher les 8 modules en continu
+                Réafficher les 9 modules en continu
               </button>
             </div>
           </div>
@@ -364,53 +427,56 @@ export default function App() {
                 </div>
 
                 {/* 2. SCHÉMA VISUEL DE RÉFÉRENCE DU MODULE (Style pastel plat & croquis d'architecture) */}
-                <div className="space-y-4">
-                  <div className="text-xs font-mono-tech uppercase tracking-wider text-palette-muted">
-                    Schéma Visuel du Module {module.number}
-                  </div>
+                {module.schemaImage && (
+                  <div className="space-y-4">
+                    <div className="text-xs font-mono-tech uppercase tracking-wider text-palette-muted">
+                      Schéma Visuel du Module {module.number}
+                    </div>
 
-                  {module.schemaImage.secondarySrc ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                      <figure className="flat-surface-tertiary p-4 sm:p-6">
+                    {module.schemaImage.secondarySrc ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                        <figure className="flat-surface-tertiary p-4 sm:p-6 min-w-0">
+                          <img
+                            src={module.schemaImage.src}
+                            alt={module.schemaImage.alt}
+                            className="w-full h-auto block"
+                            loading="lazy"
+                          />
+                          <figcaption className="mt-4 text-sm text-palette-body leading-relaxed break-words">
+                            {module.schemaImage.caption}
+                          </figcaption>
+                        </figure>
+                        <figure className="flat-surface-tertiary p-4 sm:p-6 min-w-0">
+                          <img
+                            src={module.schemaImage.secondarySrc}
+                            alt={module.schemaImage.alt}
+                            className="w-full h-auto block"
+                            loading="lazy"
+                          />
+                          <figcaption className="mt-4 text-sm text-palette-body leading-relaxed break-words">
+                            {module.schemaImage.secondaryCaption}
+                          </figcaption>
+                        </figure>
+                      </div>
+                    ) : (
+                      <figure className="flat-surface-tertiary p-4 sm:p-8 max-w-4xl min-w-0">
                         <img
                           src={module.schemaImage.src}
                           alt={module.schemaImage.alt}
                           className="w-full h-auto block"
                           loading="lazy"
                         />
-                        <figcaption className="mt-4 text-sm text-palette-body leading-relaxed">
+                        <figcaption className="mt-4 text-sm text-palette-body leading-relaxed break-words">
                           {module.schemaImage.caption}
                         </figcaption>
                       </figure>
-                      <figure className="flat-surface-tertiary p-4 sm:p-6">
-                        <img
-                          src={module.schemaImage.secondarySrc}
-                          alt={module.schemaImage.alt}
-                          className="w-full h-auto block"
-                          loading="lazy"
-                        />
-                        <figcaption className="mt-4 text-sm text-palette-body leading-relaxed">
-                          {module.schemaImage.secondaryCaption}
-                        </figcaption>
-                      </figure>
-                    </div>
-                  ) : (
-                    <figure className="flat-surface-tertiary p-4 sm:p-8 max-w-4xl">
-                      <img
-                        src={module.schemaImage.src}
-                        alt={module.schemaImage.alt}
-                        className="w-full h-auto block"
-                        loading="lazy"
-                      />
-                      <figcaption className="mt-4 text-sm text-palette-body leading-relaxed">
-                        {module.schemaImage.caption}
-                      </figcaption>
-                    </figure>
-                  )}
-                </div>
+                    )}
+                  </div>
+                )}
 
                 {/* 3. LES SOUS-MODULES DÉTAILLÉS & ESPACÉS (Grand Titre -> Sous-titre -> Contenu) */}
-                <div className="space-y-24">
+                {module.sections.length > 0 && (
+                  <div className="space-y-24">
                   {module.sections.map((sec) => (
                     <article
                       key={sec.id}
@@ -474,15 +540,15 @@ export default function App() {
                           </h4>
                           <div className="space-y-4">
                             {sec.constraintAdaptation.map((item, idx) => (
-                              <div key={idx} className="flat-surface-tertiary p-6 space-y-2">
-                                <div className="text-xs font-mono-tech font-semibold state-text-warning uppercase">
+                              <div key={idx} className="flat-surface-tertiary p-6 space-y-2 min-w-0">
+                                <div className="text-xs font-mono-tech font-semibold state-text-warning uppercase break-words">
                                   ▲ Imprévu : {item.triggerConstraint}
                                 </div>
-                                <p className="text-sm text-palette-muted">
+                                <p className="text-sm text-palette-muted break-words">
                                   <strong className="state-text-danger">Mauvais réflexe :</strong>{' '}
                                   {item.badReaction}
                                 </p>
-                                <p className="text-base text-palette-main">
+                                <p className="text-base text-palette-main break-words">
                                   <strong className="state-text-success">
                                     Décision d’Architecte :
                                   </strong>{' '}
@@ -495,7 +561,8 @@ export default function App() {
                       )}
                     </article>
                   ))}
-                </div>
+                  </div>
+                )}
 
                 {/* 4. LABORATOIRE INTERACTIF DU MODULE */}
                 {renderInteractiveTool(module.interactiveToolId)}

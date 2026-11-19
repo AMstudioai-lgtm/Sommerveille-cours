@@ -1,0 +1,2451 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lire une Architecture Logicielle & Piloter l'IA — Cours Interactif</title>
+  <style>
+    /* =====================================================================
+       PALETTE 4 RÔLES (Conforme aux directives : plat, aéré, sans profondeur)
+       1. Primaire    : Arrière-plan général
+       2. Secondaire  : Typographie & hiérarchie de lecture
+       3. Tertiaire   : Surfaces interactives plates (bordure fine, 0 ombre)
+       4. Quaternaire : États, sélection active, progression, alertes
+       ===================================================================== */
+    :root {
+      --primary: #F6F5F0;
+      --secondary: #191B18;
+      --secondary-soft: #565B54;
+      --tertiary: #ECEAE1;
+      --tertiary-hover: #E3E0D4;
+      --border-fine: #D4D1C5;
+      --quaternary: #245C49;
+      --quaternary-soft: #DCEAE4;
+      --quaternary-warn: #A23B2A;
+      --quaternary-warn-soft: #F3DFDC;
+
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "JetBrains Mono", "Fira Code", "SFMono-Regular", Consolas, monospace;
+
+      --radius: 3px;
+      --transition: 240ms cubic-bezier(0.22, 1, 0.36, 1);
+      --max-width: 960px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--primary);
+      color: var(--secondary);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.68;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--primary);
+      color: var(--secondary);
+      overflow-x: hidden;
+    }
+
+    /* Barre de progression de lecture (Quaternaire) */
+    .progress-track {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: transparent;
+      z-index: 100;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background-color: var(--quaternary);
+      transition: width 120ms linear;
+    }
+
+    /* Navigation supérieure douce */
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background-color: rgba(246, 245, 240, 0.94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-fine);
+      transition: border-color var(--transition);
+    }
+
+    .nav-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0.9rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .brand {
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--secondary);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.35rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .nav-links::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-link {
+      position: relative;
+      font-size: 0.86rem;
+      color: var(--secondary-soft);
+      text-decoration: none;
+      white-space: nowrap;
+      padding: 0.25rem 0;
+      transition: color var(--transition);
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 100%;
+      height: 2px;
+      background-color: var(--quaternary);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--transition);
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--secondary);
+    }
+
+    .nav-link.active::after,
+    .nav-link:hover::after {
+      transform: scaleX(1);
+    }
+
+    /* Conteneur principal aéré */
+    main {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 1.5rem 7rem;
+    }
+
+    /* Hero minimaliste et respirant */
+    .hero {
+      padding: 6.5rem 0 4.5rem;
+      border-bottom: 1px solid var(--border-fine);
+    }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--quaternary);
+      margin-bottom: 1.25rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 4.4vw, 3.1rem);
+      font-weight: 650;
+      line-height: 1.16;
+      letter-spacing: -0.025em;
+      max-width: 19ch;
+      margin-bottom: 1.4rem;
+    }
+
+    .hero-lead {
+      font-size: 1.1rem;
+      color: var(--secondary-soft);
+      max-width: 58ch;
+      margin-bottom: 2.2rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    /* Boutons plats (zéro profondeur) */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-sans);
+      font-size: 0.92rem;
+      font-weight: 500;
+      padding: 0.72rem 1.25rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-fine);
+      background-color: var(--tertiary);
+      color: var(--secondary);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+    }
+
+    .btn:hover {
+      background-color: var(--tertiary-hover);
+      border-color: var(--secondary-soft);
+    }
+
+    .btn-primary {
+      background-color: var(--quaternary);
+      border-color: var(--quaternary);
+      color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      background-color: #1C493A;
+      border-color: #1C493A;
+      color: var(--primary);
+    }
+
+    .btn-small {
+      font-size: 0.82rem;
+      padding: 0.45rem 0.85rem;
+    }
+
+    /* Sections de chapitre avec reveal doux */
+    .chapter {
+      padding: 5.2rem 0 4.5rem;
+      border-bottom: 1px solid var(--border-fine);
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 550ms cubic-bezier(0.22, 1, 0.36, 1), transform 550ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .chapter.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .chapter:last-of-type {
+      border-bottom: none;
+    }
+
+    .chapter-num {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--quaternary);
+      margin-bottom: 0.65rem;
+      display: block;
+    }
+
+    h2 {
+      font-size: clamp(1.55rem, 3vw, 2.15rem);
+      font-weight: 620;
+      line-height: 1.22;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.15rem;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      line-height: 1.35;
+      margin-top: 2.6rem;
+      margin-bottom: 0.85rem;
+    }
+
+    p {
+      max-width: 68ch;
+      margin-bottom: 1.1rem;
+    }
+
+    .muted {
+      color: var(--secondary-soft);
+    }
+
+    .rule-note {
+      border-left: 2px solid var(--quaternary);
+      padding: 0.25rem 0 0.25rem 1.25rem;
+      margin: 2rem 0;
+      max-width: 66ch;
+    }
+
+    .rule-note.warn {
+      border-left-color: var(--quaternary-warn);
+    }
+
+    .rule-note strong {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+    }
+
+    /* Surfaces plates (Tertiaire) réservées aux zones interactives importantes */
+    .interactive-surface {
+      background-color: var(--tertiary);
+      border: 1px solid var(--border-fine);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      margin: 2rem 0;
+    }
+
+    /* Onglets plats (sans pilules) */
+    .tab-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      border-bottom: 1px solid var(--border-fine);
+      margin-bottom: 1.5rem;
+    }
+
+    .tab-btn {
+      position: relative;
+      background: transparent;
+      border: none;
+      padding: 0.7rem 1rem;
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--secondary-soft);
+      cursor: pointer;
+      transition: color var(--transition), background-color var(--transition);
+    }
+
+    .tab-btn:hover {
+      color: var(--secondary);
+      background-color: rgba(25, 27, 24, 0.03);
+    }
+
+    .tab-btn[aria-selected="true"] {
+      color: var(--quaternary);
+      font-weight: 600;
+    }
+
+    .tab-btn[aria-selected="true"]::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 2px;
+      background-color: var(--quaternary);
+    }
+
+    /* ---------------------------------------------------------------------
+       CHAPITRE 1 : Échelle Fonction -> Fichier -> Module -> Service
+       --------------------------------------------------------------------- */
+    .scale-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.65rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .scale-step {
+      text-align: left;
+      background-color: var(--primary);
+      border: 1px solid var(--border-fine);
+      border-radius: var(--radius);
+      padding: 0.95rem 1rem;
+      cursor: pointer;
+      transition: border-color var(--transition), background-color var(--transition);
+    }
+
+    .scale-step:hover {
+      border-color: var(--secondary-soft);
+    }
+
+    .scale-step.active {
+      border-color: var(--quaternary);
+      background-color: var(--quaternary-soft);
+    }
+
+    .scale-step-num {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: var(--secondary-soft);
+      margin-bottom: 0.25rem;
+    }
+
+    .scale-step.active .scale-step-num {
+      color: var(--quaternary);
+    }
+
+    .scale-step-title {
+      font-weight: 600;
+      font-size: 0.96rem;
+      color: var(--secondary);
+    }
+
+    .scale-detail {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 1.75rem;
+      align-items: start;
+      padding-top: 0.5rem;
+    }
+
+    .mono-block {
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      line-height: 1.65;
+      background-color: var(--primary);
+      border: 1px solid var(--border-fine);
+      border-radius: var(--radius);
+      padding: 1.15rem 1.25rem;
+      overflow-x: auto;
+      white-space: pre;
+      color: var(--secondary);
+    }
+
+    .detail-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--quaternary);
+      margin-bottom: 0.45rem;
+      display: block;
+    }
+
+    /* Anatomie interactive d'une fonction */
+    .code-xray {
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+      line-height: 2;
+      background-color: var(--primary);
+      border: 1px solid var(--border-fine);
+      border-radius: var(--radius);
+      padding: 1.35rem 1.5rem;
+      overflow-x: auto;
+      margin-bottom: 1.25rem;
+    }
+
+    .xray-part {
+      display: inline;
+      padding: 0.12rem 0.28rem;
+      border-bottom: 2px solid var(--border-fine);
+      cursor: pointer;
+      transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+    }
+
+    .xray-part:hover {
+      background-color: var(--tertiary);
+      border-bottom-color: var(--secondary);
+    }
+
+    .xray-part.active {
+      background-color: var(--quaternary-soft);
+      border-bottom-color: var(--quaternary);
+      color: var(--quaternary);
+      font-weight: 600;
+    }
+
+    .xray-explain {
+      border-top: 1px solid var(--border-fine);
+      padding-top: 1.15rem;
+    }
+
+    .xray-explain h4 {
+      font-size: 1rem;
+      margin-bottom: 0.45rem;
+      color: var(--secondary);
+    }
+
+    /* ---------------------------------------------------------------------
+       CHAPITRE 2 & 3 : Simulateurs à choix (Cases / Interrupteurs plats)
+       --------------------------------------------------------------------- */
+    .checklist-grid {
+      display: grid;
+      gap: 0.7rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      padding: 0.9rem 1rem;
+      background-color: var(--primary);
+      border: 1px solid var(--border-fine);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: border-color var(--transition), background-color var(--transition);
+    }
+
+    .check-row:hover {
+      border-color: var(--secondary-soft);
+    }
+
+    .check-row.checked {
+      border-color: var(--quaternary);
+      background-color: var(--quaternary-soft);
+    }
+
+    .check-row.checked-warn {
+      border-color: var(--quaternary-warn);
+      background-color: var(--quaternary-warn-soft);
+    }
+
+    .check-row input[type="checkbox"] {
+      margin-top: 0.28rem;
+      width: 17px;
+      height: 17px;
+      accent-color: var(--quaternary);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .check-text strong {
+      display: block;
+      font-size: 0.94rem;
+      font-weight: 600;
+      margin-bottom: 0.15rem;
+    }
+
+    .check-text span {
+      font-size: 0.86rem;
+      color: var(--secondary-soft);
+    }
+
+    .verdict-box {
+      background-color: var(--primary);
+      border: 1px solid var(--border-fine);
+      border-left: 3px solid var(--quaternary);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.35rem;
+      transition: border-left-color var(--transition);
+    }
+
+    .verdict-box.warn {
+      border-left-color: var(--quaternary-warn);
+    }
+
+    .verdict-title {
+      font-weight: 650;
+      font-size: 1.02rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .prompt-snippet {
+      margin-top: 1rem;
+      padding: 0.95rem 1.1rem;
+      background-color: var(--tertiary);
+      border: 1px solid var(--border-fine);
+      border-radius: var(--radius);
+      font-family: var(--font-mono);
+      font-size: 0.83rem;
+      line-height: 1.55;
+      color: var(--secondary);
+    }
+
+    .prompt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.55rem;
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
+      color: var(--secondary-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Comparaison Module vs Service (2 colonnes plates) */
+    .split-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.2rem;
+      margin: 2rem 0;
+    }
+
+    .compare-col {
+      border-top: 2px solid var(--secondary);
+      padding-top: 1.1rem;
+    }
+
+    .compare-col.accent {
+      border-top-color: var(--quaternary);
+    }
+
+    .compare-col h4 {
+      font-size: 1.05rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .plain-list {
+      list-style: none;
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .plain-list li {
+      position: relative;
+      padding-left: 1.15rem;
+      font-size: 0.94rem;
+      color: var(--secondary);
+    }
+
+    .plain-list li::before {
+      content: "—";
+      position: absolute;
+      left: 0;
+      color: var(--quaternary);
+    }
+
+    /* Schéma architectural SVG/HTML sobre */
+    .diagram-stage {
+      background-color: var(--primary);
+      border: 1px solid var(--border-fine);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .diagram-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+    }
+
+    .diag-box {
+      border: 1px solid var(--secondary);
+      background-color: var(--tertiary);
+      padding: 0.85rem 1.15rem;
+      border-radius: var(--radius);
+      min-width: 170px;
+      text-align: center;
+    }
+
+    .diag-box.boundary {
+      border-style: dashed;
+      border-color: var(--quaternary);
+      background-color: transparent;
+      padding: 1.25rem;
+      width: 100%;
+    }
+
+    .diag-box strong {
+      display: block;
+      font-size: 0.9rem;
+    }
+
+    .diag-box small {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      color: var(--secondary-soft);
+      margin-top: 0.2rem;
+    }
+
+    .diag-arrow {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--quaternary);
+      text-align: center;
+    }
+
+    /* ---------------------------------------------------------------------
+       CHAPITRE 4 : Explorateur Interactif des 5 Architectures
+       --------------------------------------------------------------------- */
+    .arch-summary {
+      margin-bottom: 1.4rem;
+      padding-bottom: 1.1rem;
+      border-bottom: 1px solid var(--border-fine);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: baseline;
+    }
+
+    .arch-flow {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--quaternary);
+    }
+
+    .explorer-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .tree-panel {
+      background-color: var(--primary);
+      border: 1px solid var(--border-fine);
+      border-radius: var(--radius);
+      padding: 1.1rem 0.8rem;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      line-height: 1.75;
+      overflow-x: auto;
+    }
+
+    .tree-line {
+      display: flex;
+      align-items: baseline;
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      border-left: 2px solid transparent;
+      padding: 0.12rem 0.55rem;
+      font-family: inherit;
+      font-size: inherit;
+      color: var(--secondary-soft);
+      white-space: pre;
+      cursor: default;
+      transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+    }
+
+    .tree-line.clickable {
+      color: var(--secondary);
+      cursor: pointer;
+    }
+
+    .tree-line.clickable:hover {
+      background-color: var(--tertiary);
+      border-left-color: var(--secondary-soft);
+    }
+
+    .tree-line.selected {
+      background-color: var(--quaternary-soft);
+      border-left-color: var(--quaternary);
+      color: var(--quaternary);
+      font-weight: 600;
+    }
+
+    .tree-hint {
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
+      color: var(--secondary-soft);
+      margin-bottom: 0.65rem;
+      padding-left: 0.55rem;
+    }
+
+    .inspector-panel {
+      background-color: var(--primary);
+      border: 1px solid var(--border-fine);
+      border-radius: var(--radius);
+      padding: 1.35rem;
+    }
+
+    .inspector-path {
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--quaternary);
+      margin-bottom: 0.35rem;
+      word-break: break-all;
+    }
+
+    .inspector-role {
+      font-size: 0.84rem;
+      color: var(--secondary-soft);
+      margin-bottom: 1rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--border-fine);
+    }
+
+    .inspector-block {
+      margin-bottom: 1rem;
+    }
+
+    .inspector-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .inspector-block strong {
+      display: block;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--secondary);
+      margin-bottom: 0.25rem;
+    }
+
+    .inspector-block p {
+      font-size: 0.9rem;
+      margin-bottom: 0;
+    }
+
+    .inspector-alert {
+      border-left: 2px solid var(--quaternary-warn);
+      padding-left: 0.8rem;
+      font-size: 0.88rem;
+      color: var(--secondary);
+    }
+
+    /* ---------------------------------------------------------------------
+       CHAPITRE 5 : Directives IA (Maladroit vs Ingénieur)
+       --------------------------------------------------------------------- */
+    .directive-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    .directive-col {
+      background-color: var(--primary);
+      border: 1px solid var(--border-fine);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+
+    .directive-col.bad {
+      border-top: 2px solid var(--quaternary-warn);
+    }
+
+    .directive-col.good {
+      border-top: 2px solid var(--quaternary);
+    }
+
+    .directive-tag {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.65rem;
+      display: block;
+    }
+
+    .directive-col.bad .directive-tag {
+      color: var(--quaternary-warn);
+    }
+
+    .directive-col.good .directive-tag {
+      color: var(--quaternary);
+    }
+
+    .directive-quote {
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      line-height: 1.6;
+      margin-bottom: 0.9rem;
+      color: var(--secondary);
+    }
+
+    .directive-why {
+      font-size: 0.88rem;
+      color: var(--secondary-soft);
+      border-top: 1px solid var(--border-fine);
+      padding-top: 0.75rem;
+      margin-bottom: 0;
+    }
+
+    /* ---------------------------------------------------------------------
+       CHAPITRE 6 : Atelier d'Audit (Quiz interactif)
+       --------------------------------------------------------------------- */
+    .quiz-progress {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.15rem;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--secondary-soft);
+    }
+
+    .quiz-options {
+      display: grid;
+      gap: 0.65rem;
+      margin: 1.25rem 0;
+    }
+
+    .quiz-option {
+      text-align: left;
+      background-color: var(--primary);
+      border: 1px solid var(--border-fine);
+      border-radius: var(--radius);
+      padding: 0.95rem 1.15rem;
+      font-family: var(--font-sans);
+      font-size: 0.94rem;
+      color: var(--secondary);
+      cursor: pointer;
+      transition: border-color var(--transition), background-color var(--transition);
+    }
+
+    .quiz-option:hover:not(:disabled) {
+      border-color: var(--secondary);
+    }
+
+    .quiz-option:disabled {
+      cursor: default;
+    }
+
+    .quiz-option.correct {
+      border-color: var(--quaternary);
+      background-color: var(--quaternary-soft);
+      color: var(--secondary);
+      font-weight: 500;
+    }
+
+    .quiz-option.wrong {
+      border-color: var(--quaternary-warn);
+      background-color: var(--quaternary-warn-soft);
+      color: var(--secondary);
+    }
+
+    .quiz-feedback {
+      display: none;
+      margin-top: 1rem;
+      padding: 1.1rem 1.25rem;
+      background-color: var(--primary);
+      border: 1px solid var(--border-fine);
+      border-left: 3px solid var(--quaternary);
+      border-radius: var(--radius);
+    }
+
+    .quiz-feedback.show {
+      display: block;
+    }
+
+    .quiz-feedback.is-wrong {
+      border-left-color: var(--quaternary-warn);
+    }
+
+    .quiz-footer {
+      margin-top: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* Tableau comparatif sobre */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 2rem 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 0.85rem 0.9rem;
+      border-bottom: 1px solid var(--border-fine);
+      vertical-align: top;
+    }
+
+    th {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--secondary-soft);
+      border-bottom-color: var(--secondary);
+    }
+
+    footer {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+      border-top: 1px solid var(--border-fine);
+      font-size: 0.86rem;
+      color: var(--secondary-soft);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    @media (max-width: 820px) {
+      .scale-steps {
+        grid-template-columns: 1fr 1fr;
+      }
+      .scale-detail,
+      .split-compare,
+      .explorer-grid,
+      .directive-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero {
+        padding: 4.5rem 0 3.2rem;
+      }
+      .chapter {
+        padding: 3.8rem 0 3.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-track" aria-hidden="true">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+
+  <nav class="site-nav" aria-label="Navigation du cours">
+    <div class="nav-inner">
+      <a href="#top" class="brand">Architecture & Pilotage IA</a>
+      <div class="nav-links" id="navLinks">
+        <a href="#echelle" class="nav-link">01. Échelle & Fonction</a>
+        <a href="#extraction" class="nav-link">02. Isoler une fonction</a>
+        <a href="#module-service" class="nav-link">03. Module vs Service</a>
+        <a href="#architectures" class="nav-link">04. Les 5 Architectures</a>
+        <a href="#pilotage" class="nav-link">05. Parler à l'IA</a>
+        <a href="#atelier" class="nav-link">06. Atelier d'Audit</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="top">
+    <!-- HERO sobre et direct -->
+    <header class="hero">
+      <div class="eyebrow">Manuel de lecture architecturale — Sans écrire de code</div>
+      <h1>Lire l'architecture, distinguer chaque brique et diriger l'IA sans casser le projet.</h1>
+      <p class="hero-lead">
+        Un parcours méthodique pour clarifier définitivement ce qu'est une <strong>fonction</strong>, un <strong>module</strong> et un <strong>service</strong>, et entraîner ton œil sur les 5 grandes architectures logicielles.
+      </p>
+      <div class="hero-actions">
+        <a href="#echelle" class="btn btn-primary">Commencer la lecture</a>
+        <a href="#architectures" class="btn">Aller à l'explorateur des 5 architectures</a>
+      </div>
+    </header>
+
+    <!-- ===================================================================
+         CHAPITRE 01 : ÉCHELLE DU CODE & ANATOMIE D'UNE FONCTION
+         =================================================================== -->
+    <section id="echelle" class="chapter">
+      <span class="chapter-num">01 / FONDAMENTAUX DE LECTURE</span>
+      <h2>L'échelle du logiciel : de la Fonction au Service</h2>
+      <p>
+        La plupart des maladresses quand on pilote une IA viennent d'une confusion d'échelle : on lui demande de « créer un service » alors qu'on voulait une simple fonction, ou on lui demande de « tout regrouper » alors qu'on vient de mélanger deux modules.
+      </p>
+      <p>
+        Clique sur chaque niveau ci-dessous pour ancrer la différence d'échelle dans un même projet (<code>boutique-app</code>).
+      </p>
+
+      <div class="interactive-surface">
+        <div class="scale-steps" id="scaleSteps">
+          <button class="scale-step active" data-scale="fonction" type="button">
+            <span class="scale-step-num">NIVEAU 1</span>
+            <span class="scale-step-title">Fonction</span>
+          </button>
+          <button class="scale-step" data-scale="fichier" type="button">
+            <span class="scale-step-num">NIVEAU 2</span>
+            <span class="scale-step-title">Fichier</span>
+          </button>
+          <button class="scale-step" data-scale="module" type="button">
+            <span class="scale-step-num">NIVEAU 3</span>
+            <span class="scale-step-title">Module</span>
+          </button>
+          <button class="scale-step" data-scale="service" type="button">
+            <span class="scale-step-num">NIVEAU 4</span>
+            <span class="scale-step-title">Service (autonome)</span>
+          </button>
+        </div>
+
+        <div class="scale-detail" id="scaleDetail">
+          <!-- Injecté par JS -->
+        </div>
+      </div>
+
+      <h3>Savoir dire : « Ceci est une fonction » (sans savoir coder)</h3>
+      <p>
+        Tu n'as pas besoin de savoir écrire une fonction pour l'identifier en deux secondes. Une fonction est simplement une <strong>boîte d'action nommée</strong> : on lui donne des ingrédients en entrée, elle exécute une recette, et elle rend un résultat.
+      </p>
+      <p class="muted">
+        Clique sur chaque zone soulignée dans l'extrait ci-dessous pour inspecter son anatomie.
+      </p>
+
+      <div class="interactive-surface">
+        <div class="code-xray" id="codeXray">
+<span class="xray-part active" data-part="decl">function</span> <span class="xray-part" data-part="name">calculerTotalCommande</span><span class="xray-part" data-part="params">(articles, tauxReduction)</span> {
+  <span class="xray-part" data-part="body">const sousTotal = additionnerPrix(articles);
+  const remise = sousTotal * tauxReduction;</span>
+  <span class="xray-part" data-part="return">return sousTotal - remise;</span>
+}
+        </div>
+        <div class="xray-explain" id="xrayExplain">
+          <!-- Injecté par JS -->
+        </div>
+      </div>
+
+      <div class="rule-note">
+        <strong>Les 3 écritures que tu croiseras chez l'IA (c'est exactement la même chose)</strong>
+        En lisant du JavaScript ou du TypeScript généré par Gemini, tu reconnaîtras une fonction sous trois formes équivalentes :
+        <code>function calculerPrix(...)</code>, <code>const calculerPrix = (...) =></code>, ou à l'intérieur d'une classe <code>calculerPrix(...) { ... }</code>. Ne te laisse pas perturber par la syntaxe : cherche toujours le <strong>verbe d'action</strong> suivi de parenthèses <code>(...)</code>.
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         CHAPITRE 02 : QUAND METTRE UNE FONCTION À PART ?
+         =================================================================== -->
+    <section id="extraction" class="chapter">
+      <span class="chapter-num">02 / GRANULARITÉ & DÉCOUPAGE</span>
+      <h2>Quand une fonction doit-elle être mise à part ?</h2>
+      <p>
+        En pilotant une IA, deux erreurs opposées abîment un projet : laisser l'IA écrire des blocs géants de 120 lignes qui font tout à la fois, ou au contraire lui demander d'isoler chaque opération triviale de 2 lignes — ce qui fragmente inutilement le projet et multiplie les risques de casse.
+      </p>
+      <p>
+        Un ingénieur n'isole pas une fonction « par esthétique », mais sur la base de <strong>4 critères objectifs</strong>. Teste ta situation dans le simulateur ci-dessous.
+      </p>
+
+      <div class="interactive-surface">
+        <span class="detail-label">Simulateur de décision — Coche ce qui s'applique à ce que tu observes</span>
+        <div class="checklist-grid" id="extractChecks">
+          <label class="check-row">
+            <input type="checkbox" data-extract="reused" />
+            <div class="check-text">
+              <strong>Elle sert à plusieurs endroits (2 ou plus)</strong>
+              <span>Ex. : le calcul de TVA apparaît sur le panier, la facture et le récapitulatif email.</span>
+            </div>
+          </label>
+          <label class="check-row">
+            <input type="checkbox" data-extract="multi" />
+            <div class="check-text">
+              <strong>Elle mélange deux métiers différents</strong>
+              <span>Ex. : dans le même bloc, elle calcule un prix, enregistre en base de données et affiche une alerte.</span>
+            </div>
+          </label>
+          <label class="check-row">
+            <input type="checkbox" data-extract="critical" />
+            <div class="check-text">
+              <strong>Elle porte une règle métier critique ou évolutive</strong>
+              <span>Ex. : règles de remise, contrôle de droits d'accès ou validation de stock qui risquent de changer.</span>
+            </div>
+          </label>
+          <label class="check-row">
+            <input type="checkbox" data-extract="long" />
+            <div class="check-text">
+              <strong>Le bloc est devenu long ou dur à résumer en une phrase</strong>
+              <span>Au-delà d'environ 30 à 40 lignes, ou si tu dois utiliser le mot « et » trois fois pour l'expliquer.</span>
+            </div>
+          </label>
+          <label class="check-row">
+            <input type="checkbox" data-extract="trivial" />
+            <div class="check-text">
+              <strong>Contre-critère : c'est une petite logique de 2 à 5 lignes utilisée à un seul endroit</strong>
+              <span>Ex. : formater une date pour un seul titre de page ou ouvrir un menu local.</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="verdict-box" id="extractVerdict">
+          <!-- Injecté par JS -->
+        </div>
+      </div>
+
+      <div class="rule-note warn">
+        <strong>Règle anti-casse quand tu demandes d'extraire une fonction</strong>
+        Ne dis jamais simplement « mets cette fonction à part ». L'IA risque de créer un dossier fourre-tout <code>utils/</code>. Précise toujours <strong>dans quelle couche ou quel module</strong> elle doit atterrir, et demande à l'IA de <em>conserver exactement les mêmes entrées et sorties</em> pour ne pas casser les fichiers qui l'appellent.
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         CHAPITRE 03 : MODULE VS SERVICE (+ QUAND CONVERTIR)
+         =================================================================== -->
+    <section id="module-service" class="chapter">
+      <span class="chapter-num">03 / LA FRONTIÈRE DÉFINITIVE</span>
+      <h2>Module vs Service : dissiper le flou une bonne fois pour toutes</h2>
+      <p>
+        Si cette distinction te paraît floue, c'est normal : le mot <strong>« service »</strong> est utilisé dans l'industrie avec <strong>deux sens totalement différents</strong>. Tant que tu ne sépares pas ces deux sens dans ta tête, tout se mélange.
+      </p>
+
+      <div class="rule-note warn">
+        <strong>Le piège de vocabulaire à connaître absolument</strong>
+        <strong>1. Un fichier <code>*Service</code> (sens interne)</strong> : Ex. <code>orderService.ts</code> dans une architecture en couches. Ce n'est qu'un <em>fichier</em> qui contient des fonctions métier dans ton application.<br />
+        <strong>2. Un Service architectural (Microservice / Service autonome)</strong> : Un <em>programme complet séparé</em>, qui tourne sur son propre serveur, possède sa propre base de données et communique par le réseau.
+      </div>
+
+      <p>
+        En architecture, la vraie opposition structurante est donc entre un <strong>Module</strong> (un compartiment interne d'une même application) et un <strong>Service autonome</strong> (une application indépendante reliée par le réseau).
+      </p>
+
+      <div class="split-compare">
+        <div class="compare-col accent">
+          <h4>Le Module (Frontière logique)</h4>
+          <ul class="plain-list">
+            <li>Vit <strong>dans le même programme</strong> et la même mémoire que les autres modules.</li>
+            <li>Regroupe tout un domaine métier dans un dossier isolé (ex. <code>modules/orders/</code>).</li>
+            <li>Appelle un autre module directement via son contrat public <code>index.ts</code> (instantané, sans réseau).</li>
+            <li>Partage généralement le même déploiement que le reste du projet.</li>
+            <li>Simple à déboguer, simple à faire évoluer avec une IA.</li>
+          </ul>
+        </div>
+        <div class="compare-col">
+          <h4>Le Service autonome (Frontière physique)</h4>
+          <ul class="plain-list">
+            <li>Est un <strong>logiciel indépendant</strong> avec son propre serveur et son propre <code>Dockerfile</code>.</li>
+            <li>Possède <strong>sa propre base de données privée</strong> (jamais partagée directement).</li>
+            <li>Communique uniquement par le <strong>réseau</strong> (API HTTP, gRPC ou messages/événements).</li>
+            <li>Se déploie et monte en charge indépendamment du reste de la plateforme.</li>
+            <li>Introduit de la latence, des pannes réseau et une complexité opérationnelle lourde.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Comparateur visuel interactif -->
+      <div class="interactive-surface">
+        <div class="tab-bar" id="msTabs" role="tablist">
+          <button class="tab-btn" role="tab" aria-selected="true" data-ms="module" type="button">Comment parlent deux Modules</button>
+          <button class="tab-btn" role="tab" aria-selected="false" data-ms="service" type="button">Comment parlent deux Services</button>
+        </div>
+        <div id="msDiagram">
+          <!-- Injecté par JS -->
+        </div>
+      </div>
+
+      <h3>Quand un Module mérite-t-il d'être converti en Service ?</h3>
+      <p>
+        Règle d'or de l'ingénieur méthodique : <strong>un bloc commence toujours sa vie en Module</strong>. On ne le convertit en Service indépendant que lorsque la réalité technique ou organisationnelle l'impose. Coche les contraintes réelles de ton projet pour obtenir un arbitrage objectif.
+      </p>
+
+      <div class="interactive-surface">
+        <span class="detail-label">Calculateur d'arbitrage — Faut-il transformer ce module en service ?</span>
+        <div class="checklist-grid" id="convertChecks">
+          <label class="check-row">
+            <input type="checkbox" data-conv="scale" />
+            <div class="check-text">
+              <strong>Charge très asymétrique (Scalabilité ciblée)</strong>
+              <span>Ce module encaisse 20x à 100x plus de trafic ou de calcul que le reste (ex. : recherche catalogue, traitement vidéo ou génération IA lourde).</span>
+            </div>
+          </label>
+          <label class="check-row">
+            <input type="checkbox" data-conv="fault" />
+            <div class="check-text">
+              <strong>Isolation critique des pannes</strong>
+              <span>Si ce bloc sature ou plante, le reste de l'application doit impérativement continuer de tourner sans ralentir.</span>
+            </div>
+          </label>
+          <label class="check-row">
+            <input type="checkbox" data-conv="team" />
+            <div class="check-text">
+              <strong>Équipes et déploiements indépendants</strong>
+              <span>Plusieurs équipes distinctes travaillent en parallèle et doivent déployer ce bloc sans attendre ni bloquer les autres.</span>
+            </div>
+          </label>
+          <label class="check-row">
+            <input type="checkbox" data-conv="stack" />
+            <div class="check-text">
+              <strong>Besoin d'une technologie ou d'un matériel incompatible</strong>
+              <span>Ex. : l'app principale est en Node.js/TypeScript, mais ce bloc exige Python + GPU dédié.</span>
+            </div>
+          </label>
+          <label class="check-row">
+            <input type="checkbox" data-conv="security" />
+            <div class="check-text">
+              <strong>Isolation réglementaire ou sécurité physique stricte</strong>
+              <span>Ex. : données de paiement ou données médicales devant être isolées dans un réseau et une base dédiés.</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="verdict-box" id="convertVerdict">
+          <!-- Injecté par JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         CHAPITRE 04 : EXPLORATEUR DES 5 GRANDES ARCHITECTURES
+         =================================================================== -->
+    <section id="architectures" class="chapter">
+      <span class="chapter-num">04 / ENTRAÎNEMENT VISUEL</span>
+      <h2>Explorateur interactif des 5 grandes architectures</h2>
+      <p>
+        Voici toujours la même application — <strong><code>boutique-app</code></strong> — organisée selon les 5 architectures majeures. Sélectionne une architecture puis <strong>clique sur n'importe quel dossier ou fichier en gras dans l'arborescence</strong> pour comprendre son rôle, ses règles de dépendance et ce que tu dois dire à l'IA.
+      </p>
+
+      <div class="interactive-surface">
+        <div class="tab-bar" id="archTabs" role="tablist">
+          <button class="tab-btn" role="tab" aria-selected="true" data-arch="layered" type="button">1. En Couches</button>
+          <button class="tab-btn" role="tab" aria-selected="false" data-arch="mvc" type="button">2. MVC / MVVM</button>
+          <button class="tab-btn" role="tab" aria-selected="false" data-arch="modular" type="button">3. Monolithe Modulaire</button>
+          <button class="tab-btn" role="tab" aria-selected="false" data-arch="hexagonal" type="button">4. Hexagonale / Clean</button>
+          <button class="tab-btn" role="tab" aria-selected="false" data-arch="microservices" type="button">5. Microservices</button>
+        </div>
+
+        <div class="arch-summary" id="archSummary">
+          <!-- Injecté par JS -->
+        </div>
+
+        <div class="explorer-grid">
+          <div class="tree-panel" id="treePanel" aria-label="Arborescence cliquable">
+            <!-- Injecté par JS -->
+          </div>
+          <div class="inspector-panel" id="inspectorPanel" aria-live="polite">
+            <!-- Injecté par JS -->
+          </div>
+        </div>
+      </div>
+
+      <h3>Tableau radar : reconnaître l'architecture en 3 secondes</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Architecture</th>
+              <th>Sens du découpage</th>
+              <th>Indices dans l'arbre</th>
+              <th>Où sont les fonctions métier ?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1. En Couches</strong></td>
+              <td>Horizontal (technique)</td>
+              <td><code>presentation/</code>, <code>business/</code>, <code>data/</code></td>
+              <td>Dans <code>business/</code> (fichiers <code>*Service</code>)</td>
+            </tr>
+            <tr>
+              <td><strong>2. MVC / MVVM</strong></td>
+              <td>Tripartite (interaction)</td>
+              <td><code>models/</code>, <code>views/</code>, <code>controllers/</code></td>
+              <td>Dans les <code>models/</code> (ou services appelés par le contrôleur)</td>
+            </tr>
+            <tr>
+              <td><strong>3. Monolithe Modulaire</strong></td>
+              <td>Vertical (métier)</td>
+              <td><code>modules/orders/</code>, <code>index.ts</code></td>
+              <td>Dans le dossier <code>domain/</code> de chaque module</td>
+            </tr>
+            <tr>
+              <td><strong>4. Hexagonale / Clean</strong></td>
+              <td>Concentrique (isolation)</td>
+              <td><code>domain/</code>, <code>ports/</code>, <code>adapters/</code></td>
+              <td>Strictement dans <code>domain/</code> et <code>use-cases/</code></td>
+            </tr>
+            <tr>
+              <td><strong>5. Microservices</strong></td>
+              <td>Distribué (réseau)</td>
+              <td><code>services/*</code>, <code>Dockerfile</code>, <code>api-gateway/</code></td>
+              <td>Dans le <code>src/</code> interne de chaque service autonome</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         CHAPITRE 05 : PARLER À L'IA SANS CASSER SON TRAVAIL
+         =================================================================== -->
+    <section id="pilotage" class="chapter">
+      <span class="chapter-num">05 / DÉLÉGATION MÉTHODIQUE</span>
+      <h2>Que dire à l'IA pour agir sans casser l'architecture</h2>
+      <p>
+        Quand on casse le travail d'une IA par maladresse, ce n'est presque jamais une erreur de syntaxe : c'est une consigne qui <strong>viole une frontière</strong> (mélanger UI et DB, déplacer un fichier sans mettre à jour ses contrats, ou créer un fourre-tout). Choisis une situation réelle ci-dessous.
+      </p>
+
+      <div class="interactive-surface">
+        <div class="tab-bar" id="directiveTabs" role="tablist">
+          <button class="tab-btn" role="tab" aria-selected="true" data-dir="feature" type="button">Ajouter une règle métier</button>
+          <button class="tab-btn" role="tab" aria-selected="false" data-dir="extract" type="button">Sortir une fonction</button>
+          <button class="tab-btn" role="tab" aria-selected="false" data-dir="bug" type="button">Corriger un bug ciblé</button>
+          <button class="tab-btn" role="tab" aria-selected="false" data-dir="refuse" type="button">Refuser un fourre-tout</button>
+          <button class="tab-btn" role="tab" aria-selected="false" data-dir="migrate" type="button">Isoler avant un service</button>
+        </div>
+
+        <div id="directiveContent">
+          <!-- Injecté par JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         CHAPITRE 06 : ATELIER D'AUDIT (QUIZ D'INGÉNIEUR)
+         =================================================================== -->
+    <section id="atelier" class="chapter">
+      <span class="chapter-num">06 / ATELIER D'AUDIT</span>
+      <h2>Teste ton œil sur 5 situations d'ingénieur</h2>
+      <p>
+        Aucun code à écrire ici : tu relis ce que l'IA te propose et tu arbitres. Chaque réponse explique le raisonnement architectural précis.
+      </p>
+
+      <div class="interactive-surface" id="quizContainer">
+        <!-- Injecté par JS -->
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Cours interactif — Lecture d'architecture & délégation IA</span>
+    <span>Méthode : Clarifier → Concevoir → Déléguer → Auditer</span>
+  </footer>
+
+  <script>
+    (function () {
+      "use strict";
+
+      /* =====================================================================
+         DONNÉES DU COURS
+         ===================================================================== */
+
+      const SCALE_DATA = {
+        fonction: {
+          title: "La Fonction — L'unité d'action élémentaire",
+          metaphor: "Dans un restaurant : un geste précis de recette, comme « calculer la TVA d'un plat » ou « vérifier si un ingrédient est en stock ».",
+          rule: "Une bonne fonction fait UNE seule chose claire, prend des entrées précises et retourne un résultat prévisible.",
+          sayToAI: "« Extrais le calcul de remise dans une fonction dédiée calculerRemise(montant, code) dans la couche métier. »",
+          tree: `orderRules.ts
+  └── calculerTotalCommande(articles, remise)  ← FONCTION
+  └── verifierStockDisponible(articles)        ← FONCTION`
+        },
+        fichier: {
+          title: "Le Fichier — Un regroupement cohérent de fonctions liées",
+          metaphor: "Dans un restaurant : une fiche de poste qui rassemble les 4 ou 5 gestes qui vont ensemble (ex. toutes les vérifications liées aux commandes).",
+          rule: "Un fichier regroupe des fonctions qui partagent la même responsabilité et le même niveau technique (jamais UI + DB dans le même fichier).",
+          sayToAI: "« Regroupe toutes les fonctions de validation de commande dans le fichier domain/orderRules.ts. »",
+          tree: `modules/orders/domain/
+  ├── orderRules.ts          ← FICHIER (règles de calcul)
+  └── orderValidation.ts     ← FICHIER (règles de contrôle)`
+        },
+        module: {
+          title: "Le Module — Un compartiment métier complet dans la même app",
+          metaphor: "Dans un restaurant : toute la cuisine (chefs, recettes, frigo du poste). Elle est séparée de la salle, mais dans le même bâtiment et la même équipe.",
+          rule: "Un module contient tout ce qui concerne un domaine métier (UI, règles, accès données) et communique avec les autres modules via une porte d'entrée unique (index.ts) sans réseau.",
+          sayToAI: "« Crée un module autonome modules/invoices/ et expose uniquement la fonction creerFacture dans son index.ts. »",
+          tree: `src/modules/orders/        ← MODULE (même app, même mémoire)
+  ├── ui/CheckoutPage.tsx
+  ├── domain/orderRules.ts
+  ├── data/orderRepo.ts
+  └── index.ts               ← Porte d'entrée publique`
+        },
+        service: {
+          title: "Le Service autonome — Une application indépendante sur le réseau",
+          metaphor: "Un prestataire externe (ex. un boulanger indépendant ou un livreur externe) : il a son propre bâtiment, son propre stock, et tu lui passes commande par téléphone.",
+          rule: "Un service possède son propre serveur, sa propre base de données et son propre déploiement. Les autres services lui parlent uniquement via le réseau (API ou événements).",
+          sayToAI: "« Ce module reste un module pour l'instant : ne crée pas de microservice ni de serveur séparé. »",
+          tree: `services/payment-service/  ← SERVICE AUTONOME (serveur séparé)
+  ├── src/                   (son propre code interne)
+  ├── db/                    (SA propre base de données)
+  ├── package.json           (ses propres dépendances)
+  └── Dockerfile             (son propre déploiement)`
+        }
+      };
+
+      const XRAY_DATA = {
+        decl: {
+          title: "1. La déclaration (function)",
+          text: "Ce mot-clé signale à ton œil : « Attention, une brique d'action commence ici ». En TypeScript/JavaScript moderne, l'IA peut aussi l'écrire const calculerTotalCommande = (...) => { ... }. Le sens est strictement identique.",
+          check: "Réflexe de lecture : repère les accolades { ... } qui délimitent le début et la fin de la boîte."
+        },
+        name: {
+          title: "2. Le Nom (calculerTotalCommande)",
+          text: "Le nom d'une fonction doit toujours être un verbe d'action qui décrit son unique intention. C'est ton meilleur indicateur de qualité sans lire le code interne.",
+          check: "Signal d'alerte : si le nom est flou (traiterData) ou contient « Et » (calculerEtSauvegarderEtNotifier), la fonction fait probablement trop de choses."
+        },
+        params: {
+          title: "3. Les Entrées / Paramètres (articles, tauxReduction)",
+          text: "Ce sont les ingrédients que l'on remet à la fonction pour qu'elle travaille. Ici, elle a besoin de la liste d'articles et d'un taux de réduction, rien d'autre.",
+          check: "Signal d'alerte : au-delà de 4 ou 5 paramètres, une fonction devient fragile et difficile à maintenir. Demande à l'IA de les regrouper dans un objet clair."
+        },
+        body: {
+          title: "4. Le Corps (La recette interne)",
+          text: "Ce sont les étapes d'exécution. Remarque une excellente pratique ici : elle appelle une autre petite fonction (additionnerPrix) au lieu de tout empiler au même endroit.",
+          check: "Signal d'alerte : si tu aperçois dans le même corps du calcul métier, un appel SQL/Firestore et du code d'affichage visuel, les couches sont mélangées."
+        },
+        return: {
+          title: "5. La Sortie (return)",
+          text: "C'est le résultat propre que la fonction renvoie à celui qui l'a appelée. Une fonction métier idéale calcule et renvoie un résultat sans modifier secrètement l'interface ou la base de données.",
+          check: "Réflexe anti-casse : quand tu demandes à l'IA de réécrire une fonction, précise : « garde exactement la même signature (entrées et sortie) »."
+        }
+      };
+
+      const ARCH_DATA = {
+        layered: {
+          name: "Architecture en Couches (Layered / N-Tier)",
+          tagline: "Découpage horizontal par rôle technique. Simple, lisible, idéale pour démarrer proprement.",
+          flow: "Dépendances : presentation → business → data",
+          defaultNode: "business/orderService.ts",
+          nodes: [
+            { id: null, text: "boutique-app/" },
+            { id: null, text: "├── src/" },
+            { id: "presentation/", text: "│   ├── presentation/             # Couche 1 : UI" },
+            { id: "presentation/CheckoutPage.tsx", text: "│   │   ├── pages/CheckoutPage.tsx" },
+            { id: null, text: "│   │   └── components/OrderSummary.tsx" },
+            { id: "business/", text: "│   ├── business/                 # Couche 2 : Métier" },
+            { id: "business/orderService.ts", text: "│   │   ├── orderService.ts" },
+            { id: null, text: "│   │   └── productService.ts" },
+            { id: "data/", text: "│   ├── data/                     # Couche 3 : Données" },
+            { id: "data/orderRepository.ts", text: "│   │   ├── orderRepository.ts" },
+            { id: null, text: "│   │   └── stripeClient.ts" },
+            { id: "entities/Order.ts", text: "│   └── entities/Order.ts         # Modèles partagés" },
+            { id: null, text: "├── context.md" },
+            { id: null, text: "├── plan.md" },
+            { id: null, text: "└── AGENTS.md" }
+          ],
+          details: {
+            "presentation/": {
+              nature: "Couche Présentation (Interface Utilisateur)",
+              role: "Affiche les écrans, capture les clics et les formulaires. Ne contient aucune règle de calcul complexe et n'accède jamais directement à la base de données.",
+              deps: "Peut appeler business/. Interdiction absolue d'importer data/ directement.",
+              aiGood: "« Ajoute le champ code promo dans presentation/pages/CheckoutPage.tsx et transmets sa valeur à business/orderService.ts. »",
+              aiMistake: "Demander à l'IA de calculer la remise et d'enregistrer en DB directement dans le bouton de la page."
+            },
+            "presentation/CheckoutPage.tsx": {
+              nature: "Fichier de Vue / Page UI",
+              role: "Affiche le récapitulatif et déclenche l'action de validation lorsque l'utilisateur clique sur « Payer ».",
+              deps: "Appelle une fonction exposée par business/orderService.ts et affiche l'état (chargement, succès, erreur).",
+              aiGood: "« Garde CheckoutPage.tsx focalisé sur l'affichage et l'état UI ; délègue toute validation de panier à la couche business. »",
+              aiMistake: "Laisser la page grossir au-delà de 300 lignes en y empilant des règles métier."
+            },
+            "business/": {
+              nature: "Couche Métier (Cerveau de l'application)",
+              role: "Regroupe toutes les règles de fonctionnement de ton entreprise : remises, vérification de stock, droits d'accès, calculs.",
+              deps: "Appelée par presentation/. Appelle data/ pour lire ou sauvegarder. Ne connaît rien au CSS ni aux boutons.",
+              aiGood: "« Toute nouvelle règle de calcul de frais de livraison doit vivre dans business/, pas dans l'UI. »",
+              aiMistake: "Confondre cette couche avec un microservice : ici tout reste dans la même application."
+            },
+            "business/orderService.ts": {
+              nature: "Fichier de fonctions métier (*Service interne — PAS un microservice !)",
+              role: "Contient les fonctions métier liées aux commandes (ex. creerCommande, calculerTotal). C'est le piège de vocabulaire n°1 : le mot « Service » signifie ici « fournisseur de logique métier ».",
+              deps: "Appelle data/orderRepository.ts et data/stripeClient.ts. Appelé par presentation/.",
+              aiGood: "« Ajoute une fonction appliquerCodePromo dans business/orderService.ts sans modifier la couche data. »",
+              aiMistake: "Croire qu'il faut un serveur séparé parce que le fichier s'appelle orderService.ts."
+            },
+            "data/": {
+              nature: "Couche Données / Accès externe",
+              role: "S'occupe uniquement de parler à la base de données (SQL, Firestore) et aux API externes (Stripe, envoi d'emails).",
+              deps: "Appelée par business/. Ne doit jamais importer presentation/ ni prendre de décisions métier.",
+              aiGood: "« Isole les requêtes Firestore dans data/ pour pouvoir changer de base plus tard sans toucher au métier. »",
+              aiMistake: "Mettre des règles de calcul de prix dans les requêtes de base de données."
+            },
+            "data/orderRepository.ts": {
+              nature: "Fichier Repository (Persistance pure)",
+              role: "Contient des fonctions simples de lecture/écriture : sauvegarderCommande, trouverCommandeParId. Aucune règle métier dedans.",
+              deps: "Utilise entities/Order.ts. Appelé uniquement par business/orderService.ts.",
+              aiGood: "« Ajoute une fonction listerCommandesUtilisateur(userId) dans data/orderRepository.ts. »",
+              aiMistake: "Appeler orderRepository.ts directement depuis une page UI pour « aller plus vite »."
+            },
+            "entities/Order.ts": {
+              nature: "Définition de structure de données",
+              role: "Décrit la « forme » officielle d'une Commande (id, articles, total, statut) afin que toutes les couches parlent exactement le même langage.",
+              deps: "Utilisé par toutes les couches. Ne dépend d'aucune couche.",
+              aiGood: "« Mets d'abord à jour le modèle dans entities/Order.ts, puis adapte business/ et data/ en conséquence. »",
+              aiMistake: "Ajouter un champ dans la base de données sans mettre à jour le modèle partagé."
+            }
+          }
+        },
+        mvc: {
+          name: "Architecture MVC / MVVM (Modèle – Vue – Contrôleur)",
+          tagline: "Découpage tripartite centré sur le cycle Requête utilisateur → Contrôleur → Modèle → Affichage.",
+          flow: "Flux : Route → Controller → Model → Controller → View",
+          defaultNode: "controllers/OrderController.ts",
+          nodes: [
+            { id: null, text: "boutique-app/" },
+            { id: null, text: "├── src/" },
+            { id: "routes/webRoutes.ts", text: "│   ├── routes/webRoutes.ts       # Aiguillage URL" },
+            { id: "controllers/OrderController.ts", text: "│   ├── controllers/OrderController.ts" },
+            { id: null, text: "│   │   └── CatalogController.ts" },
+            { id: "models/OrderModel.ts", text: "│   ├── models/OrderModel.ts      # Données & règles" },
+            { id: null, text: "│   │   └── ProductModel.ts" },
+            { id: "views/orders/checkout.html", text: "│   └── views/orders/checkout.html # Affichage pur" },
+            { id: null, text: "├── context.md" },
+            { id: null, text: "└── AGENTS.md" }
+          ],
+          details: {
+            "routes/webRoutes.ts": {
+              nature: "Table d'aiguillage",
+              role: "Relie chaque adresse (ex. POST /commandes) à la bonne fonction du Contrôleur. Ne contient aucune logique.",
+              deps: "Pointe vers controllers/. Ne touche jamais directement aux models/.",
+              aiGood: "« Ajoute la route POST /commandes/annuler et relie-la à OrderController.annuler. »",
+              aiMistake: "Écrire toute la logique de traitement directement dans le fichier de routes."
+            },
+            "controllers/OrderController.ts": {
+              nature: "Contrôleur (Chef d'orchestre — ou ViewModel en MVVM)",
+              role: "Reçoit la requête utilisateur, vérifie son format, demande au Model de lire/écrire, puis choisit quelle Vue renvoyer. Doit rester mince et léger.",
+              deps: "Appelle models/ et renvoie views/.",
+              aiGood: "« Garde OrderController léger : il orchestre uniquement, la logique de calcul reste dans le modèle ou un fichier métier dédié. »",
+              aiMistake: "Le syndrome du « Fat Controller » : entasser 300 lignes de logique métier dans le contrôleur."
+            },
+            "models/OrderModel.ts": {
+              nature: "Modèle (Données + accès persistance)",
+              role: "Représente les commandes, gère la lecture/écriture en base de données et valide l'intégrité des données.",
+              deps: "Ne connaît rien aux views/ ni aux routes HTTP.",
+              aiGood: "« Ajoute la validation du statut de commande dans models/OrderModel.ts. »",
+              aiMistake: "Formatter du HTML ou des messages d'interface directement dans le Modèle."
+            },
+            "views/orders/checkout.html": {
+              nature: "Vue (Affichage pur)",
+              role: "Reçoit des données déjà prêtes de la part du Contrôleur et les affiche proprement à l'écran.",
+              deps: "Ne fait aucun calcul critique et ne parle jamais à la base de données.",
+              aiGood: "« Modifie uniquement la mise en page dans views/orders/checkout.html sans toucher au contrôleur. »",
+              aiMistake: "Demander à la Vue de recalculer les totaux ou d'interroger la base de données."
+            }
+          }
+        },
+        modular: {
+          name: "Monolithe Modulaire (Feature-Based / Vertical Slice)",
+          tagline: "Découpage vertical par domaine métier. Une seule application, mais chaque fonctionnalité est une brique isolée.",
+          flow: "Règle : modules/A → modules/B/index.ts uniquement (zéro accès interne)",
+          defaultNode: "modules/orders/index.ts",
+          nodes: [
+            { id: null, text: "boutique-app/" },
+            { id: null, text: "├── src/" },
+            { id: null, text: "│   ├── modules/                  # Découpage MÉTIER" },
+            { id: "modules/catalog/", text: "│   │   ├── catalog/              # Module Catalogue" },
+            { id: null, text: "│   │   │   ├── ui/CatalogPage.tsx" },
+            { id: null, text: "│   │   │   ├── domain/productRules.ts" },
+            { id: null, text: "│   │   │   └── index.ts" },
+            { id: "modules/orders/", text: "│   │   └── orders/               # Module Commandes" },
+            { id: null, text: "│   │       ├── ui/CheckoutPage.tsx" },
+            { id: "modules/orders/domain/orderRules.ts", text: "│   │       ├── domain/orderRules.ts" },
+            { id: null, text: "│   │       ├── data/orderRepo.ts" },
+            { id: "modules/orders/index.ts", text: "│   │       └── index.ts          # Contrat public" },
+            { id: "shared/database/", text: "│   └── shared/database/          # Socle commun strict" },
+            { id: null, text: "├── context.md" },
+            { id: null, text: "└── AGENTS.md" }
+          ],
+          details: {
+            "modules/catalog/": {
+              nature: "Module Métier Autonome (dans le même programme)",
+              role: "Contient tout le nécessaire pour gérer le catalogue produits (UI, règles, accès DB). Si tu supprimes ce dossier, tu supprimes toute la feature proprement.",
+              deps: "Indépendant. Les autres modules ne connaissent que son fichier index.ts.",
+              aiGood: "« Travaille uniquement dans modules/catalog/ pour ajouter les filtres de catégorie. »",
+              aiMistake: "Importer un composant interne de orders/ depuis catalog/ en contournant index.ts."
+            },
+            "modules/orders/": {
+              nature: "Module Métier Commandes",
+              role: "Regroupe en un seul endroit l'écran de commande, les calculs métier et l'accès aux données des commandes. Idéal pour déléguer à une IA car tout le contexte est regroupé.",
+              deps: "Si orders a besoin d'un prix produit, il appelle catalog/index.ts, jamais catalog/data/.",
+              aiGood: "« Garde toute la nouvelle fonctionnalité de coupons à l'intérieur du module orders/. »",
+              aiMistake: "Éparpiller des fichiers liés aux commandes dans shared/."
+            },
+            "modules/orders/domain/orderRules.ts": {
+              nature: "Fichier de Fonctions Métier Pures (à l'intérieur d'un module)",
+              role: "Contient les fonctions métier critiques du module Commandes (calcul de total, vérification d'éligibilité). Facile à auditer et isoler.",
+              deps: "Aucune dépendance vers ui/ ou la base de données.",
+              aiGood: "« Extrais la logique de remise dans une fonction dédiée dans modules/orders/domain/orderRules.ts. »",
+              aiMistake: "Placer un appel API Stripe dans orderRules.ts au lieu de data/."
+            },
+            "modules/orders/index.ts": {
+              nature: "Interface Publique / Contrat du Module (La frontière sacrée)",
+              role: "Liste explicitement les seules fonctions que les autres modules ont le droit d'appeler. C'est ce fichier qui permet, plus tard, de convertir éventuellement le module en service sans tout casser.",
+              deps: "Point d'entrée unique depuis l'extérieur du module.",
+              aiGood: "« Expose uniquement la fonction creerCommande dans modules/orders/index.ts ; garde le reste privé au module. »",
+              aiMistake: "Laisser l'IA importer directement modules/orders/data/orderRepo.ts depuis un autre module."
+            },
+            "shared/database/": {
+              nature: "Socle technique partagé (strictement minimal)",
+              role: "Contient uniquement la connexion technique commune (ex. client DB, composants UI de base du design system). Ne contient aucune règle métier.",
+              deps: "Peut être utilisé par les modules. Ne dépend jamais d'aucun module.",
+              aiGood: "« N'ajoute rien dans shared/ qui soit spécifique aux commandes ou au catalogue. »",
+              aiMistake: "Transformer shared/ en dossier fourre-tout géant."
+            }
+          }
+        },
+        hexagonal: {
+          name: "Architecture Hexagonale / Clean (Ports & Adapters)",
+          tagline: "Découpage concentrique. Le métier pur est au centre absolu ; la technique se branche autour comme des adaptateurs.",
+          flow: "Inversion : infrastructure → application → domain (le centre n'importe RIEN)",
+          defaultNode: "application/ports/PaymentGatewayPort.ts",
+          nodes: [
+            { id: null, text: "boutique-app/" },
+            { id: null, text: "├── src/" },
+            { id: "domain/entities/Order.ts", text: "│   ├── domain/entities/Order.ts  # CŒUR MÉTIER PUR" },
+            { id: null, text: "│   ├── application/" },
+            { id: "application/use-cases/PlaceOrder.ts", text: "│   │   ├── use-cases/PlaceOrder.ts" },
+            { id: "application/ports/PaymentGatewayPort.ts", text: "│   │   └── ports/PaymentGatewayPort.ts" },
+            { id: null, text: "│   └── infrastructure/" },
+            { id: "infrastructure/adapters/primary/OrderHttpController.ts", text: "│       ├── adapters/primary/OrderHttpController.ts" },
+            { id: "infrastructure/adapters/secondary/StripePaymentAdapter.ts", text: "│       ├── adapters/secondary/StripePaymentAdapter.ts" },
+            { id: "infrastructure/config/container.ts", text: "│       └── config/container.ts   # Câblage" },
+            { id: null, text: "└── AGENTS.md" }
+          ],
+          details: {
+            "domain/entities/Order.ts": {
+              nature: "Cœur Métier (Sanctuaire zéro dépendance)",
+              role: "Contient les règles fondamentales de ton métier. Ce dossier ne connaît ni SQL, ni Firestore, ni React, ni Stripe. Il reste identique même si tu changes toute la technique.",
+              deps: "ZÉRO import extérieur. C'est le seul dossier qui ne dépend de rien.",
+              aiGood: "« Vérifie que domain/ n'importe aucune bibliothèque externe ni aucun outil d'infrastructure. »",
+              aiMistake: "Importer Firebase ou Axios dans domain/ : cela détruit l'intérêt même de l'architecture hexagonale."
+            },
+            "application/use-cases/PlaceOrder.ts": {
+              nature: "Cas d'Usage (Scénario métier complet)",
+              role: "Décrit étape par étape l'action « Passer une commande » en utilisant le domain et des interfaces abstraites (Ports), sans savoir quelle DB ou quel prestataire de paiement est derrière.",
+              deps: "Dépend de domain/ et de application/ports/. Ignore infrastructure/.",
+              aiGood: "« Crée un nouveau cas d'usage CancelOrder.ts dans application/use-cases/ qui s'appuie uniquement sur les ports existants. »",
+              aiMistake: "Instancier directement Stripe à l'intérieur du cas d'usage."
+            },
+            "application/ports/PaymentGatewayPort.ts": {
+              nature: "Port (Prise électrique / Contrat abstrait)",
+              role: "Définit ce que le métier attend d'un système de paiement (ex. une fonction débiter(montant)), sans dire comment c'est fait. N'importe quel prestataire pourra se brancher sur cette prise.",
+              deps: "Défini côté application, implémenté côté infrastructure.",
+              aiGood: "« Définis d'abord l'interface dans application/ports/ avant d'écrire l'intégration technique. »",
+              aiMistake: "Modifier le Port pour y faire apparaître des noms spécifiques à Stripe."
+            },
+            "infrastructure/adapters/primary/OrderHttpController.ts": {
+              nature: "Adapter Primaire (Porte d'entrée)",
+              role: "Traduit un appel extérieur (une requête HTTP, un clic UI, une commande CLI) en appel vers un cas d'usage (PlaceOrder).",
+              deps: "Appelle application/use-cases/.",
+              aiGood: "« Garde l'adapter HTTP purement traducteur : il lit la requête, appelle PlaceOrder et renvoie le code HTTP. »",
+              aiMistake: "Mettre des règles métier dans l'adapter HTTP."
+            },
+            "infrastructure/adapters/secondary/StripePaymentAdapter.ts": {
+              nature: "Adapter Secondaire (Branchement technique interchangeable)",
+              role: "Implémente concrètement le Port PaymentGatewayPort en parlant à l'API Stripe. Demain, tu peux écrire PayPalPaymentAdapter.ts sans toucher une seule ligne du métier.",
+              deps: "Implémente un Port de application/ports/.",
+              aiGood: "« Remplace Stripe par PayPal en créant un nouvel adapter qui respecte PaymentGatewayPort, sans toucher à domain/ ni application/. »",
+              aiMistake: "Réécrire tout le projet juste parce qu'on change de base de données ou de prestataire."
+            },
+            "infrastructure/config/container.ts": {
+              nature: "Câblage (Injection de dépendances)",
+              role: "Le seul fichier qui branche concrètement les prises : il dit à PlaceOrder d'utiliser StripePaymentAdapter et PostgresOrderRepository.",
+              deps: "Connaît les use-cases et les adapters pour les assembler au démarrage.",
+              aiGood: "« Branche le nouvel adapter PayPal uniquement dans infrastructure/config/container.ts. »",
+              aiMistake: "Faire le branchement dans plusieurs fichiers éparpillés."
+            }
+          }
+        },
+        microservices: {
+          name: "Architecture Microservices (Systèmes distribués)",
+          tagline: "Découpage physique en plusieurs applications autonomes qui communiquent par le réseau.",
+          flow: "Réseau : Client → api-gateway → services indépendants + événements",
+          defaultNode: "services/order-service/",
+          nodes: [
+            { id: null, text: "boutique-platform/" },
+            { id: "api-gateway/", text: "├── api-gateway/                  # Guichet unique" },
+            { id: null, text: "├── services/" },
+            { id: "services/order-service/", text: "│   ├── order-service/            # SERVICE AUTONOME 1" },
+            { id: null, text: "│   │   ├── src/" },
+            { id: "services/order-service/db/", text: "│   │   ├── db/                   # Sa propre DB privée" },
+            { id: null, text: "│   │   ├── package.json" },
+            { id: null, text: "│   │   └── Dockerfile" },
+            { id: "services/payment-service/", text: "│   └── payment-service/          # SERVICE AUTONOME 2" },
+            { id: null, text: "│       ├── src/" },
+            { id: null, text: "│       ├── db/" },
+            { id: null, text: "│       └── Dockerfile" },
+            { id: "contracts/events/OrderCreated.schema.json", text: "├── contracts/events/OrderCreated.schema.json" },
+            { id: "infra/docker-compose.yml", text: "└── infra/docker-compose.yml      # Orchestration" }
+          ],
+          details: {
+            "api-gateway/": {
+              nature: "Passerelle API (Guichet unique)",
+              role: "Reçoit toutes les requêtes des utilisateurs, vérifie l'authentification, limite les abus et redirige vers le bon service interne.",
+              deps: "Communique par le réseau avec les services. Ne contient pas la logique métier des services.",
+              aiGood: "« Configure uniquement le routage et la vérification de session dans api-gateway/. »",
+              aiMistake: "Mettre des calculs de commande dans la passerelle."
+            },
+            "services/order-service/": {
+              nature: "Service Autonome complet (Mini-application déployable seule)",
+              role: "Gère tout le cycle de vie des commandes. Possède son propre serveur, son propre package.json et son propre Dockerfile. À l'intérieur de son src/, il peut utiliser une architecture en Couches ou Hexagonale.",
+              deps: "Ne partage aucun code mémoire avec payment-service. Communique uniquement par API ou événements.",
+              aiGood: "« Assure-toi que order-service peut démarrer et fonctionner même si payment-service est momentanément lent. »",
+              aiMistake: "Créer des microservices sur un projet solo au démarrage : 10x plus complexe sans bénéfice."
+            },
+            "services/order-service/db/": {
+              nature: "Base de données privée du service",
+              role: "Règle absolue des microservices : chaque service est seul propriétaire de sa base. Aucun autre service n'a le droit d'y lire ou d'y écrire directement.",
+              deps: "Accessible uniquement par order-service.",
+              aiGood: "« payment-service ne doit jamais requêter la base de order-service ; il reçoit les infos via l'événement OrderCreated. »",
+              aiMistake: "Partager une seule table SQL modifiable par 4 services (le « monolithe distribué », pire des deux mondes)."
+            },
+            "services/payment-service/": {
+              nature: "Second Service Autonome",
+              role: "Gère isolément les paiements (sécurité renforcée, déploiement indépendant). Écoute l'événement OrderCreated pour déclencher le règlement.",
+              deps: "Totalement découplé du code de order-service. Dépend uniquement du contrat d'événement.",
+              aiGood: "« Gère les tentatives de réessai (retry) en cas d'échec réseau dans payment-service. »",
+              aiMistake: "Oublier qu'un appel réseau entre deux services peut échouer ou répondre en retard."
+            },
+            "contracts/events/OrderCreated.schema.json": {
+              nature: "Contrat de communication inter-services",
+              role: "Décrit officiellement la structure du message envoyé sur le réseau quand une commande est créée, pour que order-service et payment-service restent compatibles.",
+              deps: "Versionné et partagé en lecture seule entre services.",
+              aiGood: "« N'enlève jamais un champ existant dans OrderCreated.schema.json sans prévoir une compatibilité descendante. »",
+              aiMistake: "Renommer un champ dans un service sans prévenir les autres services qui l'écoutent."
+            },
+            "infra/docker-compose.yml": {
+              nature: "Orchestration réseau & déploiement",
+              role: "Décrit comment lancer simultanément tous les services, leurs bases de données séparées et leur réseau privé.",
+              deps: "Pilote les Dockerfile de chaque service.",
+              aiGood: "« Mets à jour infra/docker-compose.yml pour déclarer les variables d'environnement sans secrets en dur. »",
+              aiMistake: "Lancer des microservices sans avoir pensé au monitoring et au débogage distribué."
+            }
+          }
+        }
+      };
+
+      const DIRECTIVES_DATA = {
+        feature: {
+          badQuote: "« Ajoute la possibilité de mettre un code promo sur la page de paiement et vérifie qu'il est valide dans la base de données. »",
+          badWhy: "Trop vague sur les couches : l'IA risque d'écrire la requête base de données et le calcul de remise directement dans le composant visuel de la page paiement.",
+          goodQuote: "« Ajoute la gestion des codes promo en respectant nos couches : 1) la lecture du code dans data/, 2) la validation et le calcul de remise dans une fonction dédiée de business/, 3) uniquement le champ de saisie et l'affichage du résultat dans presentation/. Mets à jour plan.md avant de coder. »",
+          goodWhy: "Tu guides les frontières sans écrire une ligne de code : chaque couche reste propre, testable et facile à modifier."
+        },
+        extract: {
+          badQuote: "« Ce fichier est trop long, coupe-le et mets des fonctions à part dans un dossier utils. »",
+          badWhy: "Tu viens de créer un dossier fourre-tout sans sens métier et tu n'as pas verrouillé les entrées/sorties : risque élevé de casser les appels existants.",
+          goodQuote: "« La fonction validerCommande fait trop de choses (calcul + stock + email). Découpe-la en 3 petites fonctions cohérentes dans la couche business/ (pas de dossier utils/), en conservant exactement les mêmes entrées/sorties pour les fichiers qui l'appellent. »",
+          goodWhy: "Découpage chirurgical, zéro dossier poubelle et compatibilité garantie avec le reste du projet."
+        },
+        bug: {
+          badQuote: "« Le total de la commande est faux, corrige ça vite. »",
+          badWhy: "Parfois l'IA « bricole » un pansement rapide dans l'affichage UI pour masquer un mauvais calcul dans la couche métier — ce qui crée des incohérences graves ailleurs.",
+          goodQuote: "« Le total affiché est faux. Identifie d'abord si l'erreur vient de la fonction de calcul dans business/ ou de l'affichage dans presentation/. Explique-moi la cause en 3 lignes avant de corriger uniquement la couche responsable. »",
+          goodWhy: "Tu imposes la démarche d'ingénieur (diagnostic avant réparation) et tu empêches les rustines dans la mauvaise couche."
+        },
+        refuse: {
+          badQuote: "« Supprime le dossier utils et mets tout dans le fichier principal. »",
+          badWhy: "Tu vas créer un fichier monstre illisible et casser tous les imports pointant vers utils/.",
+          goodQuote: "« Je vois que tu as créé un dossier utils/ fourre-tout. Redispatche chaque fonction dans la couche ou le module métier qui lui correspond, mets à jour tous les imports associés, puis supprime utils/. Vérifie qu'aucune référence cassée ne reste. »",
+          goodWhy: "Reclassement propre, aucune référence orpheline, arborescence maintenue intacte."
+        },
+        migrate: {
+          badQuote: "« Transforme mon module de facturation en microservice maintenant pour que ce soit pro. »",
+          badWhy: "Sur-ingénierie prématurée : tu ajoutes un serveur, du réseau et une deuxième base de données à gérer sans besoin réel.",
+          goodQuote: "« Garde la facturation comme un module interne (modules/billing/), mais verrouille strictement sa frontière : aucun autre module ne doit toucher à sa base ni à ses fichiers internes ; tout passe par son contrat public modules/billing/index.ts. Ainsi, il sera prêt à devenir un service le jour où la charge l'exigera. »",
+          goodWhy: "Tu obtiens 90 % des bénéfices de l'isolation avec 0 % de la complexité réseau."
+        }
+      };
+
+      const QUIZ_DATA = [
+        {
+          context: `src/
+├── domain/
+│   └── entities/Booking.ts
+├── application/
+│   ├── use-cases/CreateBooking.ts
+│   └── ports/CalendarPort.ts
+└── infrastructure/
+    └── adapters/secondary/GoogleCalendarAdapter.ts`,
+          question: "1. Quelle architecture reconnais-tu immédiatement ici, et où dois-tu demander à l'IA d'ajouter une nouvelle règle interdisant de réserver le dimanche ?",
+          options: [
+            "Architecture en Couches — à placer dans infrastructure/",
+            "Architecture Hexagonale / Clean — à placer dans domain/ (ou use-cases/), jamais dans GoogleCalendarAdapter",
+            "Architecture Microservices — il faut créer un nouveau Dockerfile pour le dimanche",
+            "Architecture MVC — à placer dans le contrôleur"
+          ],
+          correct: 1,
+          explanation: "Les dossiers domain/, use-cases/, ports/ et adapters/ sont la signature absolue de l'Architecture Hexagonale (Clean). Une règle métier (« pas de réservation le dimanche ») appartient strictement au cœur métier (domain/ ou use-cases/), totalement indépendante de Google Calendar."
+        },
+        {
+          context: `src/
+├── presentation/pages/ProfilePage.tsx   (importe directement firebaseDb !)
+├── business/userService.ts
+└── data/userRepository.ts`,
+          question: "2. Dans cette architecture en couches, tu repères que ProfilePage.tsx parle directement à la base de données. Quel est le problème exact ?",
+          options: [
+            "Aucun problème, c'est plus rapide",
+            "Il manque un dossier utils/ pour faire le lien",
+            "Violation de couche : presentation/ saute par-dessus business/ et data/, créant un couplage interdit",
+            "Il faut immédiatement transformer userService.ts en microservice"
+          ],
+          correct: 2,
+          explanation: "En architecture en couches, les dépendances descendent proprement : presentation → business → data. Si une page UI parle directement à la base, changer de base ou ajouter une règle de sécurité plus tard obligera à fouiller toute l'interface."
+        },
+        {
+          context: `function finaliserInscription(user) {
+  // 1. Vérifie le format de l'email (15 lignes)
+  // 2. Calcule le plan tarifaire (25 lignes)
+  // 3. Sauvegarde l'utilisateur en base de données (20 lignes)
+  // 4. Envoie l'email de bienvenue (30 lignes)
+}`,
+          question: "3. L'IA a généré cette fonction de 90 lignes. Quelle décision d'ingénieur prends-tu ?",
+          options: [
+            "La laisser telle quelle puisqu'elle fonctionne",
+            "La découper en fonctions distinctes réparties dans leurs bonnes responsabilités (validation/métier, persistance, notification), en gardant une fonction courte qui les orchestre",
+            "Déplacer ses 90 lignes intactes dans un dossier helpers/",
+            "Transformer l'envoi d'email en un serveur Kubernetes séparé"
+          ],
+          correct: 1,
+          explanation: "Cette fonction cumule 4 responsabilités différentes et dépasse 90 lignes. La découper proprement permet de modifier le tarif ou le fournisseur d'email sans risquer de casser l'enregistrement en base."
+        },
+        {
+          context: `Projet : Application interne utilisée par 150 personnes.
+Module concerné : modules/reports/ (génère 10 PDF par jour).
+Question du fondateur : « Faut-il transformer reports en microservice séparé ? »`,
+          question: "4. En te basant sur les critères d'ingénierie, quel est ton arbitrage ?",
+          options: [
+            "Oui, les microservices sont toujours la meilleure architecture",
+            "Oui, dès qu'il y a plus de 2 modules il faut passer en microservices",
+            "Non : aucune charge asymétrique, aucune équipe séparée ni panne critique. Il doit rester un Module propre avec son contrat index.ts",
+            "Non, il faut plutôt tout fusionner dans un seul fichier sans modules"
+          ],
+          correct: 2,
+          explanation: "10 PDF par jour pour 150 utilisateurs ne justifie aucunement le coût réseau, le déploiement multiple et la complexité d'un microservice. Un Module bien isolé dans un Monolithe Modulaire est le choix rigoureux."
+        },
+        {
+          context: `boutique-app/
+├── package.json         (un seul pour tout le projet)
+└── src/
+    ├── presentation/
+    ├── business/
+    │   └── paymentService.ts
+    └── data/`,
+          question: "5. Tu vois le fichier paymentService.ts dans cette arborescence. Que peux-tu affirmer avec certitude ?",
+          options: [
+            "C'est un microservice déployé sur un serveur séparé",
+            "C'est un simple fichier de couche métier interne dans une seule application (le mot « Service » au sens interne)",
+            "C'est un fichier d'interface visuelle",
+            "C'est une base de données autonome"
+          ],
+          correct: 1,
+          explanation: "Un seul package.json, aucun Dockerfile multiple, pas de dossier services/ ni d'api-gateway/ : paymentService.ts est simplement un fichier contenant des fonctions métier au sein d'une architecture en couches."
+        }
+      ];
+
+      /* =====================================================================
+         1. NAVIGATION, PROGRESSION & ANIMATIONS REVEAL
+         ===================================================================== */
+      const progressFill = document.getElementById("progressFill");
+      const navLinks = Array.from(document.querySelectorAll(".nav-link"));
+      const chapters = Array.from(document.querySelectorAll(".chapter"));
+
+      function updateProgress() {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
+        progressFill.style.width = pct + "%";
+      }
+
+      window.addEventListener("scroll", updateProgress, { passive: true });
+      updateProgress();
+
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+            }
+          });
+        },
+        { threshold: 0.08 }
+      );
+
+      chapters.forEach((ch) => revealObserver.observe(ch));
+
+      const navObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const id = entry.target.getAttribute("id");
+              navLinks.forEach((link) => {
+                link.classList.toggle("active", link.getAttribute("href") === "#" + id);
+              });
+            }
+          });
+        },
+        { rootMargin: "-30% 0px -60% 0px" }
+      );
+
+      chapters.forEach((ch) => navObserver.observe(ch));
+
+      /* =====================================================================
+         2. CHAPITRE 1 : ÉCHELLE + ANATOMIE DE FONCTION
+         ===================================================================== */
+      const scaleSteps = document.getElementById("scaleSteps");
+      const scaleDetail = document.getElementById("scaleDetail");
+
+      function renderScale(key) {
+        const item = SCALE_DATA[key];
+        scaleSteps.querySelectorAll(".scale-step").forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.scale === key);
+        });
+        scaleDetail.innerHTML = `
+          <div>
+            <span class="detail-label">${escapeHtml(item.title)}</span>
+            <p><strong>Image mentale :</strong> ${escapeHtml(item.metaphor)}</p>
+            <p><strong>Règle clé :</strong> ${escapeHtml(item.rule)}</p>
+            <p class="muted" style="margin-bottom:0;"><strong>Comment en parler à l'IA :</strong> ${escapeHtml(item.sayToAI)}</p>
+          </div>
+          <div>
+            <span class="detail-label">Ce que voit ton œil dans le projet</span>
+            <div class="mono-block">${escapeHtml(item.tree)}</div>
+          </div>
+        `;
+      }
+
+      scaleSteps.addEventListener("click", (e) => {
+        const btn = e.target.closest(".scale-step");
+        if (!btn) return;
+        renderScale(btn.dataset.scale);
+      });
+      renderScale("fonction");
+
+      const codeXray = document.getElementById("codeXray");
+      const xrayExplain = document.getElementById("xrayExplain");
+
+      function renderXray(partKey) {
+        const info = XRAY_DATA[partKey];
+        codeXray.querySelectorAll(".xray-part").forEach((el) => {
+          el.classList.toggle("active", el.dataset.part === partKey);
+        });
+        xrayExplain.innerHTML = `
+          <h4>${escapeHtml(info.title)}</h4>
+          <p>${escapeHtml(info.text)}</p>
+          <p class="muted" style="margin-bottom:0;"><strong>${escapeHtml(info.check)}</strong></p>
+        `;
+      }
+
+      codeXray.addEventListener("click", (e) => {
+        const part = e.target.closest(".xray-part");
+        if (!part) return;
+        renderXray(part.dataset.part);
+      });
+      renderXray("decl");
+
+      /* =====================================================================
+         3. CHAPITRE 2 : SIMULATEUR D'EXTRACTION DE FONCTION
+         ===================================================================== */
+      const extractChecks = document.getElementById("extractChecks");
+      const extractVerdict = document.getElementById("extractVerdict");
+
+      function updateExtractVerdict() {
+        const state = {};
+        extractChecks.querySelectorAll("input[type='checkbox']").forEach((cb) => {
+          state[cb.dataset.extract] = cb.checked;
+          const row = cb.closest(".check-row");
+          row.classList.remove("checked", "checked-warn");
+          if (cb.checked) {
+            row.classList.add(cb.dataset.extract === "trivial" ? "checked-warn" : "checked");
+          }
+        });
+
+        const positiveCount =
+          (state.reused ? 1 : 0) +
+          (state.multi ? 1 : 0) +
+          (state.critical ? 1 : 0) +
+          (state.long ? 1 : 0);
+
+        let title = "";
+        let body = "";
+        let prompt = "";
+        let isWarn = false;
+
+        if (positiveCount === 0 && !state.trivial) {
+          title = "Sélectionne au moins un critère ci-dessus";
+          body = "Coche ce que tu observes dans le bloc généré par l'IA pour obtenir le verdict d'ingénierie et la directive exacte à lui donner.";
+        } else if (state.trivial && positiveCount === 0) {
+          isWarn = true;
+          title = "Verdict : Laisse-la sur place (ne pas sur-découper)";
+          body = "Une opération de 2 à 5 lignes qui ne sert qu'à un seul endroit est plus lisible là où elle est. La sortir maintenant ajouterait de la complexité inutile sans bénéfice.";
+          prompt = "« Garde cette petite logique localement dans ce fichier pour le moment ; ne crée pas de fichier utilitaire séparé. »";
+        } else if (state.multi) {
+          isWarn = true;
+          title = "Verdict : Extraction indispensable (mélange de responsabilités)";
+          body = "C'est le cas le plus urgent : une fonction qui fait deux métiers différents finit toujours par créer des bugs en cascade. Il faut séparer chaque responsabilité dans sa propre fonction et sa bonne couche.";
+          prompt = "« Ce bloc mélange plusieurs responsabilités. Découpe-le en fonctions distinctes placées dans leurs couches respectives (calcul dans business/, persistance dans data/, affichage dans presentation/), en conservant exactement les mêmes entrées/sorties côté appelant. »";
+        } else {
+          title = "Verdict : Oui, mets cette fonction à part proprement";
+          body = `Tu as coché ${positiveCount} critère(s) solide(s). Isoler cette fonction dans le bon dossier métier rendra le code plus sûr à modifier et évitera les copier-coller.`;
+          prompt = "« Extrais cette logique dans une fonction nommée clairement (verbe d'action) dans le dossier métier correspondant — sans créer de dossier utils/ fourre-tout — et mets à jour les appels existants sans changer le comportement. »";
+        }
+
+        extractVerdict.classList.toggle("warn", isWarn);
+        extractVerdict.innerHTML = `
+          <div class="verdict-title">${escapeHtml(title)}</div>
+          <p style="margin-bottom:0;">${escapeHtml(body)}</p>
+          ${prompt ? buildPromptBlock("Modèle de consigne pour l'IA", prompt) : ""}
+        `;
+      }
+
+      extractChecks.addEventListener("change", updateExtractVerdict);
+      updateExtractVerdict();
+
+      /* =====================================================================
+         4. CHAPITRE 3 : MODULE VS SERVICE + CALCULATEUR DE CONVERSION
+         ===================================================================== */
+      const msTabs = document.getElementById("msTabs");
+      const msDiagram = document.getElementById("msDiagram");
+
+      function renderMsDiagram(mode) {
+        msTabs.querySelectorAll(".tab-btn").forEach((b) => {
+          b.setAttribute("aria-selected", String(b.dataset.ms === mode));
+        });
+
+        if (mode === "module") {
+          msDiagram.innerHTML = `
+            <div class="diagram-stage">
+              <div class="diag-box boundary">
+                <strong>UNE SEULE APPLICATION (Même serveur, même mémoire, même déploiement)</strong>
+                <div class="diagram-row">
+                  <div class="diag-box">
+                    <strong>Module Commandes</strong>
+                    <small>modules/orders/</small>
+                  </div>
+                  <div class="diag-arrow">
+                    appel direct →<br />
+                    <small>via catalog/index.ts (0 ms réseau)</small>
+                  </div>
+                  <div class="diag-box">
+                    <strong>Module Catalogue</strong>
+                    <small>modules/catalog/</small>
+                  </div>
+                </div>
+                <small>Une base de données (avec tables bien séparées par module) — Simple à déboguer.</small>
+              </div>
+            </div>
+          `;
+        } else {
+          msDiagram.innerHTML = `
+            <div class="diagram-stage">
+              <div class="diagram-row">
+                <div class="diag-box">
+                  <strong>order-service</strong>
+                  <small>Serveur A + DB A + Dockerfile A</small>
+                </div>
+                <div class="diag-arrow">
+                  ← RÉSEAU (HTTP / Événements) →<br />
+                  <small>latence, timeout, retry obligatoires</small>
+                </div>
+                <div class="diag-box">
+                  <strong>payment-service</strong>
+                  <small>Serveur B + DB B + Dockerfile B</small>
+                </div>
+              </div>
+              <p class="muted" style="text-align:center; font-size:0.86rem; margin:0.6rem 0 0;">
+                Deux programmes totalement séparés. Aucun accès direct à la base de données de l'autre.
+              </p>
+            </div>
+          `;
+        }
+      }
+
+      msTabs.addEventListener("click", (e) => {
+        const btn = e.target.closest(".tab-btn");
+        if (!btn) return;
+        renderMsDiagram(btn.dataset.ms);
+      });
+      renderMsDiagram("module");
+
+      const convertChecks = document.getElementById("convertChecks");
+      const convertVerdict = document.getElementById("convertVerdict");
+
+      function updateConvertVerdict() {
+        let score = 0;
+        convertChecks.querySelectorAll("input[type='checkbox']").forEach((cb) => {
+          const row = cb.closest(".check-row");
+          row.classList.toggle("checked", cb.checked);
+          if (cb.checked) score++;
+        });
+
+        let title = "";
+        let body = "";
+        let prompt = "";
+        let isWarn = false;
+
+        if (score === 0) {
+          title = "Verdict : Garde-le impérativement en Module interne";
+          body = "Aucun critère ne justifie la lourdeur d'un service autonome. Passer en microservice maintenant ralentirait chaque modification et multiplierait les pannes réseau inutiles.";
+          prompt = "« Garde cette fonctionnalité en module interne dans modules/. Ne crée ni serveur séparé ni microservice. »";
+        } else if (score === 1) {
+          title = "Verdict : Reste en Module, mais verrouille son contrat public";
+          body = "Un seul signal apparaît. Ce n'est généralement pas encore suffisant pour payer le prix d'un système distribué. La stratégie d'ingénieur : rendre le module 100 % étanche aujourd'hui (via son index.ts) pour pouvoir l'extraire facilement plus tard si besoin.";
+          prompt = "« Isole strictement ce module : aucune importation directe de ses fichiers internes ni de ses tables depuis les autres modules. Tout passe par son fichier index.ts. »";
+        } else {
+          isWarn = true;
+          title = `Verdict : Candidat légitime à la conversion en Service (${score}/5 critères)`;
+          body = "Les contraintes de charge, d'isolation ou d'organisation justifient une séparation physique. Procède par étapes : 1) définir le contrat d'API/événements, 2) séparer les données, 3) extraire le serveur dédié.";
+          prompt = "« Prépare un plan de migration dans plan.md pour extraire ce module en service autonome : commence par définir le contrat d'API/événements et l'isolation de sa base de données avant de toucher au code. »";
+        }
+
+        convertVerdict.classList.toggle("warn", isWarn);
+        convertVerdict.innerHTML = `
+          <div class="verdict-title">${escapeHtml(title)}</div>
+          <p style="margin-bottom:0;">${escapeHtml(body)}</p>
+          ${buildPromptBlock("Directive d'arbitrage pour l'IA", prompt)}
+        `;
+      }
+
+      convertChecks.addEventListener("change", updateConvertVerdict);
+      updateConvertVerdict();
+
+      /* =====================================================================
+         5. CHAPITRE 4 : EXPLORATEUR INTERACTIF DES 5 ARCHITECTURES
+         ===================================================================== */
+      const archTabs = document.getElementById("archTabs");
+      const archSummary = document.getElementById("archSummary");
+      const treePanel = document.getElementById("treePanel");
+      const inspectorPanel = document.getElementById("inspectorPanel");
+
+      let currentArchKey = "layered";
+      let currentNodeKey = ARCH_DATA.layered.defaultNode;
+
+      function renderArchitecture(archKey) {
+        currentArchKey = archKey;
+        const arch = ARCH_DATA[archKey];
+        currentNodeKey = arch.defaultNode;
+
+        archTabs.querySelectorAll(".tab-btn").forEach((b) => {
+          b.setAttribute("aria-selected", String(b.dataset.arch === archKey));
+        });
+
+        archSummary.innerHTML = `
+          <div>
+            <strong>${escapeHtml(arch.name)}</strong>
+            <div class="muted" style="font-size:0.9rem;">${escapeHtml(arch.tagline)}</div>
+          </div>
+          <div class="arch-flow">${escapeHtml(arch.flow)}</div>
+        `;
+
+        const linesHtml = arch.nodes
+          .map((n) => {
+            if (!n.id) {
+              return `<div class="tree-line">${escapeHtml(n.text)}</div>`;
+            }
+            const sel = n.id === currentNodeKey ? " selected" : "";
+            return `<button type="button" class="tree-line clickable${sel}" data-node="${escapeHtml(n.id)}">${escapeHtml(n.text)}</button>`;
+          })
+          .join("");
+
+        treePanel.innerHTML = `<div class="tree-hint">Clique sur un élément en gras pour l'inspecter :</div>${linesHtml}`;
+        renderInspector(currentNodeKey);
+      }
+
+      function renderInspector(nodeKey) {
+        currentNodeKey = nodeKey;
+        const arch = ARCH_DATA[currentArchKey];
+        const info = arch.details[nodeKey];
+        if (!info) return;
+
+        treePanel.querySelectorAll(".tree-line.clickable").forEach((btn) => {
+          btn.classList.toggle("selected", btn.dataset.node === nodeKey);
+        });
+
+        inspectorPanel.innerHTML = `
+          <div class="inspector-path">${escapeHtml(nodeKey)}</div>
+          <div class="inspector-role">${escapeHtml(info.nature)}</div>
+          <div class="inspector-block">
+            <strong>Rôle exact</strong>
+            <p>${escapeHtml(info.role)}</p>
+          </div>
+          <div class="inspector-block">
+            <strong>Règle de dépendance (qui parle à qui)</strong>
+            <p>${escapeHtml(info.deps)}</p>
+          </div>
+          <div class="inspector-block">
+            <strong>Bonne directive à donner à l'IA</strong>
+            <p class="muted">${escapeHtml(info.aiGood)}</p>
+          </div>
+          <div class="inspector-block">
+            <strong>Maladresse qui casse cette architecture</strong>
+            <div class="inspector-alert">${escapeHtml(info.aiMistake)}</div>
+          </div>
+        `;
+      }
+
+      archTabs.addEventListener("click", (e) => {
+        const btn = e.target.closest(".tab-btn");
+        if (!btn) return;
+        renderArchitecture(btn.dataset.arch);
+      });
+
+      treePanel.addEventListener("click", (e) => {
+        const btn = e.target.closest(".tree-line.clickable");
+        if (!btn) return;
+        renderInspector(btn.dataset.node);
+      });
+
+      renderArchitecture("layered");
+
+      /* =====================================================================
+         6. CHAPITRE 5 : DIRECTIVES IA (AVANT / APRÈS)
+         ===================================================================== */
+      const directiveTabs = document.getElementById("directiveTabs");
+      const directiveContent = document.getElementById("directiveContent");
+
+      function renderDirective(key) {
+        const d = DIRECTIVES_DATA[key];
+        directiveTabs.querySelectorAll(".tab-btn").forEach((b) => {
+          b.setAttribute("aria-selected", String(b.dataset.dir === key));
+        });
+
+        directiveContent.innerHTML = `
+          <div class="directive-grid">
+            <div class="directive-col bad">
+              <span class="directive-tag">Consigne maladroite (risque de casse)</span>
+              <div class="directive-quote">${escapeHtml(d.badQuote)}</div>
+              <p class="directive-why"><strong>Pourquoi c'est risqué :</strong> ${escapeHtml(d.badWhy)}</p>
+            </div>
+            <div class="directive-col good">
+              <span class="directive-tag">Directive d'ingénieur (précise et sûre)</span>
+              <div class="directive-quote">${escapeHtml(d.goodQuote)}</div>
+              <div style="margin-bottom:0.85rem;">
+                <button type="button" class="btn btn-small" data-copy="${escapeHtml(d.goodQuote)}">Copier cette directive</button>
+              </div>
+              <p class="directive-why"><strong>Pourquoi ça protège le projet :</strong> ${escapeHtml(d.goodWhy)}</p>
+            </div>
+          </div>
+        `;
+      }
+
+      directiveTabs.addEventListener("click", (e) => {
+        const btn = e.target.closest(".tab-btn");
+        if (!btn) return;
+        renderDirective(btn.dataset.dir);
+      });
+      renderDirective("feature");
+
+      /* =====================================================================
+         7. CHAPITRE 6 : ATELIER D'AUDIT (QUIZ INTERACTIF)
+         ===================================================================== */
+      const quizContainer = document.getElementById("quizContainer");
+      let quizIdx = 0;
+      let quizScore = 0;
+      let quizAnswered = false;
+
+      function renderQuiz() {
+        if (quizIdx >= QUIZ_DATA.length) {
+          quizContainer.innerHTML = `
+            <span class="detail-label">Bilan de l'atelier d'audit</span>
+            <h3 style="margin-top:0.25rem;">Score : ${quizScore} / ${QUIZ_DATA.length} arbitrages justes</h3>
+            <p>
+              ${
+                quizScore === QUIZ_DATA.length
+                  ? "Excellent réflexe architectural : tu distingues clairement les couches, les fonctions, les modules et les services autonomes."
+                  : "Bon entraînement ! N'hésite pas à revoir les cas manqués dans l'explorateur des 5 architectures puis à relancer l'atelier."
+              }
+            </p>
+            <button type="button" class="btn btn-primary" id="restartQuizBtn">Recommencer l'atelier</button>
+          `;
+          document.getElementById("restartQuizBtn").addEventListener("click", () => {
+            quizIdx = 0;
+            quizScore = 0;
+            renderQuiz();
+          });
+          return;
+        }
+
+        quizAnswered = false;
+        const q = QUIZ_DATA[quizIdx];
+
+        const optionsHtml = q.options
+          .map(
+            (opt, i) =>
+              `<button type="button" class="quiz-option" data-opt="${i}">${escapeHtml(opt)}</button>`
+          )
+          .join("");
+
+        quizContainer.innerHTML = `
+          <div class="quiz-progress">
+            <span>CAS D'AUDIT ${quizIdx + 1} / ${QUIZ_DATA.length}</span>
+            <span>Arbitrages justes : ${quizScore}</span>
+          </div>
+          <div class="mono-block" style="margin-bottom:1.15rem;">${escapeHtml(q.context)}</div>
+          <p style="font-weight:600; margin-bottom:0.5rem;">${escapeHtml(q.question)}</p>
+          <div class="quiz-options" id="quizOptions">${optionsHtml}</div>
+          <div class="quiz-feedback" id="quizFeedback"></div>
+          <div class="quiz-footer">
+            <span class="muted" style="font-size:0.84rem;" id="quizHint">Choisis l'arbitrage le plus rigoureux.</span>
+            <button type="button" class="btn btn-primary" id="quizNextBtn" style="display:none;">
+              ${quizIdx === QUIZ_DATA.length - 1 ? "Voir le bilan" : "Cas suivant →"}
+            </button>
+          </div>
+        `;
+
+        const optionsWrap = document.getElementById("quizOptions");
+        const feedbackBox = document.getElementById("quizFeedback");
+        const nextBtn = document.getElementById("quizNextBtn");
+        const hintEl = document.getElementById("quizHint");
+
+        optionsWrap.addEventListener("click", (e) => {
+          const btn = e.target.closest(".quiz-option");
+          if (!btn || quizAnswered) return;
+          quizAnswered = true;
+
+          const chosen = Number(btn.dataset.opt);
+          const isRight = chosen === q.correct;
+          if (isRight) quizScore++;
+
+          optionsWrap.querySelectorAll(".quiz-option").forEach((el, idx) => {
+            el.disabled = true;
+            if (idx === q.correct) el.classList.add("correct");
+            else if (idx === chosen && !isRight) el.classList.add("wrong");
+          });
+
+          feedbackBox.classList.add("show");
+          feedbackBox.classList.toggle("is-wrong", !isRight);
+          feedbackBox.innerHTML = `
+            <strong style="display:block; margin-bottom:0.35rem;">
+              ${isRight ? "Arbitrage exact." : "Attention au piège architectural."}
+            </strong>
+            <p style="margin-bottom:0;">${escapeHtml(q.explanation)}</p>
+          `;
+
+          hintEl.textContent = "Prends 5 secondes pour relire l'explication avant de continuer.";
+          nextBtn.style.display = "inline-flex";
+        });
+
+        nextBtn.addEventListener("click", () => {
+          quizIdx++;
+          renderQuiz();
+        });
+      }
+
+      renderQuiz();
+
+      /* =====================================================================
+         UTILITAIRES PROPRES (Échappement HTML + Copie presse-papiers)
+         ===================================================================== */
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function buildPromptBlock(label, text) {
+        return `
+          <div class="prompt-snippet">
+            <div class="prompt-header">
+              <span>${escapeHtml(label)}</span>
+              <button type="button" class="btn btn-small" data-copy="${escapeHtml(text)}">Copier</button>
+            </div>
+            <div>${escapeHtml(text)}</div>
+          </div>
+        `;
+      }
+
+      document.body.addEventListener("click", (e) => {
+        const copyBtn = e.target.closest("[data-copy]");
+        if (!copyBtn) return;
+        const text = copyBtn.getAttribute("data-copy");
+        const original = copyBtn.textContent;
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => {
+            copyBtn.textContent = "Copié";
+            setTimeout(() => {
+              copyBtn.textContent = original;
+            }, 1400);
+          });
+        } else {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+          copyBtn.textContent = "Copié";
+          setTimeout(() => {
+            copyBtn.textContent = original;
+          }, 1400);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
