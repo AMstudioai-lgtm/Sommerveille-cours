@@ -3,24 +3,63 @@ import { CAPSTONE_PROJECT_SPEC } from '../data/curriculumData';
 import { AiStudioScenarioLab } from './AiStudioScenarioLab';
 import { Check, Copy, CheckSquare, Square, Terminal, FileText } from 'lucide-react';
 
+import {
+  DEFAULT_CAPSTONE_BUSINESS_RULE,
+  DEFAULT_CAPSTONE_PROJECT_NAME,
+} from '../persistence/progressStorage';
+
 interface CapstoneProjectLabProps {
   onScenarioStepSolved?: (stepKey: string) => void;
   solvedSteps?: string[];
+  checkedMilestones?: string[];
+  onToggleMilestone?: (id: string) => void;
+  customProjectName?: string;
+  onChangeProjectName?: (value: string) => void;
+  customBusinessRule?: string;
+  onChangeBusinessRule?: (value: string) => void;
 }
 
 export const CapstoneProjectLab: React.FC<CapstoneProjectLabProps> = ({
   onScenarioStepSolved,
   solvedSteps = [],
+  checkedMilestones: controlledMilestones,
+  onToggleMilestone,
+  customProjectName: controlledProjectName,
+  onChangeProjectName,
+  customBusinessRule: controlledBusinessRule,
+  onChangeBusinessRule,
 }) => {
-  const [checkedMilestones, setCheckedMilestones] = useState<string[]>([]);
+  const [localMilestones, setLocalMilestones] = useState<string[]>([]);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [customProjectName, setCustomProjectName] = useState<string>('MediFlow Studio');
-  const [customBusinessRule, setCustomBusinessRule] = useState<string>(
-    'Calculer un score de priorité médicale (0 à 100) selon les symptômes, l’âge et les antécédents.'
-  );
+  const [localProjectName, setLocalProjectName] = useState<string>(DEFAULT_CAPSTONE_PROJECT_NAME);
+  const [localBusinessRule, setLocalBusinessRule] = useState<string>(DEFAULT_CAPSTONE_BUSINESS_RULE);
+
+  const checkedMilestones = controlledMilestones ?? localMilestones;
+  const customProjectName = controlledProjectName ?? localProjectName;
+  const customBusinessRule = controlledBusinessRule ?? localBusinessRule;
+
+  const setCustomProjectName = (value: string) => {
+    if (onChangeProjectName) {
+      onChangeProjectName(value);
+    } else {
+      setLocalProjectName(value);
+    }
+  };
+
+  const setCustomBusinessRule = (value: string) => {
+    if (onChangeBusinessRule) {
+      onChangeBusinessRule(value);
+    } else {
+      setLocalBusinessRule(value);
+    }
+  };
 
   const toggleMilestone = (id: string) => {
-    setCheckedMilestones((prev) =>
+    if (onToggleMilestone) {
+      onToggleMilestone(id);
+      return;
+    }
+    setLocalMilestones((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
   };

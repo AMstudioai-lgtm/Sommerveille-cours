@@ -185,7 +185,7 @@ export const TRAINING_MODULES: TrainingModule[] = [
     sommervilleChapters: 'Sommerville Chapitres 1 & 4 — Introduction à l’Ingénierie & Ingénierie des Exigences',
     bgTone: 'primary',
     schemaImage: {
-      src: '/src/assets/images/schema_module1_cycle_incremental_1795020431050.jpg',
+      src: '/images/schemas/schema_module1_cycle_incremental_1795020431050.jpg',
       alt: 'Schéma du besoin et des règles métier découpés en incréments',
       caption: 'Du besoin métier central vers le découpage en incréments maîtrisés : la base de la réflexion d’ingénieur.'
     },
@@ -379,7 +379,7 @@ export const TRAINING_MODULES: TrainingModule[] = [
     sommervilleChapters: 'Sommerville Chapitre 6.1 à 6.3.2 — Architectural Design Decisions & Layered Architecture',
     bgTone: 'primary',
     schemaImage: {
-      src: '/src/assets/images/schema_module2_couches_roles_1795020435677.jpg',
+      src: '/images/schemas/schema_module2_couches_roles_1795020435677.jpg',
       alt: 'Schéma des 4 couches logicielles avec les rôles associés',
       caption: 'Les 4 étages fondamentaux d’un logiciel moderne : Présentation (UI), Logique Métier, Accès Données (API) et Base de Données.',
       secondarySrc: '/assets/aistudio/Screenshot_20261114_212457_ChatGPT_1e112b2e.jpg',
@@ -438,7 +438,7 @@ export const TRAINING_MODULES: TrainingModule[] = [
     sommervilleChapters: 'Sommerville Chapitres 6.3, 17 & 18 — Architectural Patterns & Distributed Systems',
     bgTone: 'primary-alt',
     schemaImage: {
-      src: '/src/assets/images/schema_module3_monolith_modulaire_1795020438811.jpg',
+      src: '/images/schemas/schema_module3_monolith_modulaire_1795020438811.jpg',
       alt: 'Comparaison entre Code Monolithique enchevêtré et Architecture Modulaire Propre',
       caption: 'Haut : Le Monolithe enchevêtré où tout est mélangé. Bas : Le Monolithe Modulaire où l’API distribue proprement vers chaque module.',
       secondarySrc: '/assets/aistudio/Screenshot_20261114_212429_ChatGPT_d561167a.jpg',
@@ -503,7 +503,7 @@ export const TRAINING_MODULES: TrainingModule[] = [
     sommervilleChapters: 'Sommerville Chapitres 7, 15 & 25 — Implémentation, Réutilisation & Gestion de Configuration',
     bgTone: 'primary-alt',
     schemaImage: {
-      src: '/src/assets/images/schema_module4_arborescence_1795020521295.jpg',
+      src: '/images/schemas/schema_module4_arborescence_1795020521295.jpg',
       alt: 'Schéma de l’anatomie d’une arborescence de projet logiciel',
       caption: 'La Racine du projet pilote la configuration et la mémoire, tandis que le dossier /src répartit les couches : components/, utils/ et services/.'
     },
@@ -551,7 +551,7 @@ export const TRAINING_MODULES: TrainingModule[] = [
     sommervilleChapters: 'Sommerville Chapitres 6.3.3, 17 & 18 — Data Repositories, Client-Serveur & Cloud SaaS',
     bgTone: 'primary',
     schemaImage: {
-      src: '/src/assets/images/schema_module5_donnees_cloud_1795020522247.jpg',
+      src: '/images/schemas/schema_module5_donnees_cloud_1795020522247.jpg',
       alt: 'Schéma du flux entre Client Web, Hébergeur Cloud Run et les 3 types de stockage Cloud',
       caption: 'Le Client Web communique avec l’hébergeur serveur (Cloud Run), qui aiguille chaque donnée vers le bon moteur : SQL, NoSQL Firestore ou Blob Storage.'
     },
@@ -625,7 +625,7 @@ export const TRAINING_MODULES: TrainingModule[] = [
     sommervilleChapters: 'Sommerville Chapitres 8, 9, 10, 11, 13 & 25 — Tests, Évolution, Sûreté & Configuration',
     bgTone: 'primary-alt',
     schemaImage: {
-      src: '/src/assets/images/schema_module6_securite_tests_1795020529336.jpg',
+      src: '/images/schemas/schema_module6_securite_tests_1795020529336.jpg',
       alt: 'Schéma des 4 barrières de sécurité et de validation du logiciel',
       caption: 'La Défense en Profondeur : 1. Validation Formulaire (UI) -> 2. Middleware Serveur -> 3. Tests Unitaires & Règles Métier -> 4. Règles Base de Données.'
     },
@@ -683,7 +683,7 @@ export const TRAINING_MODULES: TrainingModule[] = [
     sommervilleChapters: 'Synthèse Appliquée — Ingénierie Assistée par IA & Études de Cas Complètes',
     bgTone: 'primary',
     schemaImage: {
-      src: '/src/assets/images/schema_module7_pilotage_ia_1795020524992.jpg',
+      src: '/images/schemas/schema_module7_pilotage_ia_1795020524992.jpg',
       alt: 'Schéma du pilotage de l’IA par l’Architecte via context.md, plan.md et agents.md',
       caption: 'Le triangle de commandement de l’Architecte : ta vision et tes règles métier pilotent l’IA à travers context.md (Mémoire), plan.md (Incréments) et agents.md (Architecture).'
     },

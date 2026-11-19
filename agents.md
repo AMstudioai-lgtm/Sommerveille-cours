@@ -4,13 +4,14 @@ Ce fichier définit les règles techniques, architecturales et visuelles impéra
 
 ## 1. Architecture du Code (Développement Modulaire en Couches)
 - **Couche Données (`/src/data/curriculumData.ts`, `/src/data/architectureReadingData.ts`, `/src/data/moduleVisualsData.ts`, `/src/data/module5VisualsData.ts`)** : Réunit l'intégralité du programme pédagogique (9 modules, sous-modules détaillés, 6 ateliers interactifs du Module 05, schémas Mermaid, extraits de code typés, arborescences, options de données/hébergement, scénarios et Projet Final). Ne jamais supprimer ni raccourcir les textes pédagogiques : toujours les enrichir et séparer le code du texte via des blocs typés.
-- **Couche Métier Pure (`/src/utils/mentorEngine.ts`, `/src/utils/visualFormatter.ts` & `.test.ts`)** : Contient uniquement des fonctions TypeScript pures testées unitairement via `npx --yes tsx --test src/utils/mentorEngine.test.ts src/utils/visualFormatter.test.ts`.
-- **Couche Présentation (`/src/components/` & `/src/App.tsx`)** : Composants visuels réutilisables (`MermaidDiagramBlock`, `CodeSnippetBlock`, `SubSectionVisualStack`) et ateliers interactifs sans dossier fourre-tout. Toujours privilégier Mermaid en vertical (`TD`) sur mobile et horizontal (`LR`) avec défilement interne sur grand écran.
+- **Couche Métier Pure (`/src/utils/mentorEngine.ts`, `/src/utils/visualFormatter.ts` & `.test.ts`)** : Contient uniquement des fonctions TypeScript pures testées unitairement via `npx --yes tsx --test src/utils/mentorEngine.test.ts src/utils/visualFormatter.test.ts src/persistence/progressStorage.test.ts`.
+- **Couche Persistance & PWA (`/src/persistence/progressStorage.ts`, `/src/hooks/usePWAInstall.ts`, `/src/hooks/useOnlineStatus.ts`)** : Sauvegarde locale versionnée (`localStorage`) de la progression utilisateur et détection d'installation/connectivité hors-ligne. Les schémas visuels des modules doivent résider dans `/public/images/schemas/` afin d'être précachés automatiquement par Workbox (`vite-plugin-pwa`).
+- **Couche Présentation (`/src/components/` & `/src/App.tsx`)** : Composants visuels réutilisables (`MermaidDiagramBlock`, `CodeSnippetBlock`, `SubSectionVisualStack`, `PWAInstallButton`, `OfflineIndicator`) et ateliers interactifs sans dossier fourre-tout. Toujours privilégier Mermaid en vertical (`TD`) sur mobile et horizontal (`LR`) avec défilement interne sur grand écran.
 
 ## 2. Règles Strictes de Design & UI Minimaliste
-1. **Typographie Unique** :
-   - Utiliser **`DM Sans`** pour l'intégralité du site (grands titres, sous-titres, corps de texte, boutons).
-   - Utiliser `IBM Plex Mono` uniquement pour les chemins de fichiers, commandes et extraits de code/prompts.
+1. **Typographie Unique (100 % Locale Hors-Ligne)** :
+   - Utiliser **`DM Sans`** (`@fontsource/dm-sans`) pour l'intégralité du site (grands titres, sous-titres, corps de texte, boutons).
+   - Utiliser `IBM Plex Mono` (`@fontsource/ibm-plex-mono`) uniquement pour les chemins de fichiers, commandes et extraits de code/prompts. Ne pas réintroduire de requêtes CDN Google Fonts dans `index.html`.
 2. **Hiérarchie « Grand Titre, Sous-titre et Reste du Contenu » & Espaces Conséquents** :
    - Chaque module et chaque sous-module s'ouvre sur un **Grand Titre**, suivi d'un **Sous-titre** explicatif et du **Reste du contenu** avec une grande respiration verticale (`py-24` à `py-32`, `space-y-20`).
    - Les textes explicatifs ne doivent jamais être supprimés ni enfermés dans des boîtes inutiles : ils sont écrits directement sur le canevas primaire.

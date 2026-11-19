@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="L'Architecte Logiciel — SE">
+  <rect width="512" height="512" fill="#141619" />
+  <rect x="40" y="40" width="432" height="432" fill="none" stroke="#3B4049" stroke-width="6" />
+  <rect x="40" y="40" width="96" height="12" fill="#1E56A0" />
+  <!-- Geometric S -->
+  <path
+    d="M236 168 H134 C122 168 114 176 114 188 V238 C114 250 122 258 134 258 H204 V308 H114 V344 H224 C236 344 244 336 244 324 V242 C244 230 236 222 224 222 H154 V204 H236 Z"
+    fill="#FAF9F5"
+  />
+  <!-- Geometric E -->
+  <path
+    d="M276 168 H398 V204 H316 V238 H384 V274 H316 V308 H398 V344 H276 Z"
+    fill="#FAF9F5"
+  />
+</svg>

@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TRAINING_MODULES, AI_STUDIO_SCENARIOS, type TrainingModule } from './data/curriculumData';
 import { AUDIT_QUIZ_CASES } from './data/architectureReadingData';
 import { SUBSECTION_VISUALS } from './data/moduleVisualsData';
 import { calculateMasteryProgress } from './utils/mentorEngine';
+import {
+  loadProgress,
+  resetProgress,
+  saveProgress,
+} from './persistence/progressStorage';
 import { InteractiveArchitectureDiagram } from './components/InteractiveArchitectureDiagram';
 import { ArchitectureReadingLab } from './components/ArchitectureReadingLab';
 import { SubSectionVisualStack } from './components/SubSectionVisualStack';
@@ -14,18 +19,52 @@ import { FileTreeExplorer } from './components/FileTreeExplorer';
 import { DecisionSimulator } from './components/DecisionSimulator';
 import { AiStudioScenarioLab, GlossaryDecoderSection } from './components/AiStudioScenarioLab';
 import { CapstoneProjectLab } from './components/CapstoneProjectLab';
+import { PWAInstallButton } from './components/PWAInstallButton';
+import { OfflineIndicator } from './components/OfflineIndicator';
 import {
   ChevronDown,
   CheckSquare,
   Square,
   ArrowUpRight,
+  RotateCcw,
 } from 'lucide-react';
 
 export default function App() {
+  const [initialProgress] = useState(() => loadProgress());
   const [activeModuleFilter, setActiveModuleFilter] = useState<string | 'all'>('all');
   const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
-  const [completedModules, setCompletedModules] = useState<string[]>(['mod-1-fondations']);
-  const [solvedScenarioSteps, setSolvedScenarioSteps] = useState<string[]>([]);
+  const [confirmResetOpen, setConfirmResetOpen] = useState<boolean>(false);
+  const [completedModules, setCompletedModules] = useState<string[]>(
+    initialProgress.completedModules
+  );
+  const [solvedScenarioSteps, setSolvedScenarioSteps] = useState<string[]>(
+    initialProgress.solvedScenarioSteps
+  );
+  const [capstoneCheckedMilestones, setCapstoneCheckedMilestones] = useState<string[]>(
+    initialProgress.capstoneCheckedMilestones
+  );
+  const [capstoneProjectName, setCapstoneProjectName] = useState<string>(
+    initialProgress.capstoneProjectName
+  );
+  const [capstoneBusinessRule, setCapstoneBusinessRule] = useState<string>(
+    initialProgress.capstoneBusinessRule
+  );
+
+  useEffect(() => {
+    saveProgress({
+      completedModules,
+      solvedScenarioSteps,
+      capstoneCheckedMilestones,
+      capstoneProjectName,
+      capstoneBusinessRule,
+    });
+  }, [
+    completedModules,
+    solvedScenarioSteps,
+    capstoneCheckedMilestones,
+    capstoneProjectName,
+    capstoneBusinessRule,
+  ]);
 
   const totalScenarioStepsCount =
     AI_STUDIO_SCENARIOS.reduce((acc, scen) => acc + scen.steps.length, 0) +
@@ -46,6 +85,24 @@ export default function App() {
 
   const handleScenarioStepSolved = (stepKey: string) => {
     setSolvedScenarioSteps((prev) => (prev.includes(stepKey) ? prev : [...prev, stepKey]));
+  };
+
+  const toggleCapstoneMilestone = (milestoneId: string) => {
+    setCapstoneCheckedMilestones((prev) =>
+      prev.includes(milestoneId)
+        ? prev.filter((id) => id !== milestoneId)
+        : [...prev, milestoneId]
+    );
+  };
+
+  const handleConfirmResetProgress = () => {
+    const fresh = resetProgress();
+    setCompletedModules(fresh.completedModules);
+    setSolvedScenarioSteps(fresh.solvedScenarioSteps);
+    setCapstoneCheckedMilestones(fresh.capstoneCheckedMilestones);
+    setCapstoneProjectName(fresh.capstoneProjectName);
+    setCapstoneBusinessRule(fresh.capstoneBusinessRule);
+    setConfirmResetOpen(false);
   };
 
   const displayedModules =
@@ -114,6 +171,12 @@ export default function App() {
           <CapstoneProjectLab
             onScenarioStepSolved={handleScenarioStepSolved}
             solvedSteps={solvedScenarioSteps}
+            checkedMilestones={capstoneCheckedMilestones}
+            onToggleMilestone={toggleCapstoneMilestone}
+            customProjectName={capstoneProjectName}
+            onChangeProjectName={setCapstoneProjectName}
+            customBusinessRule={capstoneBusinessRule}
+            onChangeBusinessRule={setCapstoneBusinessRule}
           />
         );
     }
@@ -183,8 +246,8 @@ export default function App() {
             </a>
           </nav>
 
-          {/* Progression & Tiroir Sommaire Animé */}
-          <div className="flex items-center gap-3 shrink-0">
+          {/* Progression, Installation PWA & Tiroir Sommaire Animé */}
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
             <span
               title={`${mastery.rankLabel} — ${mastery.percentage}%`}
               className="hidden sm:inline-block text-xs font-mono-tech tabular-nums text-palette-muted whitespace-nowrap shrink-0"
@@ -192,9 +255,14 @@ export default function App() {
               Maîtrise {mastery.percentage}%
             </span>
 
+            <PWAInstallButton />
+
             <button
               type="button"
-              onClick={() => setNavDrawerOpen((prev) => !prev)}
+              onClick={() => {
+                setNavDrawerOpen((prev) => !prev);
+                setConfirmResetOpen(false);
+              }}
               aria-expanded={navDrawerOpen}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono-tech font-medium flat-surface-tertiary cursor-pointer hover:border-[#1E56A0] transition-colors whitespace-nowrap shrink-0"
             >
@@ -212,20 +280,51 @@ export default function App() {
         {navDrawerOpen && (
           <div className="border-t border-[#DCD7CA] bg-[#F7F5EF] animate-reveal-down max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain touch-pan-y">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-10 sm:py-8">
-              <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
                 <span className="text-xs font-mono-tech uppercase text-palette-muted">
                   Plan Méthodique de la Formation (9 Modules + Projet Final) · {mastery.rankLabel} · {mastery.percentage}%
                 </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveModuleFilter('all');
-                    setNavDrawerOpen(false);
-                  }}
-                  className="text-xs font-mono-tech state-text-active underline cursor-pointer whitespace-nowrap"
-                >
-                  Tout afficher en lecture continue
-                </button>
+                <div className="flex flex-wrap items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveModuleFilter('all');
+                      setNavDrawerOpen(false);
+                    }}
+                    className="text-xs font-mono-tech state-text-active underline cursor-pointer whitespace-nowrap"
+                  >
+                    Tout afficher en lecture continue
+                  </button>
+
+                  {!confirmResetOpen ? (
+                    <button
+                      type="button"
+                      onClick={() => setConfirmResetOpen(true)}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono-tech text-palette-muted hover:text-[#A62626] cursor-pointer whitespace-nowrap transition-colors"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5 shrink-0" />
+                      <span>Réinitialiser la progression</span>
+                    </button>
+                  ) : (
+                    <div className="inline-flex items-center gap-2 text-xs font-mono-tech">
+                      <span className="state-text-danger font-medium">Effacer la sauvegarde locale ?</span>
+                      <button
+                        type="button"
+                        onClick={handleConfirmResetProgress}
+                        className="px-2.5 py-1 bg-[#A62626] text-white cursor-pointer whitespace-nowrap"
+                      >
+                        Confirmer
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setConfirmResetOpen(false)}
+                        className="px-2.5 py-1 flat-surface-tertiary text-palette-main cursor-pointer whitespace-nowrap"
+                      >
+                        Annuler
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Accès rapides visibles sur mobile/tablette */}
@@ -602,6 +701,8 @@ export default function App() {
           <div>Fichiers directeurs : /context.md · /plan.md · /agents.md</div>
         </div>
       </footer>
+      {/* INDICATEUR DISCRET MODE HORS-LIGNE (PALETTE QUATERNAIRE) */}
+      <OfflineIndicator />
     </div>
   );
 }

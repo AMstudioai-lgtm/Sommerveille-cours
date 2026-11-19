@@ -55,6 +55,7 @@ Elle transforme l'ouvrage de référence *Software Engineering (10th Edition)* d
 - [x] Création du Projet Final guidé « MediFlow Studio » (`src/components/CapstoneProjectLab.tsx`) en fin de formation.
 - [x] Validation par tests unitaires (`mentorEngine.test.ts` + `visualFormatter.test.ts`), compilation et vérification navigateur (PC 1440px & Mobile 390px).
 - [x] Résolution du conflit de dépendances `esbuild` / `vite` dans `package.json` (`esbuild@^0.28.0`) pour compatibilité `npm install` sur Vercel.
+- [x] **PWA 100 % Hors-Ligne (Cas 2)** : Configuration `vite-plugin-pwa` (`registerType: 'autoUpdate'`), manifeste complet (`id`, `short_name: 'Architecte'`, `display: 'standalone'`), icônes PNG conformes (`192×192`, `512×512`, `maskable` 512×512 avec marge de sécurité, `apple-touch-icon.png` 180×180), polices `DM Sans` et `IBM Plex Mono` embarquées localement (`@fontsource`), précaching Workbox intégral (chunks JS/Mermaid, 7 schémas JPG dans `public/images/schemas/`, 3 schémas de référence et PDF Sommerville 4 Mo avec limite 8 Mo), bouton d'installation intégré (`PWAInstallButton` + guide iOS Safari), indicateur hors-ligne (`OfflineIndicator`) et persistance locale versionnée (`src/persistence/progressStorage.ts`) avec réinitialisation dans le Sommaire.
 
 ## 5. Évolutions Futures (Versions X)
 - **v1.2** : Export téléchargeable en un clic d'une archive `.zip` contenant les fichiers `context.md`, `plan.md` et `agents.md` personnalisés par l'apprenant.

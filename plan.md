@@ -32,3 +32,8 @@
   - Création de la logique pure `src/utils/visualFormatter.ts` (+ `visualFormatter.test.ts`) : résolution d'orientation Mermaid (`TD` mobile / `LR` desktop) et tokeniseur syntaxique sobre sur 4 palettes.
   - Création des composants `MermaidDiagramBlock.tsx` (auto-responsive, défilement interne horizontal, bascule V/H, code source dépliable), `CodeSnippetBlock.tsx` (copie + coloration 4 palettes) et `SubSectionVisualStack.tsx`.
   - Enrichissement de tous les sous-modules (`src/data/moduleVisualsData.ts`) et des 6 ateliers du Module 05 (`src/data/module5VisualsData.ts`) en combinant systématiquement Texte épuré + Schéma Mermaid + Code typé + Arborescence.
+- [x] **Incrément 8 : PWA 100 % Hors-Ligne (Cas 2) & Persistance Locale**
+  - Embarquement local des polices `@fontsource/dm-sans` et `@fontsource/ibm-plex-mono` (suppression de toute dépendance Google Fonts).
+  - Génération des icônes PWA conformes (`public/icon.svg`, `pwa-192x192.png`, `pwa-512x512.png`, `pwa-maskable-512x512.png`, `apple-touch-icon.png`) et configuration `vite-plugin-pwa` (Workbox précaching 8 Mo couvrant JS/Mermaid, polices, 7 schémas `public/images/schemas/`, 3 schémas de référence et PDF Sommerville 4 Mo).
+  - Création de la couche persistance `src/persistence/progressStorage.ts` (+ tests unitaires `progressStorage.test.ts`), des hooks `src/hooks/usePWAInstall.ts` et `src/hooks/useOnlineStatus.ts`, et des composants `PWAInstallButton.tsx` (Chromium + guide iOS Safari) et `OfflineIndicator.tsx`.
+  - Intégration du contrôle de réinitialisation en 2 temps dans le tiroir Sommaire.
