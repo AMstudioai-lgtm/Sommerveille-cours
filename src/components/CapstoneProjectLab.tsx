@@ -89,13 +89,15 @@ Règle métier centrale : ${customBusinessRule}
   return (
     <div className="space-y-20 mt-12">
       {/* Partie 1 : Entraînement sur les 2 Scénarios Réels Google AI Studio */}
-      <div>
-        <h3 className="text-2xl sm:text-3xl font-bold text-palette-main mb-3">
-          Étape 1 — Entraînement : Scénarios de Décision sur Google AI Studio
-        </h3>
-        <p className="text-lg text-palette-body mb-8 max-w-3xl">
-          Avant de construire ton projet final, teste tes réflexes d’architecte sur ces deux cas réels inspirés d’Ian Sommerville.
-        </p>
+      <div className="space-y-6">
+        <div className="max-w-[65ch] space-y-3">
+          <h3 className="font-editorial-serif font-medium text-[1.75rem] sm:text-[2.4rem] leading-[1.12] tracking-[-0.015em] text-palette-main">
+            Étape 1 — Entraînement : Scénarios de Décision sur Google AI Studio
+          </h3>
+          <p className="text-[1.05rem] sm:text-[1.18rem] text-palette-body leading-[1.56]">
+            Avant de construire ton projet final, teste tes réflexes d’architecte sur ces deux cas réels inspirés d’Ian Sommerville.
+          </p>
+        </div>
         <AiStudioScenarioLab
           onScenarioStepSolved={onScenarioStepSolved}
           solvedSteps={solvedSteps}
@@ -103,17 +105,18 @@ Règle métier centrale : ${customBusinessRule}
       </div>
 
       {/* Partie 2 : Le Projet Final de Fin de Formation à Construire */}
-      <div id="projet-final" className="pt-12 border-t border-[#DCD7CA]">
-        <div className="max-w-4xl mb-12">
-          <div className="text-xs font-mono-tech uppercase tracking-widest state-text-active font-semibold mb-3">
+      <div id="projet-final" className="pt-14 editorial-rule-fine">
+        <div className="max-w-[65ch] mb-10 space-y-4">
+          <div className="text-xs font-mono-tech uppercase tracking-widest state-text-active font-semibold">
             PROJET DE FIN DE FORMATION · MISE EN PRATIQUE COMPLÈTE
           </div>
-          <h3 className="text-3xl sm:text-4xl font-bold text-palette-main leading-tight">
+          <h3 className="font-editorial-serif font-medium text-[2rem] sm:text-[2.85rem] text-palette-main leading-[1.08] tracking-[-0.02em]">
             {CAPSTONE_PROJECT_SPEC.title}
           </h3>
-          <p className="text-xl text-palette-body mt-4 leading-relaxed">
+          <p className="text-[1.08rem] sm:text-[1.22rem] text-palette-body leading-[1.56]">
             {CAPSTONE_PROJECT_SPEC.subtitle}
           </p>
+          <div className="editorial-rule-strong pt-2" />
         </div>
 
         {/* Brief du Projet écrit simplement et clairement */}

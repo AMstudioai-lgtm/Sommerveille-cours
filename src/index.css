@@ -4,26 +4,26 @@
   :root {
     color-scheme: light;
 
-    /* 1. PALETTE PRIMAIRE : Backgrounds ultra-épurés et respirants */
-    --bg-primary: #FAF9F5;
-    --bg-primary-alt: #F3F1EA;
-    --bg-primary-deep: #EAE6DC;
-    --bg-header-sticky: rgba(250, 249, 245, 0.95);
+    /* 1. PALETTE PRIMAIRE : Canevas papier éditorial lumineux et respirant */
+    --bg-primary: #FFFFFF;
+    --bg-primary-alt: #FAF9F6;
+    --bg-primary-deep: #F3F1EB;
+    --bg-header-sticky: rgba(255, 255, 255, 0.94);
 
-    /* 2. PALETTE SECONDAIRE : Texte & Hiérarchie (DM Sans intégral) */
+    /* 2. PALETTE SECONDAIRE : Texte & Hiérarchie (Cormorant Garamond titres + DM Sans corps) */
     --text-secondary-main: #141619;
-    --text-secondary-body: #3B4049;
-    --text-secondary-muted: #6E7582;
+    --text-secondary-body: #323741;
+    --text-secondary-muted: #666E7A;
 
     /* 3. PALETTE TERTIAIRE : Contenu important, contrôles, cartes plates sans ombre (bordure fine 1px) */
     --surface-tertiary: #FFFFFF;
-    --surface-tertiary-alt: #F7F5EF;
+    --surface-tertiary-alt: #F8F7F3;
     --surface-tertiary-active: #EDF3FC;
-    --border-tertiary-fine: #DCD7CA;
+    --border-tertiary-fine: #E4E0D5;
     --border-tertiary-strong: #141619;
 
     /* 4. PALETTE QUATERNAIRE : États, Chargement, Interactions, Validation, Alertes */
-    --state-quaternary-active: #1E56A0;
+    --state-quaternary-active: #1D4ED8;
     --state-quaternary-success: #1B6B4A;
     --state-quaternary-warning: #B85D19;
     --state-quaternary-danger: #A62626;
@@ -36,7 +36,7 @@
     --state-bg-danger: #FDF2F2;
     --state-bg-neutral: #F1F5F9;
     --btn-ink-bg: #141619;
-    --btn-ink-text: #FAF9F5;
+    --btn-ink-text: #FFFFFF;
   }
 
   :root[data-theme='dark'] {
@@ -94,9 +94,22 @@
     transition: background-color 0.2s ease, color 0.2s ease;
   }
 
-  h1, h2, h3, h4, h5, h6, .font-serif-editorial {
+  h1, h2, h3, .font-serif-editorial, .font-editorial-serif {
+    font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    letter-spacing: -0.02em;
+    font-variant-numeric: lining-nums tabular-nums;
+    font-feature-settings: "lnum" 1, "tnum" 1;
+    text-wrap: balance;
+  }
+
+  .editorial-numerals {
+    font-variant-numeric: lining-nums tabular-nums;
+    font-feature-settings: "lnum" 1, "tnum" 1;
+  }
+
+  h4, h5, h6 {
     font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.015em;
   }
 
   code, pre, .font-mono-tech {
@@ -354,3 +367,44 @@
   background-color: var(--bg-primary) !important;
 }
 
+/* Filets éditoriaux inspirés de la mise en page livre / revue */
+.editorial-rule-strong {
+  border-top: 1.5px solid var(--border-tertiary-strong);
+}
+
+.editorial-rule-fine {
+  border-top: 1px solid var(--border-tertiary-fine);
+}
+
+/* Mise en page impression / export PDF fidèle au rendu éditorial */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 22mm 20mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #141619 !important;
+    font-size: 11pt;
+    line-height: 1.65;
+  }
+
+  header,
+  .no-print {
+    display: none !important;
+  }
+
+  section {
+    padding-block: 18pt !important;
+    border-color: #dcd7ca !important;
+  }
+
+  figure,
+  pre,
+  .flat-surface-tertiary {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

@@ -41,3 +41,8 @@
   - Définition de `:root[data-theme="dark"]` sur les variables CSS existantes dans `src/index.css` (`#111317` / `#171A20` / `#1B1F26`, textes `#F3F1EA`, bordure fine 1px `#2B313D`, états quaternaires calibrés dark, zéro ombre).
   - Création de `src/persistence/themeStorage.ts` (+ `themeStorage.test.ts`), `src/hooks/useTheme.ts` (sync `data-theme` + `<meta name="theme-color">`) et `src/components/ThemeToggleButton.tsx` intégré dans l'en-tête.
   - Adaptation dynamique de `MermaidDiagramBlock.tsx`, `InteractiveArchitectureDiagram.tsx` et `CodeSnippetBlock.tsx`, plus script anti-flash dans `index.html`.
+- [x] **Incrément 10 : Création du Skill Réutilisable en Fichier Unique (`/pdf-en-cours.md`)**
+  - Analyse de bout en bout du projet et formalisation du skill `pdf-en-cours` à la racine du projet, réutilisable pour convertir n'importe quel PDF en un fichier HTML unique interactif.
+- [x] **Incrément 11 : Refonte Visuelle Éditoriale (Marges, Serif `Cormorant Garamond` & Filets Horizontaux)**
+  - Embarquement local de `@fontsource/cormorant-garamond` (`300`, `400`, `500`, `600`, `400-italic`) pour les grands titres (`h1`, `h2`, `h3`) et métriques nues hors-ligne.
+  - Élargissement des marges latérales (`px-7 sm:px-12 lg:px-16`), colonne de prose `65ch`, filet horizontal fort `1.5px` sous chaque bloc titre/sous-titre, métrique de progression nue en bleu cobalt (`X/9`), suppression des barres verticales latérales, styles `@media print` et mise à jour miroir dans `/pdf-en-cours.md`.

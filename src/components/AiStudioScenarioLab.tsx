@@ -215,18 +215,19 @@ export const GlossaryDecoderSection: React.FC = () => {
   const filteredTerms = filterGlossaryTerms(searchQuery, selectedCategory);
 
   return (
-    <section id="lexique-decodeur" className="py-16 border-t border-[#D5D0C3]">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mb-8">
-          <div className="text-xs font-mono-tech uppercase tracking-wider state-text-active font-semibold mb-2">
+    <section id="lexique-decodeur" className="py-20 sm:py-24 border-t border-[var(--border-tertiary-fine)] bg-palette-primary">
+      <div className="max-w-4xl mx-auto px-7 sm:px-12 lg:px-16">
+        <div className="max-w-[65ch] mb-10 space-y-4">
+          <div className="text-xs font-mono-tech uppercase tracking-wider state-text-active font-semibold">
             Référentiel Technique & Jargon de l’IA
           </div>
-          <h2 className="text-2xl sm:text-3xl font-serif-editorial font-semibold text-palette-main mb-3">
+          <h2 className="font-editorial-serif font-medium text-[2.1rem] sm:text-[3rem] leading-[1.08] tracking-[-0.02em] text-palette-main">
             Décodeur du Vocabulaire d’Ingénieur Logiciel
           </h2>
-          <p className="text-base text-palette-body">
+          <p className="text-[1.05rem] sm:text-[1.18rem] text-palette-body leading-[1.56]">
             Ne sois plus jamais dans le flou quand une IA te parle de « CRUD », de « règle métier », d’« idempotence », de « refactoring » ou de « middleware ». Recherche un terme pour comprendre sa signification simple et la décision que tu dois prendre en tant qu’architecte.
           </p>
+          <div className="editorial-rule-strong pt-2" />
         </div>
 
         {/* Barre de recherche et filtres (Palette Tertiaire) */}

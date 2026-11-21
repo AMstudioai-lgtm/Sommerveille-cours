@@ -196,7 +196,7 @@ export default function App() {
           />
         </div>
 
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4 sm:gap-6">
+        <div className="max-w-5xl mx-auto px-5 sm:px-8 lg:px-10 h-16 flex items-center justify-between gap-4 sm:gap-6">
           <button
             type="button"
             onClick={() => setActiveModuleFilter('all')}
@@ -283,8 +283,8 @@ export default function App() {
 
         {/* Tiroir Sommaire Complet avec Sous-modules */}
         {navDrawerOpen && (
-          <div className="border-t border-[#DCD7CA] bg-[#F7F5EF] animate-reveal-down max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain touch-pan-y">
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-10 sm:py-8">
+          <div className="border-t border-[var(--border-tertiary-fine)] bg-[var(--surface-tertiary-alt)] animate-reveal-down max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain touch-pan-y">
+            <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-6 pb-10 sm:py-8">
               <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
                 <span className="text-xs font-mono-tech uppercase text-palette-muted">
                   Plan Méthodique de la Formation (9 Modules + Projet Final) · {mastery.rankLabel} · {mastery.percentage}%
@@ -413,23 +413,41 @@ export default function App() {
         )}
       </header>
 
-      {/* HERO MINIMALISTE & RESPIRANT (Grand Titre, Sous-titre, Navigation calme) */}
-      <section className="py-20 sm:py-28 border-b border-[#DCD7CA] bg-palette-primary">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl space-y-6 animate-reveal-up">
-            <div className="text-xs font-mono-tech uppercase tracking-widest state-text-active font-semibold">
-              PARCOURS MENTORÉ · D’APRÈS IAN SOMMERVILLE
+      {/* HERO ÉDITORIAL MINIMALISTE & RESPIRANT (Grand Titre Serif, Sous-titre, Filet fort, Métrique nue) */}
+      <section className="py-16 sm:py-24 border-b border-[var(--border-tertiary-fine)] bg-palette-primary">
+        <div className="max-w-4xl mx-auto px-7 sm:px-12 lg:px-16">
+          <div className="max-w-[65ch] space-y-7 animate-reveal-up">
+            <div className="space-y-4">
+              <div className="text-xs font-mono-tech uppercase tracking-widest state-text-active font-semibold">
+                PARCOURS MENTORÉ · D’APRÈS IAN SOMMERVILLE
+              </div>
+
+              <h1 className="font-editorial-serif font-medium text-[2.55rem] sm:text-[3.85rem] text-palette-main leading-[1.06] tracking-[-0.02em]">
+                De la Conception à la Maintenance d’un Logiciel.
+              </h1>
+
+              <p className="text-[1.1rem] sm:text-[1.32rem] text-palette-body leading-[1.58] font-normal">
+                Apprends méthodiquement à penser en architecte logiciel sans écrire de code, à décider quelle architecture choisir, à lire une arborescence et à piloter l’IA jusqu’à ton projet final.
+              </p>
             </div>
 
-            <h1 className="text-4xl sm:text-6xl font-bold text-palette-main leading-[1.12] tracking-tight">
-              De la Conception à la Maintenance d’un Logiciel.
-            </h1>
+            <div className="editorial-rule-strong pt-7 space-y-6">
+              <p className="text-[16px] sm:text-[17px] text-palette-body leading-[1.74]">
+                <strong className="font-semibold text-palette-main">Le principe de formation : </strong>
+                chaque module s’appuie sur un schéma lisible en 5 secondes, des explications sans jargon inutile et des exercices de décision réels inspirés d’Ian Sommerville pour garder la maîtrise de tes projets IA.
+              </p>
 
-            <p className="text-xl sm:text-2xl text-palette-body leading-relaxed font-normal">
-              Apprends méthodiquement à penser en architecte logiciel sans écrire de code, à décider quelle architecture choisir, à lire une arborescence et à piloter l’IA jusqu’à ton projet final.
-            </p>
+              <div className="pt-1 space-y-1">
+                <div className="font-editorial-serif editorial-numerals font-light text-5xl sm:text-6xl leading-none tracking-tight state-text-active">
+                  {completedModules.length}/{TRAINING_MODULES.length}
+                </div>
+                <div className="text-xs sm:text-sm text-palette-muted">
+                  Modules validés · {mastery.rankLabel} ({mastery.percentage}% de maîtrise globale)
+                </div>
+              </div>
+            </div>
 
-            <div className="pt-4 flex flex-wrap items-center gap-4">
+            <div className="editorial-rule-fine pt-7 flex flex-wrap items-center gap-4 no-print">
               <a
                 href="#module-mod-1-fondations"
                 onClick={() => setActiveModuleFilter('all')}
@@ -441,7 +459,7 @@ export default function App() {
               <a
                 href="#projet-final"
                 onClick={() => setActiveModuleFilter('all')}
-                className="inline-flex items-center gap-2 px-6 py-3.5 text-sm font-medium flat-surface-tertiary text-palette-main hover:border-[#1E56A0] transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3.5 text-sm font-medium flat-surface-tertiary text-palette-main hover:border-[var(--state-quaternary-active)] transition-colors"
               >
                 Voir le Projet Final à Construire
               </a>
@@ -450,13 +468,13 @@ export default function App() {
         </div>
       </section>
 
-      {/* CORPS DE LA FORMATION : STRUCTURE MINIMALISTE (GRAND TITRE -> SOUS-TITRE -> CONTENU ESPACÉ) */}
+      {/* CORPS DE LA FORMATION : MARGES ÉDITORIALES, TITRE SERIF, FILETS & RESPIRATION */}
       <main className="flex-1">
         {activeModuleFilter !== 'all' && (
-          <div className="bg-[#EDF3FC] border-b border-[#1E56A0] py-3 px-4">
-            <div className="max-w-5xl mx-auto flex items-center justify-between text-xs font-mono-tech">
+          <div className="bg-[var(--state-bg-active)] border-b border-[var(--state-quaternary-active)] py-3 px-7 sm:px-12 no-print">
+            <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs font-mono-tech">
               <span className="state-text-active font-semibold">
-                ● Lecture ciblée d’un module unique
+                Lecture ciblée d’un module unique
               </span>
               <button
                 type="button"
@@ -476,13 +494,13 @@ export default function App() {
             <section
               key={module.id}
               id={`module-${module.id}`}
-              className={`scroll-mt-16 py-24 sm:py-32 border-b border-[#DCD7CA] ${getSectionBgClass(
+              className={`scroll-mt-16 py-20 sm:py-28 border-b border-[var(--border-tertiary-fine)] ${getSectionBgClass(
                 module.bgTone
               )}`}
             >
-              <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
-                {/* 1. INTRODUCTION DU MODULE : GRAND TITRE + SOUS-TITRE + PAROLE DU MENTOR */}
-                <div className="space-y-8">
+              <div className="max-w-4xl mx-auto px-7 sm:px-12 lg:px-16 space-y-16 sm:space-y-20">
+                {/* 1. INTRODUCTION DU MODULE : GRAND TITRE SERIF + SOUS-TITRE + FILET FORT + MENTOR */}
+                <div className="max-w-[65ch] space-y-7">
                   <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="text-xs font-mono-tech uppercase tracking-widest state-text-active font-semibold">
                       MODULE {module.number} · {module.sommervilleChapters}
@@ -491,10 +509,10 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => toggleModuleCompleted(module.id)}
-                      className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-mono-tech cursor-pointer flat-surface-tertiary ${
+                      className={`no-print inline-flex items-center gap-2 px-4 py-2 text-xs font-mono-tech cursor-pointer flat-surface-tertiary ${
                         isCompleted
                           ? 'border-[#1B6B4A] bg-[#EAF5F0] state-text-success font-semibold'
-                          : 'text-palette-body hover:border-[#1E56A0]'
+                          : 'text-palette-body hover:border-[var(--state-quaternary-active)]'
                       }`}
                     >
                       {isCompleted ? (
@@ -511,22 +529,22 @@ export default function App() {
                     </button>
                   </div>
 
-                  {/* Grand Titre & Sous-titre avec espace conséquent */}
-                  <div className="max-w-4xl space-y-5">
-                    <h2 className="text-3xl sm:text-5xl font-bold text-palette-main leading-[1.15] tracking-tight">
+                  {/* Grand Titre Serif & Sous-titre avec espace conséquent */}
+                  <div className="space-y-4">
+                    <h2 className="font-editorial-serif font-medium text-[2.2rem] sm:text-[3.25rem] text-palette-main leading-[1.08] tracking-[-0.02em]">
                       {module.fullTitle}
                     </h2>
-                    <p className="text-xl sm:text-2xl text-palette-body leading-relaxed font-normal">
+                    <p className="text-[1.08rem] sm:text-[1.28rem] text-palette-body leading-[1.56] font-normal">
                       {module.subtitle}
                     </p>
                   </div>
 
-                  {/* Introduction du Mentor écrite sobrement sur le fond */}
-                  <div className="max-w-3xl pt-4 border-l-2 border-[#141619] pl-6">
-                    <div className="text-xs font-mono-tech uppercase text-palette-muted mb-2">
-                      Parole de l’Ingénieur Mentor :
-                    </div>
-                    <p className="text-lg text-palette-main leading-relaxed">
+                  {/* Filet horizontal éditorial fort + Parole du Mentor en attaque directe */}
+                  <div className="editorial-rule-strong pt-7">
+                    <p className="text-[16px] sm:text-[17px] text-palette-body leading-[1.76]">
+                      <strong className="font-semibold text-palette-main">
+                        Parole de l’Ingénieur Mentor :{' '}
+                      </strong>
                       {module.mentorIntro}
                     </p>
                   </div>
@@ -580,30 +598,35 @@ export default function App() {
                   </div>
                 )}
 
-                {/* 3. LES SOUS-MODULES DÉTAILLÉS & ESPACÉS (Grand Titre -> Sous-titre -> Contenu) */}
+                {/* 3. LES SOUS-MODULES DÉTAILLÉS & ESPACÉS (Grand Titre Serif -> Sous-titre -> Contenu) */}
                 {module.sections.length > 0 && (
-                  <div className="space-y-24">
+                  <div className="space-y-20">
                   {module.sections.map((sec) => (
                     <article
                       key={sec.id}
-                      className="pt-12 border-t border-[#DCD7CA] space-y-10"
+                      className="pt-14 editorial-rule-fine space-y-9"
                     >
-                      {/* En-tête du Sous-module : Grand Titre + Sous-titre */}
-                      <div className="max-w-3xl space-y-3">
+                      {/* En-tête du Sous-module : Grand Titre Serif + Sous-titre */}
+                      <div className="max-w-[65ch] space-y-3">
                         <div className="text-xs font-mono-tech uppercase state-text-active font-semibold">
                           {sec.code} · {sec.sommervilleRef}
                         </div>
-                        <h3 className="text-2xl sm:text-4xl font-bold text-palette-main leading-tight">
+                        <h3 className="font-editorial-serif font-medium text-[1.75rem] sm:text-[2.45rem] text-palette-main leading-[1.12] tracking-[-0.015em]">
                           {sec.title}
                         </h3>
-                        <p className="text-lg sm:text-xl text-palette-body leading-relaxed">
+                        <p className="text-[1.05rem] sm:text-[1.18rem] text-palette-body leading-[1.56]">
                           {sec.subtitle}
                         </p>
                       </div>
 
-                      {/* Explication méthodique et enrichie (écrite directement sur la page sans cartes superflues) */}
-                      <div className="max-w-3xl space-y-6 text-base sm:text-lg text-palette-main leading-[1.8]">
-                        <p className="font-medium text-palette-main">{sec.mentorVoice}</p>
+                      {/* Explication méthodique et enrichie posée directement sur le fond */}
+                      <div className="max-w-[65ch] space-y-5 text-[16px] sm:text-[17px] text-palette-body leading-[1.78]">
+                        <p className="text-palette-body">
+                          <strong className="font-semibold text-palette-main">
+                            En pratique :{' '}
+                          </strong>
+                          {sec.mentorVoice}
+                        </p>
                         {sec.deepDiveParagraphs.map((paragraph, pIdx) => (
                           <p key={pIdx} className="text-palette-body">
                             {paragraph}
@@ -616,27 +639,27 @@ export default function App() {
                         <SubSectionVisualStack items={SUBSECTION_VISUALS[sec.id]} />
                       )}
 
-                      {/* Principes clés aérés */}
-                      <div className="pt-6 space-y-12 max-w-4xl">
+                      {/* Principes clés épurés avec filets horizontaux fins */}
+                      <div className="pt-4 space-y-8 max-w-[65ch]">
                         {sec.corePrinciples.map((principle, idx) => (
                           <div
                             key={idx}
-                            className="pl-6 border-l-2 border-[#1E56A0] space-y-3"
+                            className="pt-6 editorial-rule-fine space-y-2.5"
                           >
                             <div className="text-xs font-mono-tech uppercase state-text-active font-semibold">
-                              Point Clé {idx + 1}
+                              Point Clé 0{idx + 1}
                             </div>
-                            <h4 className="text-xl font-bold text-palette-main">
+                            <h4 className="text-lg sm:text-xl font-semibold text-palette-main leading-snug">
                               {principle.heading}
                             </h4>
-                            <p className="text-base text-palette-body leading-relaxed whitespace-pre-line">
+                            <p className="text-[15.5px] sm:text-[16px] text-palette-body leading-[1.72] whitespace-pre-line">
                               {principle.explanation}
                             </p>
                             <p className="text-sm text-palette-muted leading-relaxed whitespace-pre-line">
-                              <strong className="text-palette-main">Exemple concret :</strong>{' '}
+                              <strong className="font-semibold text-palette-main">Exemple concret :</strong>{' '}
                               {principle.concreteExample}
                             </p>
-                            <p className="text-sm font-mono-tech text-[#1E56A0] pt-1">
+                            <p className="text-sm font-mono-tech state-text-active pt-1">
                               Consigne Architecte IA : {principle.aiArchitectRule}
                             </p>
                           </div>
@@ -679,9 +702,9 @@ export default function App() {
                 {renderInteractiveTool(module.interactiveToolId)}
 
                 {/* 5. SYNTHÈSE & RÈGLE D'OR DU MODULE */}
-                <div className="pt-8 border-t border-[#DCD7CA] max-w-3xl">
+                <div className="pt-8 editorial-rule-strong max-w-[65ch]">
                   <div className="text-xs font-mono-tech font-semibold state-text-success uppercase mb-2">
-                    À Retenir du Module {module.number} :
+                    À Retenir du Module {module.number}
                   </div>
                   <p className="text-lg font-medium text-palette-main leading-relaxed">
                     {module.keyTakeaway}
@@ -697,8 +720,8 @@ export default function App() {
       </main>
 
       {/* PIED DE PAGE MINIMALISTE */}
-      <footer className="py-14 bg-palette-primary-deep border-t border-[#DCD7CA]">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-mono-tech text-palette-body">
+      <footer className="py-14 bg-palette-primary-deep border-t border-[var(--border-tertiary-fine)]">
+        <div className="max-w-4xl mx-auto px-7 sm:px-12 lg:px-16 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-mono-tech text-palette-body">
           <div>
             <strong>L’Architecte Logiciel</strong> — Formation modulaire basée sur{' '}
             <em>Software Engineering (10th Ed.)</em> d’Ian Sommerville.

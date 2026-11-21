@@ -9,18 +9,19 @@ Ce fichier définit les règles techniques, architecturales et visuelles impéra
 - **Couche Présentation (`/src/components/` & `/src/App.tsx`)** : Composants visuels réutilisables (`MermaidDiagramBlock`, `CodeSnippetBlock`, `SubSectionVisualStack`, `PWAInstallButton`, `OfflineIndicator`, `ThemeToggleButton`) et ateliers interactifs sans dossier fourre-tout. Toujours privilégier Mermaid en vertical (`TD`) sur mobile et horizontal (`LR`) avec défilement interne sur grand écran.
 
 ## 2. Règles Strictes de Design & UI Minimaliste
-1. **Typographie Unique (100 % Locale Hors-Ligne)** :
-   - Utiliser **`DM Sans`** (`@fontsource/dm-sans`) pour l'intégralité du site (grands titres, sous-titres, corps de texte, boutons).
+1. **Typographie Éditoriale (100 % Locale Hors-Ligne)** :
+   - Utiliser **`Cormorant Garamond`** (`@fontsource/cormorant-garamond`, graisses `300`, `400`, `500`, `600`) pour les grands titres (`h1`, `h2`, `h3`, `.font-editorial-serif`) et les métriques nues.
+   - Utiliser **`DM Sans`** (`@fontsource/dm-sans`) pour les sous-titres, le corps de texte (`max-w-[65ch]`) et les boutons.
    - Utiliser `IBM Plex Mono` (`@fontsource/ibm-plex-mono`) uniquement pour les chemins de fichiers, commandes et extraits de code/prompts. Ne pas réintroduire de requêtes CDN Google Fonts dans `index.html`.
-2. **Hiérarchie « Grand Titre, Sous-titre et Reste du Contenu » & Espaces Conséquents** :
-   - Chaque module et chaque sous-module s'ouvre sur un **Grand Titre**, suivi d'un **Sous-titre** explicatif et du **Reste du contenu** avec une grande respiration verticale (`py-24` à `py-32`, `space-y-20`).
-   - Les textes explicatifs ne doivent jamais être supprimés ni enfermés dans des boîtes inutiles : ils sont écrits directement sur le canevas primaire.
+2. **Hiérarchie « Grand Titre Serif → Sous-titre Sans → Filet Fort → Contenu » & Marges Larges** :
+   - Chaque module et chaque sous-module s'ouvre sur un **Grand Titre Serif**, suivi d'un **Sous-titre** explicatif, d'un **filet horizontal fort (`1.5px`)** et du **Reste du contenu** dans une colonne de lecture confortable avec marges latérales généreuses (`px-7 sm:px-12 lg:px-16`).
+   - Les textes explicatifs ne doivent jamais être supprimés ni enfermés dans des boîtes inutiles ou des barres verticales latérales : ils sont posés directement sur le canevas primaire avec amorces en gras et séparateurs horizontaux fins (`1px`).
 3. **Système à 4 Palettes de Couleurs — Clair & Sombre (Obligatoire)** :
    - Décliné en mode clair (`:root`) et mode sombre (`:root[data-theme="dark"]`) via les mêmes variables CSS, toujours en style plat **sans aucune ombre (`box-shadow: none`)** et avec bordure fine `1px`.
-   - **Palette 1 — Primaire (Backgrounds)** : Clair `#FAF9F5` / `#F3F1EA` / `#EAE6DC` · Sombre `#111317` / `#171A20` / `#0D0F13`.
-   - **Palette 2 — Secondaire (Texte)** : Clair `#141619` / `#3B4049` / `#6E7582` · Sombre `#F3F1EA` / `#C8CDD6` / `#8E96A5`.
-   - **Palette 3 — Tertiaire (Surfaces plates, schémas, formulaires)** : Clair `#FFFFFF` / `#F7F5EF` (bordure `#DCD7CA`) · Sombre `#1B1F26` / `#15181E` (bordure `#2B313D`).
-   - **Palette 4 — Quaternaire (États, chargement, feedback)** : Clair `#1E56A0` / `#1B6B4A` / `#B85D19` / `#A62626` · Sombre `#6EA8FE` / `#4CC38A` / `#E5964B` / `#F06D6D`.
+   - **Palette 1 — Primaire (Backgrounds)** : Clair `#FFFFFF` / `#FAF9F6` / `#F3F1EB` · Sombre `#111317` / `#171A20` / `#0D0F13`.
+   - **Palette 2 — Secondaire (Texte)** : Clair `#141619` / `#323741` / `#666E7A` · Sombre `#F3F1EA` / `#C8CDD6` / `#8E96A5`.
+   - **Palette 3 — Tertiaire (Surfaces plates, schémas, formulaires)** : Clair `#FFFFFF` / `#F8F7F3` (bordure `#E4E0D5`) · Sombre `#1B1F26` / `#15181E` (bordure `#2B313D`).
+   - **Palette 4 — Quaternaire (États, chargement, feedback)** : Clair `#1D4ED8` / `#1B6B4A` / `#B85D19` / `#A62626` · Sombre `#6EA8FE` / `#4CC38A` / `#E5964B` / `#F06D6D`.
 4. **Interdictions Visuelles & Confinement Strict** :
    - Pas de KPI cards, pas de Hero surchargé, pas de pilules pour le texte (`rounded-full` interdit sur les textes).
    - Aucun texte ne doit dépasser d'une carte (`min-w-0`, `break-words`, `overflow-x-auto` sur les blocs de code/arborescences).
